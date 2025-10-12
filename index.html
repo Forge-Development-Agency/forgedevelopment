@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Forge Development | Jax — Founder & Developer</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://unpkg.com/lucide-static@latest/font/lucide.css" rel="stylesheet" />
   <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1087/1087840.png" />
+  <script src="https://kit.fontawesome.com/a2e0bfa8a5.js" crossorigin="anonymous"></script>
   <style>
     body {
       background: radial-gradient(circle at top, #0f172a, #020617);
@@ -21,7 +21,19 @@
     .card {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    a {
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+    a:hover {
+      color: #93c5fd;
+      transform: translateY(-1px);
     }
   </style>
 </head>
@@ -29,7 +41,7 @@
 <body class="min-h-screen flex flex-col items-center justify-start px-6 py-12 space-y-12">
 
   <!-- Header -->
-  <header class="text-center space-y-4">
+  <header class="text-center space-y-4 animate-fadeIn">
     <h1 class="text-5xl font-extrabold gradient-text tracking-tight">Forge Development</h1>
     <p class="text-lg text-slate-300">Crafting immersive experiences and stunning web solutions.</p>
   </header>
@@ -38,7 +50,7 @@
   <section class="max-w-4xl w-full card p-8 rounded-2xl shadow-lg space-y-6">
     <h2 class="text-3xl font-bold gradient-text">💫 About Jax</h2>
     <p class="text-slate-300">
-      <strong>Jax</strong> is the Founder and Lead Developer at <strong>Manchester Roleplay</strong> and a seasoned Developer at <strong>Kingdom Roleplay</strong>, 
+      <strong>Jax</strong> is the Founder and Lead Developer at <strong>Manchester Roleplay</strong> and a seasoned Developer at <strong>Kingdom Roleplay</strong>,
       known for blending creativity and precision to craft truly immersive <strong>FiveM</strong> experiences.
     </p>
     <p class="text-slate-300">
@@ -69,7 +81,9 @@
         Custom, responsive websites built for performance and brand identity.
       </p>
       <p class="text-slate-200"><strong>Starting at £150 ($190)</strong></p>
-      <p class="text-indigo-400 font-medium">Preview work: <a href="#" class="underline hover:text-indigo-300">One Drone Media</a></p>
+      <p class="text-indigo-400 font-medium">Preview work: 
+        <a href="https://onedronemedia.com" target="_blank" class="underline hover:text-indigo-300">One Drone Media</a>
+      </p>
     </div>
   </section>
 
@@ -88,20 +102,31 @@
   <!-- Call to Action -->
   <section class="max-w-4xl w-full flex flex-col items-center text-center space-y-4">
     <h2 class="text-2xl font-semibold gradient-text">Join the Community</h2>
-    <a href="#" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl shadow-md transition">
-      💬 Join Forgedev on Discord
+    <a href="https://discord.gg/YOURDISCORD" target="_blank" 
+       class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2">
+      <i class="fa-brands fa-discord text-lg"></i> Join Forgedev on Discord
     </a>
   </section>
 
   <!-- Social Links -->
-  <footer class="max-w-4xl w-full mt-12 text-center text-slate-400 space-y-2">
+  <footer class="max-w-4xl w-full mt-12 text-center text-slate-400 space-y-3">
     <h3 class="text-xl font-semibold gradient-text">🌍 Connect with Jax</h3>
-    <div class="flex flex-wrap justify-center gap-4 mt-4 text-slate-300">
-      <a href="#" class="hover:text-indigo-400"><i class="lucide-twitter"></i> Twitter (X): @sybu__</a>
-      <a href="#" class="hover:text-indigo-400"><i class="lucide-gamepad"></i> FiveM Forum: @Jax</a>
-      <a href="#" class="hover:text-indigo-400"><i class="lucide-github"></i> GitHub: @ssybumrp</a>
-      <a href="#" class="hover:text-indigo-400"><i class="lucide-globe"></i> Forge Development</a>
-      <a href="#" class="hover:text-indigo-400"><i class="lucide-shopping-bag"></i> Tebex: Manchester Roleplay Store</a>
+    <div class="flex flex-wrap justify-center gap-6 mt-4 text-slate-300 text-lg">
+      <a href="https://twitter.com/sybu__" target="_blank" title="Twitter / X" class="flex items-center gap-2">
+        <i class="fa-brands fa-x-twitter"></i> <span>@sybu__</span>
+      </a>
+      <a href="https://forum.cfx.re/u/Jax" target="_blank" title="FiveM Forum" class="flex items-center gap-2">
+        <i class="fa-solid fa-gamepad"></i> <span>@Jax</span>
+      </a>
+      <a href="https://github.com/ssybumrp" target="_blank" title="GitHub" class="flex items-center gap-2">
+        <i class="fa-brands fa-github"></i> <span>@ssybumrp</span>
+      </a>
+      <a href="https://forgedevelopment.co.uk" target="_blank" title="Website" class="flex items-center gap-2">
+        <i class="fa-solid fa-globe"></i> <span>Forge Development</span>
+      </a>
+      <a href="https://manchester-roleplay.tebex.io" target="_blank" title="Tebex Store" class="flex items-center gap-2">
+        <i class="fa-solid fa-store"></i> <span>Manchester Roleplay Store</span>
+      </a>
     </div>
     <p class="text-xs text-slate-500 mt-6">© 2025 Forge Development. All Rights Reserved.</p>
   </footer>
