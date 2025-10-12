@@ -30,4 +30,4 @@ To bring virtual cities to life through passion, precision, and innovation.
 
 Interested in collaborating or joining the community? Click below to join:
 
-💬 Join Forgedev on Discord
+[💬 Join Forgedev on Discord](https://discord.gg/2Hc3Gs28jF)
