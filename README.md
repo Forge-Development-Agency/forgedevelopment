@@ -26,8 +26,20 @@ Whether he’s designing new systems, fine-tuning assets, or optimizing code, Ja
 
 To bring virtual cities to life through passion, precision, and innovation.
 
-🔗 Join Forgedev
 
 Interested in collaborating or joining the community? Click below to join:
 
 [💬 Join Forgedev on Discord](https://discord.gg/2Hc3Gs28jF)
+
+🌍 Connect with Jax
+
+Stay connected and follow Jax’s latest work, projects, and updates:
+
+🐦 Twitter (X): [@sybu__](https://x.com/sybuu__)
+
+🎮 FiveM Forum: @Jax
+
+🧠 GitHub: [@ssybumrp](https://github.com/sybumrp)
+
+🌐 Website: [Forge Development](forgedev.store)
+🌐 Tebex: Manchester Roleplay Store](mannyroleplay.store)
