@@ -42,4 +42,4 @@ Stay connected and follow Jax’s latest work, projects, and updates:
 🧠 GitHub: [@ssybumrp](https://github.com/sybumrp)
 
 🌐 Website: [Forge Development](forgedev.store)
-🌐 Tebex: Manchester Roleplay Store](mannyroleplay.store)
+🌐 Tebex: [Manchester Roleplay Store](mannyroleplay.store)
