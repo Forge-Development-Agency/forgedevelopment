@@ -18,7 +18,7 @@ with reliable updates, optimization, and tailored systems for your community.
 
 Need a custom site for your server or project? Jax also designs and builds high-quality, responsive websites starting at £150 ($190) — fast, professional, and tailored to fit your brand.
 
-💻 Preview some work: [One Drone Media](onedronemedia.co.uk](http://www.onedronemedia.co.uk/index.html)
+💻 Preview some work: [One Drone Media](onedronemedia.co.uk](www.onedronemedia.co.uk/index.html)
 
 🚀 About Forgedev
 
