@@ -6,225 +6,184 @@
   <title>Forge Development | Jax — Founder & Developer</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1087/1087840.png" />
-  <!-- ✅ Font Awesome 6.6 CDN (includes X/Twitter/Discord icons) -->
-  <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    rel="stylesheet"
-  />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
 
   <style>
+    /* Background and Typography */
     body {
-      background: radial-gradient(circle at top, #0f172a, #020617);
-      color: #f1f5f9;
+      background: radial-gradient(circle at 30% 10%, #111827, #020617);
+      color: #f8fafc;
       font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
     }
+
+    /* Hero Text Gradient */
     .gradient-text {
-      background: linear-gradient(90deg, #60a5fa, #c084fc, #a855f7);
+      background: linear-gradient(90deg, #60a5fa, #818cf8, #a855f7, #ec4899);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-size: 300% 300%;
+      animation: gradientFlow 6s ease infinite;
     }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Glassmorphic Cards */
     .card {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
-      transition: all 0.3s ease;
+      backdrop-filter: blur(18px) saturate(180%);
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      transition: all 0.4s ease;
     }
     .card:hover {
-      border-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-6px) scale(1.01);
     }
+
+    /* Links */
     a {
-      transition: color 0.2s ease, transform 0.2s ease;
+      transition: color 0.25s ease, transform 0.2s ease;
     }
     a:hover {
-      color: #93c5fd;
-      transform: translateY(-1px);
+      color: #a5b4fc;
+      transform: translateY(-2px);
+    }
+
+    /* Glow Accent */
+    .glow {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%);
+      filter: blur(100px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Animations */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 
-<body class="min-h-screen flex flex-col items-center justify-start px-6 py-12 space-y-12">
+<body class="min-h-screen flex flex-col items-center justify-start px-6 py-16 space-y-16 relative">
 
-  <!-- Header -->
-  <header class="text-center space-y-4 animate-fadeIn">
-    <h1 class="text-5xl font-extrabold gradient-text tracking-tight">Forge Development</h1>
-    <p class="text-lg text-slate-300">Crafting immersive experiences and stunning web solutions.</p>
+  <!-- Glowy Background Accents -->
+  <div class="glow top-10 left-[-100px]"></div>
+  <div class="glow bottom-0 right-[-150px]"></div>
+
+  <!-- Header / Hero -->
+  <header class="text-center space-y-6 relative z-10 fade-up">
+    <h1 class="text-6xl md:text-7xl font-extrabold gradient-text tracking-tight drop-shadow-xl">
+      Forge Development
+    </h1>
+    <p class="text-xl text-slate-300 max-w-2xl mx-auto">
+      Crafting immersive experiences and modern web solutions that push boundaries.
+    </p>
   </header>
 
-  <!-- About Jax -->
-  <section class="max-w-4xl w-full card p-8 rounded-2xl shadow-lg space-y-6">
+  <!-- About Section -->
+  <section class="max-w-5xl w-full card p-10 space-y-6 relative z-10 fade-up">
     <h2 class="text-3xl font-bold gradient-text">💫 About Jax</h2>
-    <p class="text-slate-300">
-      <strong>Jax</strong> is the Founder and Lead Developer at <strong>Manchester Roleplay</strong> and a seasoned Developer at <strong>Kingdom Roleplay</strong>,
-      known for blending creativity and precision to craft truly immersive <strong>FiveM</strong> experiences.
+    <p class="text-slate-300 leading-relaxed">
+      <strong>Jax</strong> — Founder & Lead Developer at <strong>Manchester Roleplay</strong>, and Developer at <strong>Kingdom Roleplay</strong>.
+      Known for fusing creative direction with technical precision to build immersive <strong>FiveM</strong> experiences.
     </p>
     <p class="text-slate-300">
-      With years of experience in full-stack development and digital artistry, Jax specializes in:
-      <br><br>
-      <span class="text-indigo-400">C# • Lua • Meta • JavaScript • HTML • CSS</span><br>
-      and is highly skilled in <span class="text-pink-400">Blender</span> and <span class="text-pink-400">Photoshop</span>.
+      Skilled in <span class="text-indigo-400">C#</span>, <span class="text-indigo-400">Lua</span>, <span class="text-indigo-400">JavaScript</span>, 
+      <span class="text-indigo-400">HTML/CSS</span> — and creative tools like <span class="text-pink-400">Blender</span> & <span class="text-pink-400">Photoshop</span>.
     </p>
-    <p class="text-slate-300">
-      His expertise bridges gameplay scripting, optimization, and detailed asset creation — from MLO reskins to custom clothing and vehicle mods.
+    <p class="text-slate-400 italic">
+      Bridging scripting, optimization, and artistry — from MLO reskins to full vehicle and clothing mods.
     </p>
   </section>
 
   <!-- Services -->
-  <section class="max-w-4xl w-full grid md:grid-cols-2 gap-8">
-    <div class="card p-8 rounded-2xl space-y-4">
-      <h3 class="text-2xl font-semibold gradient-text">💻 FiveM Development Services</h3>
-      <p class="text-slate-300">Full server development, optimization, and updates for your community.</p>
-      <div class="text-slate-200">
+  <section class="max-w-5xl w-full grid md:grid-cols-2 gap-10 relative z-10 fade-up">
+    <!-- FiveM Dev Card -->
+    <div class="card p-10 space-y-6">
+      <h3 class="text-2xl font-semibold gradient-text">💻 FiveM Development</h3>
+      <p class="text-slate-300">
+        Custom server builds, optimization, and ongoing support to bring your RP vision to life.
+      </p>
+      <div class="text-slate-200 space-y-1">
         <p><strong>$200/month</strong> (£149)</p>
         <p><strong>$2,400/year</strong> (£1,791)</p>
       </div>
 
-      <!-- 🔥 ForgeDev Studio Product List -->
-      <div class="mt-6 border-t border-slate-700 pt-4 space-y-3 text-slate-300">
-        <h4 class="text-xl font-bold gradient-text">ForgeDev Studio – Product List</h4>
-        <p>Welcome to <strong>ForgeDev Studio!</strong> We build servers mainly using reliable community resources, carefully set up and optimized. Custom scripts are included in higher tiers where noted.</p>
-        <p>To order, create a ticket in <span class="text-indigo-400 font-semibold">🎫・open-a-ticket</span>.</p>
-        <p>Each tier builds on the previous one.</p>
+      <div class="border-t border-slate-700 pt-4 space-y-4 text-slate-300">
+        <h4 class="text-xl font-bold gradient-text">ForgeDev Studio — Packages</h4>
+        <p>Choose from structured tiers — each carefully built for quality, stability, and value.</p>
 
-        <ul class="space-y-4 text-slate-300">
-          <li><strong>📦 Basic – £25</strong><br>
-            Starter setup for small communities.<br>
-            ✅ Base server (txAdmin)<br>
-            ✅ Essential resources<br>
-            ✅ Basic jobs (Police, EMS, Mechanic, Taxi)<br>
-            ✅ Economy (cash + bank)<br>
-            ✅ Standard vehicle pack<br>
-            ✅ 7-day bug-fix warranty
-          </li>
-
-          <li><strong>📦 Starter – £45</strong><br>
-            Adds polish and QoL features.<br>
-            ✅ Optimized config & permissions<br>
-            ✅ Better menus/HUD tuning<br>
-            ✅ Basic anti-cheat setup<br>
-            ✅ 10 core settings documented
-          </li>
-
-          <li><strong>📦 Standard – £65</strong><br>
-            Great for growing servers.<br>
-            ✅ 2 small custom job scripts<br>
-            ✅ Advanced vehicle pack<br>
-            ✅ Branded loading screen + logo<br>
-            ✅ 14-day bug-fix warranty
-          </li>
-
-          <li><strong>📦 Advanced – £85</strong><br>
-            Feature-rich baseline.<br>
-            ✅ Gang/organization framework<br>
-            ✅ Improved inventory & shops<br>
-            ✅ Basic crafting system<br>
-            ✅ Staff tools setup
-          </li>
-
-          <li><strong>📦 Pro – £105</strong><br>
-            Serious RP readiness.<br>
-            ✅ CAD/MDT integration<br>
-            ✅ Advanced economy (billing, invoices)<br>
-            ✅ Job actions (F6/F7)<br>
-            ✅ Performance pass
-          </li>
-
-          <li><strong>📦 Elite – £125</strong><br>
-            High-end content & polish.<br>
-            ✅ 2 extra small custom scripts<br>
-            ✅ Imports vehicle bundle<br>
-            ✅ Map tweaks + zones<br>
-            ✅ Priority support 21 days
-          </li>
-
-          <li><strong>📦 Ultimate – £145</strong><br>
-            Near-complete turnkey setup.<br>
-            ✅ Job pack expansion<br>
-            ✅ Custom UI theming<br>
-            ✅ Discord integrations<br>
-            ✅ Automated backups & crash recovery
-          </li>
-
-          <li><strong>📦 Enterprise – £165</strong><br>
-            Top tier. Full service and support.<br>
-            ✅ Deployment on your host/VPS<br>
-            ✅ Full documentation<br>
-            ✅ 1h admin training call/guide<br>
-            ✅ Priority support 30 days
-          </li>
+        <ul class="space-y-3 text-slate-400 text-sm leading-relaxed">
+          <li><strong>Basic (£25)</strong> — Starter setup with txAdmin, economy, jobs, and base scripts.</li>
+          <li><strong>Standard (£65)</strong> — Advanced vehicle packs, branded loading, and scripts.</li>
+          <li><strong>Pro (£105)</strong> — RP-ready with CAD/MDT, advanced economy, and staff tools.</li>
+          <li><strong>Enterprise (£165)</strong> — Full documentation, deployment, and premium support.</li>
         </ul>
-
-        <div class="border-t border-slate-700 pt-4">
-          <h5 class="text-lg font-semibold text-indigo-400">⚡ Add-ons (Optional)</h5>
-          <p>Enhance any tier with extras:</p>
-          <ul class="list-disc list-inside">
-            <li>Extra script — from £10</li>
-            <li>Extra vehicles — from £5</li>
-            <li>Advanced jobs/gangs — from £15</li>
-            <li>Branding assets — from £10</li>
-            <li>Extra support (7 days) — £10</li>
-          </ul>
-          <p class="text-slate-400 mt-2 italic">ForgeDev Studio • Quality Development, Simple Pricing</p>
-        </div>
+        <p class="text-xs text-slate-500 italic mt-3">+ Add-ons like extra scripts, vehicles, and branding available.</p>
       </div>
-      <!-- End Product List -->
     </div>
 
-    <div class="card p-8 rounded-2xl space-y-4">
-      <h3 class="text-2xl font-semibold gradient-text">🌐 Website Development</h3>
+    <!-- Web Dev Card -->
+    <div class="card p-10 space-y-6">
+      <h3 class="text-2xl font-semibold gradient-text">🌐 Web Development</h3>
       <p class="text-slate-300">
-        Custom, responsive websites built for performance and brand identity.
+        Clean, responsive, and high-performance sites built with a design-first mindset.
       </p>
       <p class="text-slate-200"><strong>Starting at £150 ($190)</strong></p>
-      <p class="text-indigo-400 font-medium">Preview work: 
+      <p class="text-indigo-400 font-medium">Preview:
         <a href="https://onedronemedia.co.uk" target="_blank" class="underline hover:text-indigo-300">One Drone Media</a>
       </p>
     </div>
   </section>
 
-  <!-- About Forgedev -->
-  <section class="max-w-4xl w-full card p-8 rounded-2xl space-y-6">
+  <!-- About Company -->
+  <section class="max-w-5xl w-full card p-10 space-y-6 relative z-10 fade-up">
     <h2 class="text-3xl font-bold gradient-text">🚀 About Forgedev</h2>
-    <p class="text-slate-300">
-      <strong>Forgedev</strong> is Jax’s own development company, delivering cutting-edge gaming systems and professional-grade web development.
-      What makes Jax stand out is his <em>approachable and collaborative nature</em> — pairing deep technical skill with community-driven creativity.
+    <p class="text-slate-300 leading-relaxed">
+      <strong>Forgedev</strong> delivers cutting-edge gaming and web systems — balancing innovation and reliability.
+      Jax brings a collaborative, community-driven spirit to every project.
     </p>
     <blockquote class="border-l-4 border-indigo-500 pl-4 italic text-slate-400">
-      “To bring virtual cities to life through passion, precision, and innovation.”
+      “Bringing virtual cities to life through passion, precision, and innovation.”
     </blockquote>
   </section>
 
-  <!-- Call to Action -->
-  <section class="max-w-4xl w-full flex flex-col items-center text-center space-y-4">
+  <!-- CTA -->
+  <section class="max-w-5xl w-full text-center space-y-6 relative z-10 fade-up">
     <h2 class="text-2xl font-semibold gradient-text">Join the Community</h2>
-    <a href="https://discord.gg/YOURDISCORD" target="_blank" 
-       class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl shadow-md transition flex items-center gap-2">
-      <i class="fa-brands fa-discord text-lg"></i> Join Forgedev on Discord
+    <a href="https://discord.gg/YOURDISCORD" target="_blank"
+       class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white px-8 py-4 rounded-2xl shadow-lg transition flex items-center justify-center gap-3 mx-auto w-fit">
+      <i class="fa-brands fa-discord text-lg"></i>
+      Join Forgedev on Discord
     </a>
   </section>
 
-  <!-- Social Links -->
-  <footer class="max-w-4xl w-full mt-12 text-center text-slate-400 space-y-3">
+  <!-- Footer -->
+  <footer class="max-w-5xl w-full mt-16 text-center text-slate-500 space-y-6 relative z-10 fade-up">
     <h3 class="text-xl font-semibold gradient-text">🌍 Connect with Jax</h3>
-    <div class="flex flex-wrap justify-center gap-6 mt-4 text-slate-300 text-lg">
-      <a href="https://twitter.com/sybu__" target="_blank" title="Twitter / X" class="flex items-center gap-2">
-        <i class="fa-brands fa-x-twitter"></i> <span>@sybu__</span>
-      </a>
-      <a href="https://forum.cfx.re/u/Jax" target="_blank" title="FiveM Forum" class="flex items-center gap-2">
-        <i class="fa-solid fa-gamepad"></i> <span>@Jax</span>
-      </a>
-      <a href="https://github.com/sybumrp" target="_blank" title="GitHub" class="flex items-center gap-2">
-        <i class="fa-brands fa-github"></i> <span>@sybumrp</span>
-      </a>
-      <a href="https://forgedevelopment.co.uk" target="_blank" title="Website" class="flex items-center gap-2">
-        <i class="fa-solid fa-globe"></i> <span>Forge Development</span>
-      </a>
-      <a href="https://www.mannyroleplay.store" target="_blank" title="Tebex Store" class="flex items-center gap-2">
-        <i class="fa-solid fa-store"></i> <span>Manchester Roleplay Store</span>
-      </a>
+    <div class="flex flex-wrap justify-center gap-8 text-slate-300 text-lg">
+      <a href="https://twitter.com/sybu__" target="_blank"><i class="fa-brands fa-x-twitter"></i> @sybu__</a>
+      <a href="https://forum.cfx.re/u/Jax" target="_blank"><i class="fa-solid fa-gamepad"></i> @Jax</a>
+      <a href="https://github.com/sybumrp" target="_blank"><i class="fa-brands fa-github"></i> @sybumrp</a>
+      <a href="https://forgedevelopment.co.uk" target="_blank"><i class="fa-solid fa-globe"></i> ForgeDev</a>
+      <a href="https://www.mannyroleplay.store" target="_blank"><i class="fa-solid fa-store"></i> MR Store</a>
     </div>
-    <p class="text-xs text-slate-500 mt-6">© 2025 Forge Development. All Rights Reserved.</p>
+    <p class="text-xs text-slate-600">© 2025 Forge Development. All Rights Reserved.</p>
   </footer>
-
 </body>
 </html>
