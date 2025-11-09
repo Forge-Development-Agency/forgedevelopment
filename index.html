@@ -8,6 +8,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    /* Custom styling for console UI - minimal and performant */
     :root{
       --bg-1:#02040a;
       --bg-2:#071027;
@@ -65,8 +66,10 @@
     .btn-ghost { border:1px solid rgba(255,255,255,0.04); padding:.45rem .7rem; border-radius:8px; background:transparent; color:inherit; }
     .kbd { background:rgba(255,255,255,0.03); padding:.12rem .4rem; border-radius:6px; font-size:12px; border:1px solid rgba(255,255,255,0.02); }
     .hidden { display:none !important; }
+    /* scrollbars */
     ::-webkit-scrollbar{width:10px;height:10px}
     ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.04);border-radius:10px}
+    /* responsive */
     @media (max-width:1024px){
       .grid-layout { grid-template-columns: 1fr; grid-auto-rows: min-content; padding:12px; }
       .sidebar { position:sticky; top:12px; z-index:40; width:100%; order:-1; margin-bottom:12px; }
@@ -74,9 +77,11 @@
   </style>
 </head>
 <body>
+
+  <!-- APP WRAPPER -->
   <div class="max-w-[1400px] mx-auto p-6 grid grid-cols-[280px_1fr_360px] gap-6 grid-layout min-h-screen">
 
-    <!-- Sidebar -->
+    <!-- SIDEBAR -->
     <aside class="sidebar panel p-4 flex flex-col gap-4">
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-black font-bold">FD</div>
@@ -121,16 +126,212 @@
       <div class="mt-auto text-[11px] muted text-center">© 2025 Forge Development</div>
     </aside>
 
-    <!-- Main Area -->
+    <!-- MAIN AREA -->
     <main class="panel p-4 min-h-[70vh]">
-      <!-- Topbar + content panels ... -->
-      <!-- The rest of your HTML content remains exactly the same as provided -->
+
+      <!-- TOPBAR -->
+      <div class="flex items-center justify-between gap-4 mb-4">
+        <div>
+          <div class="text-xs muted">Forge Console</div>
+          <h1 class="text-2xl font-semibold">Development Control Center</h1>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="text-sm muted">Auto-scroll</div>
+          <input id="autoScroll" type="checkbox" checked />
+          <div class="text-sm muted">Paused</div>
+          <input id="paused" type="checkbox" />
+          <div class="text-sm muted">Search</div>
+          <input id="searchInput" class="input-plain" placeholder="Regex / text search — press / to focus" />
+          <button id="exportTxt" class="btn-ghost">Export .log</button>
+          <button id="exportJson" class="btn-ghost">Export .json</button>
+        </div>
+      </div>
+
+      <!-- CONTENT PANELS -->
+      <section id="panel-overview" class="space-y-4">
+        <!-- Live console + terminal -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="panel p-3 flex flex-col">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs muted">Live Console</div>
+                <h2 class="text-lg font-semibold">Logs</h2>
+              </div>
+              <div class="flex items-center gap-2">
+                <select id="levelFilter" class="input-plain">
+                  <option value="ALL">All Levels</option>
+                  <option value="INFO">INFO</option>
+                  <option value="WARN">WARN</option>
+                  <option value="ERROR">ERROR</option>
+                  <option value="DEBUG">DEBUG</option>
+                </select>
+                <button id="btnPause" class="btn-ghost">Pause</button>
+                <button id="btnClear" class="btn-ghost">Clear</button>
+                <button id="btnCopy" class="btn-ghost">Copy</button>
+              </div>
+            </div>
+
+            <div id="logsViewport" class="mt-3 overflow-auto p-2 space-y-2 logs-viewport" style="max-height:360px" aria-live="polite"></div>
+
+            <div class="mt-3 panel p-2 flex items-center gap-3">
+              <div class="text-xs muted">Terminal:</div>
+              <input id="terminalInput" class="flex-1 input-plain" placeholder="Type command (help, restart, deploy, restartResource <name>)" />
+              <button id="terminalSend" class="btn-primary">Send</button>
+            </div>
+
+            <div class="mt-2 text-xs muted">History (Up/Down to navigate)</div>
+            <div id="termHistory" class="panel p-2 mt-1 max-h-20 overflow-auto text-xs"></div>
+          </div>
+
+          <!-- Metrics snapshot -->
+          <div class="panel p-3">
+            <div>
+              <div class="text-xs muted">System Metrics</div>
+              <h2 class="text-lg font-semibold">Realtime</h2>
+            </div>
+
+            <div class="mt-3 grid grid-cols-1 gap-3">
+              <div class="panel p-3 flex items-center justify-between">
+                <div>
+                  <div class="text-xs muted">CPU</div>
+                  <div id="cpuValue" class="text-lg font-semibold">--%</div>
+                </div>
+                <canvas id="cpuSpark" width="160" height="60"></canvas>
+              </div>
+
+              <div class="panel p-3 flex items-center justify-between">
+                <div>
+                  <div class="text-xs muted">Memory</div>
+                  <div id="memValue" class="text-lg font-semibold">--%</div>
+                </div>
+                <canvas id="memSpark" width="160" height="60"></canvas>
+              </div>
+
+              <div class="panel p-3 flex items-center justify-between">
+                <div>
+                  <div class="text-xs muted">TPS</div>
+                  <div id="tpsValue" class="text-lg font-semibold">--</div>
+                </div>
+                <canvas id="tpsSpark" width="160" height="60"></canvas>
+              </div>
+
+              <div class="panel p-3">
+                <div class="text-xs muted">Players</div>
+                <div id="playersValue" class="text-lg font-semibold">--</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-console" class="hidden">
+        <div class="panel p-3">
+          <div class="text-xs muted">Console</div>
+          <h2 class="text-lg font-semibold">Advanced Console</h2>
+          <div class="mt-3 grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <div class="col-span-2 panel p-2 logs-viewport" id="consoleViewport" style="max-height:480px; overflow:auto"></div>
+            <aside class="panel p-3">
+              <div class="text-xs muted">Filters</div>
+              <div class="mt-2 space-y-2">
+                <label><input id="cbInfo" type="checkbox" checked/> <span class="muted ml-2">INFO</span></label>
+                <label><input id="cbWarn" type="checkbox" checked/> <span class="muted ml-2">WARN</span></label>
+                <label><input id="cbError" type="checkbox" checked/> <span class="muted ml-2">ERROR</span></label>
+                <label><input id="cbDebug" type="checkbox" checked/> <span class="muted ml-2">DEBUG</span></label>
+              </div>
+              <div class="mt-3">
+                <button id="btnExportJSON" class="btn-ghost w-full">Export JSON</button>
+                <button id="btnDownload" class="btn-ghost w-full mt-2">Download</button>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-metrics" class="hidden">
+        <div class="panel p-3">
+          <div class="text-xs muted">Metrics</div>
+          <h2 class="text-lg font-semibold">Historical</h2>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="panel p-3"><canvas id="chartCpu" width="400" height="120"></canvas></div>
+            <div class="panel p-3"><canvas id="chartMem" width="400" height="120"></canvas></div>
+            <div class="panel p-3"><canvas id="chartTps" width="400" height="120"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-projects" class="hidden">
+        <div class="panel p-3">
+          <div class="text-xs muted">Projects</div>
+          <h2 class="text-lg font-semibold">Selected Work</h2>
+          <div class="mt-3 grid sm:grid-cols-2 gap-3">
+            <div class="panel p-3">
+              <div class="text-xs muted">Manchester Roleplay</div>
+              <div class="text-white font-medium mt-1">Large-scale RP server: custom economy, UI and tools</div>
+            </div>
+            <div class="panel p-3">
+              <div class="text-xs muted">One Drone Media</div>
+              <div class="text-white font-medium mt-1">Website & booking platform</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-settings" class="hidden">
+        <div class="panel p-3">
+          <div class="text-xs muted">Settings</div>
+          <h2 class="text-lg font-semibold">Console Settings</h2>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="panel p-3">
+              <div class="text-xs muted">Stream Rate (ms)</div>
+              <input id="streamRate" type="range" min="50" max="2000" value="200" class="w-full"/>
+              <div class="text-xs muted mt-2">Controls simulated log frequency</div>
+            </div>
+            <div class="panel p-3">
+              <div class="text-xs muted">Retention (max logs)</div>
+              <input id="retention" type="number" min="100" max="20000" value="5000" class="input-plain w-full"/>
+              <div class="text-xs muted mt-2">How many log lines to keep in memory (localStorage)</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
 
-    <!-- Right Column -->
+    <!-- RIGHT COLUMN -->
     <aside class="panel p-4 flex flex-col gap-4">
-      <!-- Widgets, alerts, shortcuts, connect links ... -->
-      <!-- Keep as provided -->
+      <div>
+        <div class="text-xs muted">Summary</div>
+        <h3 class="text-lg font-semibold">Snapshot</h3>
+        <div class="mt-3 grid grid-cols-2 gap-2">
+          <div class="panel p-3"><div class="text-xs muted">Players</div><div id="widgetPlayers" class="text-lg font-semibold">--</div></div>
+          <div class="panel p-3"><div class="text-xs muted">Peak</div><div id="widgetPeak" class="text-lg font-semibold">--</div></div>
+          <div class="panel p-3"><div class="text-xs muted">Deploys</div><div id="widgetDeploys" class="text-lg font-semibold">0</div></div>
+          <div class="panel p-3"><div class="text-xs muted">Errors</div><div id="widgetErrors" class="text-lg font-semibold">0</div></div>
+        </div>
+      </div>
+
+      <div class="panel p-3">
+        <div class="text-xs muted">Alerts</div>
+        <div id="alerts" class="mt-2 space-y-2 text-sm"></div>
+      </div>
+
+      <div class="panel p-3">
+        <div class="text-xs muted">Shortcuts</div>
+        <div class="mt-2 text-sm muted">
+          <div><span class="kbd">Ctrl/Cmd</span> + <span class="kbd">K</span> — Command palette</div>
+          <div><span class="kbd">/</span> — Focus search</div>
+          <div><span class="kbd">Esc</span> — Close palette</div>
+        </div>
+      </div>
+
+      <div class="panel p-3">
+        <div class="text-xs muted">Connect</div>
+        <div class="mt-2 flex flex-col gap-2">
+          <a href="https://twitter.com/sybu__" target="_blank" class="text-sm text-gray-300 hover:text-white"><i class="fa-brands fa-x-twitter"></i> @sybu__</a>
+          <a href="https://github.com/sybumrp" target="_blank" class="text-sm text-gray-300 hover:text-white"><i class="fa-brands fa-github"></i> GitHub</a>
+        </div>
+      </div>
     </aside>
   </div>
 
@@ -146,10 +347,715 @@
   </div>
 
   <script>
+    /*
+      Forge Development Console (single-file)
+      - Client-side simulation of a FiveM control console
+      - Replace executeFiveMCommand with real server integration when ready
+      - Persist logs and settings to localStorage
+    */
+
     (function () {
-      /* Full JavaScript as in your original file */
-      /* Handles: logs, terminal, metrics, streams, UI, command palette, alerts, server control */
-      /* Paste all your JS code from your original snippet here */
+      // ---- Configuration ----
+      const DEFAULT_RETENTION = 5000;
+      const DEFAULT_STREAM_RATE = 200; // ms
+      const APP_KEY = 'forge_console_v1';
+      const LOG_KEY = APP_KEY + '_logs';
+      const SETTINGS_KEY = APP_KEY + '_settings';
+
+      // ---- DOM ----
+      const logsViewport = document.getElementById('logsViewport');
+      const consoleViewport = document.getElementById('consoleViewport');
+      const autoScrollEl = document.getElementById('autoScroll');
+      const pausedEl = document.getElementById('paused');
+      const searchInput = document.getElementById('searchInput');
+      const levelFilter = document.getElementById('levelFilter');
+      const btnPause = document.getElementById('btnPause');
+      const btnClear = document.getElementById('btnClear');
+      const btnCopy = document.getElementById('btnCopy');
+      const terminalInput = document.getElementById('terminalInput');
+      const terminalSend = document.getElementById('terminalSend');
+      const termHistoryEl = document.getElementById('termHistory');
+      const exportTxtBtn = document.getElementById('exportTxt');
+      const exportJsonBtn = document.getElementById('exportJson');
+      const btnRestart = document.getElementById('btnRestart');
+      const btnDeploy = document.getElementById('btnDeploy');
+      const btnStop = document.getElementById('btnStop');
+      const btnStart = document.getElementById('btnStart');
+      const uptimeBar = document.getElementById('uptimeBar');
+      const serverStateEl = document.getElementById('serverState');
+      const serverDot = document.getElementById('serverDot');
+      const widgetPlayers = document.getElementById('widgetPlayers');
+      const widgetPeak = document.getElementById('widgetPeak');
+      const widgetDeploys = document.getElementById('widgetDeploys');
+      const widgetErrors = document.getElementById('widgetErrors');
+      const alertsEl = document.getElementById('alerts');
+      const streamRateEl = document.getElementById('streamRate');
+      const retentionEl = document.getElementById('retention');
+
+      const consoleNavButtons = document.querySelectorAll('[data-nav]');
+      const panels = {
+        overview: document.getElementById('panel-overview'),
+        console: document.getElementById('panel-console'),
+        metrics: document.getElementById('panel-metrics'),
+        projects: document.getElementById('panel-projects'),
+        settings: document.getElementById('panel-settings')
+      };
+
+      // Command palette
+      const cmdPalette = document.getElementById('cmdPalette');
+      const paletteInput = document.getElementById('paletteInput');
+      const paletteClose = document.getElementById('paletteClose');
+      const paletteResults = document.getElementById('paletteResults');
+
+      // charts/spares
+      const cpuSpark = document.getElementById('cpuSpark');
+      const memSpark = document.getElementById('memSpark');
+      const tpsSpark = document.getElementById('tpsSpark');
+      const chartCpu = document.getElementById('chartCpu');
+      const chartMem = document.getElementById('chartMem');
+      const chartTps = document.getElementById('chartTps');
+
+      // settings
+      let settings = loadSettings() || {
+        streamRate: DEFAULT_STREAM_RATE,
+        retention: DEFAULT_RETENTION,
+        autoScroll: true,
+        tail: 1500
+      };
+
+      // state
+      let logs = loadLogs() || [];
+      let running = true;
+      let tail = settings.tail || 1500;
+      let retention = settings.retention || DEFAULT_RETENTION;
+      let streamRate = settings.streamRate || DEFAULT_STREAM_RATE;
+      let paused = false;
+      let autoScroll = true;
+      let players = 1248;
+      let peakPlayers = 1552;
+      let deploys = 0;
+      let errorCount = 0;
+      let serverState = 'running'; // running, stopped, restarting
+      let logTimer = null;
+      let metricsTimer = null;
+      let commandHistory = [];
+      let commandHistoryIdx = -1;
+
+      // metrics data arrays for drawing
+      const metrics = {
+        cpu: new Array(120).fill(12),
+        mem: new Array(120).fill(28),
+        tps: new Array(120).fill(60),
+        players: new Array(120).fill(200)
+      };
+
+      // ---- Utilities ----
+      function saveSettings() {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      }
+      function loadSettings() {
+        try {
+          const s = localStorage.getItem(SETTINGS_KEY);
+          return s ? JSON.parse(s) : null;
+        } catch (e) { return null; }
+      }
+      function saveLogs() {
+        try {
+          const copy = logs.slice(-retention);
+          localStorage.setItem(LOG_KEY, JSON.stringify(copy));
+        } catch (e) { console.warn('Saving logs failed', e); }
+      }
+      function loadLogs() {
+        try {
+          const s = localStorage.getItem(LOG_KEY);
+          return s ? JSON.parse(s) : null;
+        } catch (e) { return null; }
+      }
+      function nowISO() { return new Date().toISOString(); }
+      function formatTS(ts) {
+        const d = new Date(ts);
+        return d.toLocaleString();
+      }
+
+      function makeLog(level, msg, meta = {}) {
+        const entry = {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+          ts: nowISO(),
+          level,
+          msg,
+          meta
+        };
+        // update error counter
+        if (level === 'ERROR') errorCount++;
+        logs.push(entry);
+        // enforce retention
+        if (logs.length > retention) logs.splice(0, logs.length - retention);
+        saveLogs();
+        return entry;
+      }
+
+      function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+      // Simple HTML escape
+      function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+      // ---- Render / UI updates ----
+      function renderLogs() {
+        // level filter and search apply
+        const level = levelFilter.value || 'ALL';
+        const q = (searchInput.value || '').trim();
+        const re = q ? safeRegExp(q) : null;
+
+        // virtualized approach: render only tail last N matching lines
+        const matched = [];
+        for (let i = logs.length - 1; i >= 0 && matched.length < tail; i--) {
+          const l = logs[i];
+          if (level !== 'ALL' && l.level !== level) continue;
+          if (re && !re.test(l.msg + ' ' + JSON.stringify(l.meta))) continue;
+          matched.push(l);
+        }
+        matched.reverse(); // chronological
+
+        logsViewport.innerHTML = '';
+        const frag = document.createDocumentFragment();
+        for (const l of matched) {
+          const el = createLogElement(l);
+          frag.appendChild(el);
+        }
+        logsViewport.appendChild(frag);
+
+        // consoleViewport (advanced)
+        if (consoleViewport) {
+          consoleViewport.innerHTML = '';
+          const ff = document.createDocumentFragment();
+          for (let i = Math.max(0, logs.length - matched.length); i < logs.length; i++) {
+            const l = logs[i];
+            const el = createLogElement(l);
+            ff.appendChild(el);
+          }
+          consoleViewport.appendChild(ff);
+        }
+
+        // update sidebar widgets
+        widgetPlayers.innerText = players;
+        widgetPeak.innerText = peakPlayers;
+        widgetDeploys.innerText = deploys;
+        widgetErrors.innerText = errorCount;
+
+        if (autoScroll && autoScrollEl.checked) {
+          logsViewport.scrollTop = logsViewport.scrollHeight;
+          if (consoleViewport) consoleViewport.scrollTop = consoleViewport.scrollHeight;
+        }
+      }
+
+      function createLogElement(l) {
+        const div = document.createElement('div');
+        div.className = 'log-line panel p-2 flex items-start gap-3 rounded';
+        const dot = document.createElement('div');
+        dot.className = 'status-dot';
+        if (l.level === 'INFO') dot.style.background = 'linear-gradient(90deg,#60a5fa,#38bdf8)';
+        if (l.level === 'WARN') dot.style.background = 'linear-gradient(90deg,#f59e0b,#f97316)';
+        if (l.level === 'ERROR') dot.style.background = 'linear-gradient(90deg,#ff4d6d,#ff6b6b)';
+        if (l.level === 'DEBUG') dot.style.background = 'linear-gradient(90deg,#a3e635,#86efac)';
+        const meta = document.createElement('div');
+        meta.className = 'text-xs muted';
+        meta.innerText = `[${formatTS(l.ts)}] ${l.level}`;
+        const content = document.createElement('div');
+        content.className = 'flex-1';
+        const title = document.createElement('div');
+        title.className = 'text-sm';
+        title.innerHTML = `<strong class="muted">${escapeHtml(l.meta.tag || l.meta.subsystem || 'sys')}</strong> ${escapeHtml(l.msg)}`;
+        const details = document.createElement('div');
+        details.className = 'text-xs muted mt-1';
+        details.innerText = JSON.stringify(l.meta);
+        content.appendChild(title);
+        content.appendChild(details);
+        div.appendChild(dot);
+        div.appendChild(meta);
+        div.appendChild(content);
+        return div;
+      }
+
+      function addAlert(text, type='info') {
+        const d = document.createElement('div');
+        d.className = 'p-2 rounded text-sm';
+        d.style.background = type === 'success' ? 'linear-gradient(90deg,#062b10,#073216)' : type === 'warn' ? 'linear-gradient(90deg,#2a1b03,#3a230a)' : 'linear-gradient(90deg,#051028,#07203b)';
+        d.innerText = text;
+        alertsEl.appendChild(d);
+        setTimeout(() => {
+          try { alertsEl.removeChild(d); } catch (e) {}
+        }, 7000);
+      }
+
+      // ---- Simulated engine / command execution ----
+      // This is the place to plug a real WebSocket / HTTP / RCON integration.
+      async function executeFiveMCommand(command, args = []) {
+        // placeholder: simulate latency and responses. Return {ok:true, message:'..', data: {...}}
+        await new Promise(r => setTimeout(r, 350 + Math.random() * 700));
+        switch (command) {
+          case 'restartServer':
+            return { ok:true, message:'Server restarted successfully' };
+          case 'stopServer': return { ok:true, message:'Server stopped' };
+          case 'startServer': return { ok:true, message:'Server started' };
+          case 'status': return { ok:true, data:{ state: serverState, players } };
+          case 'restartResource': return { ok:true, message:`Resource ${args[0]} restarted` };
+          case 'startResource': return { ok:true, message:`Resource ${args[0]} started` };
+          case 'stopResource': return { ok:true, message:`Resource ${args[0]} stopped` };
+          case 'ensure': return { ok:true, message:`Ensured ${args[0]}` };
+          default: return { ok:false, message:'Unknown command' };
+        }
+      }
+
+      // High-level commands that mutate visible state and push logs
+      async function doRestartServer() {
+        // guard
+        if (serverState === 'restarting') { makeLog('WARN','Restart already in progress'); return; }
+        makeLog('INFO','Announcement: Server will restart in 5 seconds',{action:'announce'});
+        addAlert('Server restart scheduled (5s)', 'info');
+        await sleep(2500);
+        makeLog('INFO','Saving world state...',{action:'snapshot'});
+        await sleep(700);
+        makeLog('DEBUG','Stopping resources...', {step:1});
+        serverState = 'restarting'; updateServerState();
+        const res = await executeFiveMCommand('restartServer');
+        if (res.ok) {
+          makeLog('INFO',res.message);
+          await sleep(1500);
+          serverState = 'running'; updateServerState();
+          makeLog('INFO','Restart complete');
+        } else {
+          serverState = 'running'; updateServerState();
+          makeLog('ERROR',`Restart failed: ${res.message}`);
+        }
+      }
+
+      async function doStopServer() {
+        makeLog('INFO','Stopping server...'); serverState = 'stopped'; updateServerState();
+        const res = await executeFiveMCommand('stopServer');
+        if (res.ok) makeLog('WARN', res.message); else makeLog('ERROR',`Stop failed: ${res.message}`);
+      }
+
+      async function doStartServer() {
+        makeLog('INFO','Starting server...'); serverState = 'starting'; updateServerState();
+        const res = await executeFiveMCommand('startServer');
+        if (res.ok) {
+          await sleep(800);
+          serverState = 'running'; updateServerState();
+          makeLog('INFO',res.message);
+        } else {
+          serverState = 'stopped'; updateServerState();
+          makeLog('ERROR',`Start failed: ${res.message}`);
+        }
+      }
+
+      async function doDeploy() {
+        makeLog('INFO','Starting deployment pipeline...'); addAlert('Deploy started', 'info');
+        makeLog('DEBUG','Running lint & tests');
+        await sleep(700);
+        makeLog('DEBUG','Building assets');
+        await sleep(900);
+        makeLog('INFO','Deploying to servers');
+        await sleep(1100);
+        makeLog('INFO','Deployment complete - applying updates');
+        deploys++;
+        widgetDeploys.innerText = deploys;
+        addAlert('Deployment complete', 'success');
+      }
+
+      async function doRestartResource(name) {
+        makeLog('INFO',`Restarting resource ${name}...`);
+        const res = await executeFiveMCommand('restartResource',[name]);
+        if (res.ok) makeLog('INFO', res.message); else makeLog('ERROR', `Restart resource failed: ${res.message}`);
+      }
+
+      async function doEnsureResource(name) {
+        makeLog('INFO',`Ensuring resource ${name}...`);
+        const res = await executeFiveMCommand('ensure',[name]);
+        if (res.ok) makeLog('INFO', res.message); else makeLog('ERROR', `Ensure resource failed: ${res.message}`);
+      }
+
+      // ---- Terminal handling ----
+      function pushCommandHistory(cmd) {
+        if (!cmd) return;
+        commandHistory.unshift(cmd);
+        commandHistory = commandHistory.slice(0, 200);
+        renderTermHistory();
+        // persist
+        settings.lastCommands = commandHistory;
+        saveSettings();
+      }
+      function renderTermHistory() {
+        termHistoryEl.innerHTML = '';
+        for (const c of commandHistory.slice(0, 50)) {
+          const d = document.createElement('div'); d.className = 'py-0.5'; d.innerText = c; termHistoryEl.appendChild(d);
+        }
+      }
+
+      async function runTerminalCommand(line) {
+        if (!line || !line.trim()) return;
+        pushCommandHistory(line);
+        makeLog('INFO','> ' + line, {source:'terminal'});
+        const parts = line.trim().split(/\s+/);
+        const cmd = parts[0].toLowerCase();
+        const args = parts.slice(1);
+        switch (cmd) {
+          case 'help':
+            makeLog('INFO','Commands: help, restart, stop, start, status, deploy, restartResource <name>, ensure <name>');
+            break;
+          case 'restart':
+            await doRestartServer();
+            break;
+          case 'stop':
+            await doStopServer();
+            break;
+          case 'start':
+            await doStartServer();
+            break;
+          case 'status': {
+            const r = await executeFiveMCommand('status');
+            makeLog('INFO', `Status: ${r.data && r.data.state ? r.data.state : serverState} players=${r.data && r.data.players ? r.data.players : players}`);
+            break;
+          }
+          case 'deploy':
+            await doDeploy();
+            break;
+          case 'restartresource':
+          case 'restartr':
+            if (!args[0]) makeLog('WARN','Usage: restartResource <name>');
+            else await doRestartResource(args[0]);
+            break;
+          case 'ensure':
+            if (!args[0]) makeLog('WARN','Usage: ensure <name>');
+            else await doEnsureResource(args[0]);
+            break;
+          case 'tail':
+            const n = Number(args[0]); if (!isNaN(n)) { tail = clamp(n,100,5000); makeLog('INFO',`Tail set to ${tail}`); renderLogs(); }
+            break;
+          case 'clear':
+            logs = []; saveLogs(); renderLogs(); makeLog('INFO','Cleared logs');
+            break;
+          default:
+            makeLog('WARN',`Unknown command: ${cmd}`);
+        }
+      }
+
+      // ---- Simulated live log stream and metrics ----
+      function startStream() {
+        stopStream();
+        logTimer = setInterval(() => {
+          if (paused || serverState === 'stopped') return;
+          const burst = Math.max(1, Math.floor(Math.random()*4));
+          for (let i=0;i<burst;i++) {
+            const ev = randomEvent();
+            makeLog(ev.level, ev.msg, ev.meta);
+          }
+          // trim
+          if (logs.length > retention) logs.splice(0, logs.length - retention);
+          saveLogs();
+          renderLogs();
+        }, streamRate);
+      }
+      function stopStream() { if (logTimer) clearInterval(logTimer); logTimer = null; }
+
+      function randomEvent() {
+        const levels = ['INFO','INFO','INFO','DEBUG','WARN','ERROR'];
+        const level = levels[Math.floor(Math.random()*levels.length)];
+        const msgs = [
+          () => ({msg:`PlayerConnected: id=${Math.floor(Math.random()*5000)}`, meta:{subsystem:'net'}}),
+          () => ({msg:`EconomyTick: ${Math.round(Math.random()*5000)} accounts`, meta:{subsystem:'economy'}}),
+          () => ({msg:`Resource started: res_${Math.floor(Math.random()*40)}`, meta:{subsystem:'resource'}}),
+          () => ({msg:`Warning: resource cpu high`, meta:{subsystem:'resource'}}),
+          () => ({msg:`Error: null ref in handler`, meta:{subsystem:'engine'}}),
+          () => ({msg:`Debug: cache warmed`, meta:{subsystem:'cache'}})
+        ];
+        const item = msgs[Math.floor(Math.random()*msgs.length)]();
+        return { level, msg: item.msg, meta: item.meta };
+      }
+
+      // metrics tick
+      function startMetrics() {
+        metricsTimer = setInterval(()=> {
+          // bump metrics
+          const cpu = clamp(Math.round(metrics.cpu[metrics.cpu.length-1] + (Math.random()-0.5)*8),1,99);
+          const mem = clamp(Math.round(metrics.mem[metrics.mem.length-1] + (Math.random()-0.5)*6),5,99);
+          const tps = clamp(Math.round(48 + Math.random()*12),30,64);
+          const pl = clamp(Math.round(200 + Math.random()*1200),0,6000);
+          metrics.cpu.push(cpu); metrics.cpu.shift();
+          metrics.mem.push(mem); metrics.mem.shift();
+          metrics.tps.push(tps); metrics.tps.shift();
+          metrics.players.push(pl); metrics.players.shift();
+          players = pl; peakPlayers = Math.max(peakPlayers, players);
+          document.getElementById('cpuValue').innerText = cpu + '%';
+          document.getElementById('memValue').innerText = mem + '%';
+          document.getElementById('tpsValue').innerText = tps;
+          document.getElementById('playersValue').innerText = players;
+          widgetPlayers.innerText = players;
+          widgetPeak.innerText = peakPlayers;
+          drawSpark(cpuSpark, metrics.cpu, '#60a5fa', '#22d3ee');
+          drawSpark(memSpark, metrics.mem, '#34d399', '#60a5fa');
+          drawSpark(tpsSpark, metrics.tps, '#f97316', '#ffb86b');
+        }, 1200);
+      }
+      function stopMetrics() { if (metricsTimer) clearInterval(metricsTimer); metricsTimer = null; }
+
+      // ---- Small canvas sparkline drawing ----
+      function drawSpark(canvas, arr, colorA, colorB) {
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width, h = canvas.height;
+        ctx.clearRect(0,0,w,h);
+        ctx.lineWidth = 2;
+        const grad = ctx.createLinearGradient(0,0,w,0);
+        grad.addColorStop(0, colorA); grad.addColorStop(1, colorB);
+        ctx.strokeStyle = grad;
+        ctx.beginPath();
+        const len = arr.length;
+        for (let i=0;i<len;i++) {
+          const x = (i/(len-1))*w;
+          const y = h - (arr[i]/100)*h;
+          if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+      }
+
+      // Draw bigger historical charts (simple)
+      function drawBigChart(ctx, arr, colorA, colorB) {
+        if (!ctx) return;
+        const canvas = ctx;
+        const c = ctx.getContext('2d');
+        const w = canvas.width, h = canvas.height;
+        c.clearRect(0,0,w,h);
+        c.lineWidth = 2;
+        // fill area
+        c.beginPath();
+        for (let i=0;i<arr.length;i++){
+          const x = (i/(arr.length-1))*w;
+          const y = h - (arr[i]/100)*h;
+          if (i===0) c.moveTo(x,y); else c.lineTo(x,y);
+        }
+        c.lineTo(w,h); c.lineTo(0,h); c.closePath();
+        const gf = c.createLinearGradient(0,0,0,h);
+        gf.addColorStop(0, colorA); gf.addColorStop(1, 'rgba(0,0,0,0)');
+        c.fillStyle = gf; c.fill();
+        // stroke
+        const grad = c.createLinearGradient(0,0,w,0); grad.addColorStop(0, colorA); grad.addColorStop(1,colorB);
+        c.strokeStyle = grad; c.beginPath();
+        for (let i=0;i<arr.length;i++) {
+          const x = (i/(arr.length-1))*w;
+          const y = h - (arr[i]/100)*h;
+          if (i===0) c.moveTo(x,y); else c.lineTo(x,y);
+        }
+        c.stroke();
+      }
+
+      // ---- Helpers ----
+      function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+      function safeRegExp(s) {
+        try { return new RegExp(s, 'i'); } catch (e) { return null; }
+      }
+
+      // ---- Export / Copy functions ----
+      function exportTxt() {
+        const text = logs.map(l => `[${l.ts}] ${l.level} ${l.msg} ${JSON.stringify(l.meta)}`).join('\n');
+        const blob = new Blob([text], {type:'text/plain'});
+        downloadBlob(blob, `forgedev-logs-${new Date().toISOString()}.log`);
+      }
+      function exportJson() {
+        const blob = new Blob([JSON.stringify(logs, null, 2)], {type:'application/json'});
+        downloadBlob(blob, `forgedev-logs-${new Date().toISOString()}.json`);
+      }
+      function downloadBlob(blob, filename) {
+        const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
+      }
+      function copyVisible() {
+        const text = logsViewport.innerText;
+        navigator.clipboard?.writeText(text).then(()=> alert('Copied visible logs'));
+      }
+
+      // ---- Server state update UI ----
+      function updateServerState() {
+        serverStateEl.innerText = serverState;
+        if (serverState === 'running') {
+          serverDot.style.background = 'linear-gradient(90deg,#00e5ff,#0078ff)';
+        } else if (serverState === 'stopped') {
+          serverDot.style.background = '#444';
+        } else {
+          serverDot.style.background = 'linear-gradient(90deg,#f59e0b,#f97316)';
+        }
+      }
+
+      // ---- Navigation ----
+      consoleNavButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-nav');
+          for (const k in panels) panels[k].classList.add('hidden');
+          panels[target].classList.remove('hidden');
+        });
+      });
+
+      // ---- Bind UI events ----
+      btnRestart.addEventListener('click', () => { runUICommand('restart'); });
+      btnDeploy.addEventListener('click', () => { runUICommand('deploy'); });
+      btnStop.addEventListener('click', () => { runUICommand('stop'); });
+      btnStart.addEventListener('click', () => { runUICommand('start'); });
+
+      btnPause.addEventListener('click', () => {
+        paused = !paused; btnPause.innerText = paused ? 'Resume' : 'Pause'; pausedEl.checked = paused;
+      });
+      btnClear.addEventListener('click', () => { logs=[]; saveLogs(); renderLogs(); });
+      btnCopy.addEventListener('click', () => copyVisible());
+      terminalSend.addEventListener('click', () => { const v=terminalInput.value; runTerminalCommand(v); terminalInput.value=''; });
+      terminalInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); const v=terminalInput.value; runTerminalCommand(v); terminalInput.value=''; }
+        if (e.key === 'ArrowUp') { e.preventDefault(); if (commandHistoryIdx < commandHistory.length-1) commandHistoryIdx++; terminalInput.value = commandHistory[commandHistoryIdx] || ''; }
+        if (e.key === 'ArrowDown') { e.preventDefault(); if (commandHistoryIdx > 0) commandHistoryIdx--; else { commandHistoryIdx = -1; terminalInput.value = ''; } terminalInput.value = commandHistory[commandHistoryIdx] || ''; }
+      });
+      exportTxtBtn.addEventListener('click', exportTxt);
+      exportJsonBtn.addEventListener('click', exportJson);
+
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === '/') { e.preventDefault(); searchInput.focus(); }
+      });
+      searchInput.addEventListener('input', () => { renderLogs(); });
+
+      levelFilter.addEventListener('change', () => { renderLogs(); });
+
+      streamRateEl?.addEventListener('input', (e) => {
+        streamRate = Number(e.target.value);
+        settings.streamRate = streamRate; saveSettings();
+        startStream();
+      });
+      retentionEl?.addEventListener('change', (e) => {
+        retention = Number(e.target.value); settings.retention = retention; saveSettings();
+      });
+
+      // Command palette
+      window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openPalette(); }
+        if (e.key === 'Escape') { closePalette(); }
+        if (e.key === '/') { if (document.activeElement !== searchInput) { e.preventDefault(); searchInput.focus(); } }
+      });
+      paletteClose.addEventListener('click', closePalette);
+      paletteInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { runUICommand(paletteInput.value); closePalette(); } });
+
+      function openPalette(){ cmdPalette.classList.remove('hidden'); paletteInput.focus(); }
+      function closePalette(){ cmdPalette.classList.add('hidden'); paletteInput.value=''; }
+
+      // ---- UI command runner wrapper ----
+      function runUICommand(cmd) {
+        // support button-triggered commands
+        runTerminalCommand(cmd);
+      }
+
+      // ---- init / seed logs ----
+      function seedIfEmpty() {
+        if (!logs || logs.length === 0) {
+          for (let i=0;i<32;i++){
+            const level = ['INFO','DEBUG','INFO','WARN','INFO','ERROR'][Math.floor(Math.random()*6)];
+            const msg = i % 5 === 0 ? `Seed startup event ${i}` : `Seed log ${i}`;
+            makeLog(level, msg, {seed:true});
+          }
+          saveLogs();
+        }
+      }
+
+      // ---- start stream and metrics ----
+      function startStream() {
+        stopStream();
+        logTimer = setInterval(() => {
+          if (paused || serverState === 'stopped') return;
+          const burst = Math.floor(Math.random()*4) + 1;
+          for (let i=0;i<burst;i++) {
+            const e = randomEvent();
+            makeLog(e.level, e.msg, e.meta);
+          }
+          renderLogs();
+        }, streamRate);
+      }
+      function stopStream(){ if (logTimer) clearInterval(logTimer); logTimer=null; }
+
+      // ---- draw big charts periodically when metrics panel visible ----
+      function drawBigCharts() {
+        drawBigChart(chartCpu, metrics.cpu, 'rgba(96,165,250,0.6)','rgba(34,211,238,0.2)');
+        drawBigChart(chartMem, metrics.mem, 'rgba(34,197,94,0.6)','rgba(96,165,250,0.2)');
+        drawBigChart(chartTps, metrics.tps, 'rgba(249,115,22,0.6)','rgba(255,184,107,0.2)');
+      }
+
+      // ---- kick off ----
+      function init() {
+        settings = loadSettings() || settings;
+        streamRate = settings.streamRate || streamRate;
+        retention = settings.retention || retention;
+        tail = settings.tail || tail;
+        autoScroll = settings.autoScroll !== undefined ? settings.autoScroll : autoScroll;
+        autoScrollEl.checked = autoScroll;
+        paused = false;
+        pausedEl.checked = paused;
+        seedIfEmpty();
+        renderLogs();
+        startStream();
+        startMetrics();
+        updateServerState();
+        // wire direct functions
+        document.getElementById('btnExportJSON')?.addEventListener('click', exportJson);
+        document.getElementById('btnDownload')?.addEventListener('click', exportTxt);
+        // draw big charts occasionally
+        setInterval(drawBigCharts, 2000);
+      }
+
+      // begin
+      init();
+
+      // Expose for debugging
+      window._forgeConsole = {
+        logs, makeLog, doRestartServer, doStopServer, doStartServer, doDeploy, doRestartResource, doEnsureResource, settings
+      };
+
+      // ---- helper functions used above not defined earlier (duplicate safe functions to avoid hoisting issues) ----
+
+      function randomEvent() {
+        const levels = ['INFO','INFO','INFO','DEBUG','WARN','ERROR'];
+        const level = levels[Math.floor(Math.random()*levels.length)];
+        const types = [
+          () => ({msg:`PlayerConnected id=${Math.floor(Math.random()*5000)}`, meta:{subsystem:'net'}}),
+          () => ({msg:`EconomyTick processed ${Math.round(Math.random()*4000)} accounts`, meta:{subsystem:'economy'}}),
+          () => ({msg:`Resource started: res_${Math.floor(Math.random()*40)}`, meta:{subsystem:'resource'}}),
+          () => ({msg:`Warning: resource cpu high`, meta:{subsystem:'resource'}}),
+          () => ({msg:`Error: null ref in handler`, meta:{subsystem:'engine'}}),
+          () => ({msg:`Debug: cache warmed`, meta:{subsystem:'cache'}})
+        ];
+        return (types[Math.floor(Math.random()*types.length)]) ? (types[Math.floor(Math.random()*types.length)])() : {msg:'tick', meta:{subsystem:'sys'}, level};
+      }
+
+      function drawBigChart(canvas, arr, colorA, colorB) {
+        if (!canvas) return;
+        const c = canvas.getContext('2d');
+        const w = canvas.width, h = canvas.height;
+        c.clearRect(0,0,w,h);
+        c.lineWidth = 2;
+        // area
+        c.beginPath();
+        for (let i=0;i<arr.length;i++){
+          const x = (i/(arr.length-1))*w;
+          const y = h - (arr[i]/100)*h;
+          if (i===0) c.moveTo(x,y); else c.lineTo(x,y);
+        }
+        c.lineTo(w,h); c.lineTo(0,h); c.closePath();
+        const gradFill = c.createLinearGradient(0,0,0,h);
+        gradFill.addColorStop(0, colorA); gradFill.addColorStop(1,'rgba(0,0,0,0)');
+        c.fillStyle = gradFill; c.fill();
+        const grad = c.createLinearGradient(0,0,w,0); grad.addColorStop(0,colorA); grad.addColorStop(1,colorB);
+        c.strokeStyle = grad; c.beginPath();
+        for (let i=0;i<arr.length;i++){
+          const x = (i/(arr.length-1))*w;
+          const y = h - (arr[i]/100)*h;
+          if (i===0) c.moveTo(x,y); else c.lineTo(x,y);
+        }
+        c.stroke();
+      }
+
+      // safeRegExp, escapeHtml, formatTS, etc. already defined above
+
     })();
   </script>
 </body>
