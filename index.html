@@ -9,15 +9,24 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" />
 
   <style>
-    /* === GLOBAL STYLE === */
+    /* === GLOBAL === */
     body {
       font-family: 'Inter', sans-serif;
-      background: radial-gradient(circle at 20% 20%, #0a0f1a, #010409 80%);
+      background: radial-gradient(circle at 20% 20%, #0b0f19, #010409 80%);
       color: #e5e7eb;
       overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
-    /* === MODERN GRADIENTS & ACCENTS === */
+    h1, h2, h3 {
+      letter-spacing: -0.02em;
+    }
+
+    ::selection {
+      background: #00ffff33;
+    }
+
+    /* === GRADIENT ANIMATION === */
     .gradient-text {
       background: linear-gradient(90deg, #00ffff, #00b3ff, #0078ff);
       -webkit-background-clip: text;
@@ -25,62 +34,33 @@
       background-size: 300% 300%;
       animation: gradientFlow 8s ease infinite;
     }
-
     @keyframes gradientFlow {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
 
-    /* === CARDS (Glassy Panels) === */
+    /* === CARD STYLING === */
     .card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.07);
-      backdrop-filter: blur(16px) saturate(180%);
+      backdrop-filter: blur(18px) saturate(160%);
       border-radius: 1.25rem;
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.05);
+      box-shadow: 0 0 50px rgba(0, 255, 255, 0.04);
       transition: all 0.4s ease;
     }
-
     .card:hover {
-      border-color: rgba(0, 255, 255, 0.3);
-      box-shadow: 0 0 40px rgba(0, 255, 255, 0.15);
-      transform: translateY(-6px);
-    }
-
-    /* === ANIMATED GLOW BACKGROUND === */
-    .glow {
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(0,255,255,0.15), transparent 70%);
-      filter: blur(100px);
-      z-index: 0;
-      animation: moveGlow 20s ease-in-out infinite alternate;
-    }
-
-    @keyframes moveGlow {
-      0% { transform: translate(-100px, 0px); }
-      100% { transform: translate(200px, 100px); }
-    }
-
-    /* === HOVER LINKS === */
-    a {
-      transition: all 0.25s ease;
-    }
-
-    a:hover {
-      color: #00ffff;
-      transform: translateY(-2px);
+      border-color: rgba(0, 255, 255, 0.25);
+      box-shadow: 0 0 60px rgba(0, 255, 255, 0.1);
+      transform: translateY(-4px);
     }
 
     /* === ANIMATIONS === */
     .fade-up {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(25px);
       animation: fadeUp 0.9s ease forwards;
     }
-
     @keyframes fadeUp {
       to {
         opacity: 1;
@@ -88,54 +68,82 @@
       }
     }
 
-    /* === BUTTON STYLE === */
+    /* === BUTTONS === */
     .btn {
       background: linear-gradient(90deg, #00ffff, #0078ff);
       color: #0a0f1a;
       font-weight: 600;
-      padding: 0.85rem 2rem;
+      padding: 0.9rem 2rem;
       border-radius: 9999px;
-      box-shadow: 0 0 30px rgba(0, 255, 255, 0.25);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
       transition: all 0.3s ease;
     }
-
     .btn:hover {
       background: linear-gradient(90deg, #00b3ff, #00ffff);
-      box-shadow: 0 0 50px rgba(0, 255, 255, 0.4);
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.35);
       transform: translateY(-3px);
+    }
+
+    /* === LINKS === */
+    a {
+      transition: all 0.25s ease;
+    }
+    a:hover {
+      color: #00ffff;
+      transform: translateY(-1px);
+    }
+
+    /* === BACKGROUND EFFECT === */
+    .glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(0,255,255,0.15), transparent 70%);
+      filter: blur(120px);
+      z-index: 0;
+      animation: moveGlow 18s ease-in-out infinite alternate;
+    }
+    @keyframes moveGlow {
+      0% { transform: translate(-100px, 0px); }
+      100% { transform: translate(200px, 100px); }
+    }
+
+    /* === DIVIDERS === */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,255,255,0.2), transparent);
     }
   </style>
 </head>
 
-<body class="relative min-h-screen flex flex-col items-center justify-start px-6 py-20 space-y-20">
+<body class="relative min-h-screen flex flex-col items-center justify-start px-6 py-24 space-y-20">
 
   <!-- Animated Glow -->
   <div class="glow top-[-100px] left-[-200px]"></div>
   <div class="glow bottom-[-100px] right-[-200px]"></div>
 
-  <!-- HERO SECTION -->
+  <!-- HERO -->
   <header class="text-center relative z-10 space-y-6 fade-up">
     <h1 class="text-6xl md:text-7xl font-extrabold gradient-text tracking-tight">
       Forge Development
     </h1>
     <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-      Crafting next-gen digital experiences — from immersive <span class="text-cyan-400">FiveM</span> worlds to high-performance websites.
+      Crafting next-gen digital experiences — from immersive <span class="text-cyan-400">FiveM</span> worlds to high-performance web ecosystems.
     </p>
   </header>
 
   <!-- ABOUT JAX -->
   <section class="max-w-5xl w-full card p-10 space-y-6 relative z-10 fade-up">
     <h2 class="text-3xl font-bold gradient-text">💫 About Jax</h2>
-    <p class="text-gray-300">
-      <strong>Jax</strong> is the Founder and Lead Developer at <strong>Manchester Roleplay</strong> — a visionary who merges creativity with technical precision to craft deeply immersive <strong>FiveM</strong> environments.
+    <p class="text-gray-300 leading-relaxed">
+      <strong>Jax</strong> is the Founder & Lead Developer of <strong>Manchester Roleplay</strong> — merging technical mastery with creative direction to produce truly immersive <strong>FiveM</strong> experiences.
     </p>
-    <p class="text-gray-400">
-      Expert in <span class="text-cyan-400">C#</span>, <span class="text-cyan-400">Lua</span>, <span class="text-cyan-400">JavaScript</span>, 
-      and design tools like <span class="text-cyan-400">Blender</span> & <span class="text-cyan-400">Photoshop</span>.
+    <p class="text-gray-400 leading-relaxed">
+      Skilled in <span class="text-cyan-400">C#</span>, <span class="text-cyan-400">Lua</span>, <span class="text-cyan-400">JavaScript</span>, and creative tools like <span class="text-cyan-400">Blender</span> and <span class="text-cyan-400">Photoshop</span>.
     </p>
-    <p class="text-gray-400 italic">
-      From scripting and optimization to 3D assets and UI — Jax shapes worlds that feel alive.
-    </p>
+    <blockquote class="italic border-l-4 border-cyan-500 pl-4 text-gray-400">
+      “Great development isn’t just code — it’s crafting worlds that feel alive.”
+    </blockquote>
   </section>
 
   <!-- SERVICES -->
@@ -143,44 +151,42 @@
     <div class="card p-10 space-y-6">
       <h3 class="text-2xl font-semibold gradient-text">💻 FiveM Development</h3>
       <p class="text-gray-300 leading-relaxed">
-        Full-stack server development and optimization tailored for dynamic, scalable RP communities.
+        Custom full-stack server development, optimized for performance, immersion, and scalability.
       </p>
-      <div class="text-gray-400 space-y-1">
+      <div class="text-gray-400">
         <p><strong>$200/month</strong> (£149)</p>
         <p><strong>$2,400/year</strong> (£1,791)</p>
       </div>
 
-      <div class="border-t border-gray-700 pt-4 text-gray-400 space-y-3 text-sm">
-        <h4 class="text-lg font-bold text-cyan-400">Package Highlights</h4>
-        <ul class="list-disc list-inside space-y-2">
-          <li>⚙️ Optimized core systems and economy</li>
-          <li>🎨 Custom UI, branding, and loading screens</li>
-          <li>🛠️ Gang frameworks, staff tools & anti-cheat setup</li>
-          <li>🚀 Priority support and documentation</li>
-        </ul>
-      </div>
+      <div class="divider my-4"></div>
+      <ul class="list-disc list-inside space-y-2 text-sm text-gray-400">
+        <li>⚙️ Optimized core systems and economy frameworks</li>
+        <li>🎨 Custom UI, branding & interactive interfaces</li>
+        <li>🛠️ Gang systems, staff tools, and anti-cheat protection</li>
+        <li>🚀 Priority support & full technical documentation</li>
+      </ul>
     </div>
 
     <div class="card p-10 space-y-6">
-      <h3 class="text-2xl font-semibold gradient-text">🌐 Website Development</h3>
-      <p class="text-gray-300">
-        High-performance, aesthetic-driven websites that amplify brand presence and speed.
+      <h3 class="text-2xl font-semibold gradient-text">🌐 Web Development</h3>
+      <p class="text-gray-300 leading-relaxed">
+        Modern, responsive websites tailored to elevate your brand’s digital presence.
       </p>
-      <p class="text-gray-200"><strong>Starting at £150 ($190)</strong></p>
+      <p class="text-gray-200"><strong>Starting from £150 ($190)</strong></p>
       <p class="text-cyan-400 font-medium">
-        Preview: <a href="https://onedronemedia.co.uk" target="_blank" class="underline hover:text-cyan-300">One Drone Media</a>
+        Live Example: <a href="https://onedronemedia.co.uk" target="_blank" class="underline hover:text-cyan-300">One Drone Media</a>
       </p>
     </div>
   </section>
 
   <!-- ABOUT FORGEDEV -->
   <section class="max-w-5xl w-full card p-10 space-y-6 relative z-10 fade-up">
-    <h2 class="text-3xl font-bold gradient-text">🚀 About Forgedev</h2>
+    <h2 class="text-3xl font-bold gradient-text">🚀 About Forge Development</h2>
     <p class="text-gray-300 leading-relaxed">
-      <strong>Forgedev</strong> builds scalable and creative digital systems — uniting innovation and polish. Jax leads each project with passion, precision, and a community-driven mindset.
+      <strong>Forge Development</strong> delivers innovative, scalable digital systems — uniting creativity and engineering precision. Each project is built with passion, technical excellence, and community-driven purpose.
     </p>
     <blockquote class="border-l-4 border-cyan-500 pl-4 italic text-gray-400">
-      “Our mission: to bring virtual cities and digital visions to life through innovation and code.”
+      “Our mission: To transform digital worlds and virtual cities through innovation and code.”
     </blockquote>
   </section>
 
@@ -188,21 +194,21 @@
   <section class="max-w-5xl w-full text-center relative z-10 space-y-6 fade-up">
     <h2 class="text-2xl font-semibold gradient-text">Join the Community</h2>
     <a href="https://discord.gg/YOURDISCORD" target="_blank" class="btn inline-flex items-center gap-2 text-lg">
-      <i class="fa-brands fa-discord"></i> Join Forgedev on Discord
+      <i class="fa-brands fa-discord"></i> Join ForgeDev on Discord
     </a>
   </section>
 
   <!-- FOOTER -->
-  <footer class="max-w-5xl w-full mt-20 text-center text-gray-500 space-y-6 relative z-10 fade-up">
+  <footer class="max-w-5xl w-full mt-24 text-center text-gray-500 space-y-6 relative z-10 fade-up">
     <h3 class="text-xl font-semibold gradient-text">🌍 Connect with Jax</h3>
     <div class="flex flex-wrap justify-center gap-8 text-lg text-gray-400">
       <a href="https://twitter.com/sybu__" target="_blank"><i class="fa-brands fa-x-twitter"></i> @sybu__</a>
-      <a href="https://forum.cfx.re/u/Jax" target="_blank"><i class="fa-solid fa-gamepad"></i> @Jax</a>
+      <a href="https://forum.cfx.re/u/Jax" target="_blank"><i class="fa-solid fa-gamepad"></i> CFX Forum</a>
       <a href="https://github.com/sybumrp" target="_blank"><i class="fa-brands fa-github"></i> @sybumrp</a>
       <a href="https://forgedevelopment.co.uk" target="_blank"><i class="fa-solid fa-globe"></i> ForgeDev</a>
       <a href="https://www.mannyroleplay.store" target="_blank"><i class="fa-solid fa-store"></i> MR Store</a>
     </div>
-    <p class="text-xs text-gray-600">© 2025 Forge Development. All Rights Reserved.</p>
+    <p class="text-xs text-gray-600">© 2025 Forge Development. All rights reserved.</p>
   </footer>
 
 </body>
