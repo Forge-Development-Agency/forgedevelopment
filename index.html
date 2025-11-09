@@ -1,46 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Forge Development — Dashboard UI | Jax</title>
-  <meta name="description" content="Forge Development — a developer dashboard style portfolio for Jax. Build status, services, live preview, and contact." />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Forge Development — Advanced Live Console | Jax</title>
+  <meta name="description" content="Forge Development — advanced live console & dashboard for Jax. Real-time logs, metrics, terminal, and deployment controls."/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
-    /* Minimal custom styles for UI look and feel */
     :root{
       --bg-900: #03060a;
       --panel: rgba(255,255,255,0.03);
-      --muted: #9ca3af;
+      --glass-border: rgba(255,255,255,0.06);
       --accent-1: #00e5ff;
       --accent-2: #0078ff;
-      --glass-border: rgba(255,255,255,0.06);
+      --muted: #9ca3af;
+      --success: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ff4d6d;
+      --info: #60a5fa;
     }
     html,body{height:100%}
     body{
+      margin:0;
+      color:#dbeafe;
       background:
-        radial-gradient(800px 400px at 10% 10%, rgba(0,229,255,0.04), transparent 8%),
-        radial-gradient(600px 300px at 90% 90%, rgba(0,120,255,0.03), transparent 10%),
+        radial-gradient(800px 400px at 10% 10%, rgba(0,229,255,0.02), transparent 8%),
+        radial-gradient(600px 300px at 90% 90%, rgba(0,120,255,0.02), transparent 10%),
         linear-gradient(180deg,#02040a,var(--bg-900));
-      color:#e6eef8;
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
-      overflow-y: auto;
+      overflow:hidden;
     }
 
-    /* Glass panels */
+    /* panel base */
     .panel{
-      background: var(--panel);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(10px) saturate(140%);
-      border-radius: 12px;
-      box-shadow: 0 6px 28px rgba(2,8,23,0.5);
+      background:var(--panel);
+      border:1px solid var(--glass-border);
+      backdrop-filter: blur(12px) saturate(150%);
+      border-radius:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.6);
     }
 
-    /* Neon gradient title */
+    /* brand gradient */
     .brand-gradient{
       background: linear-gradient(90deg,var(--accent-1),var(--accent-2));
       -webkit-background-clip:text;
@@ -49,409 +52,1164 @@
       animation: shimmer 6s linear infinite;
       font-weight:700;
     }
-    @keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+    @keyframes shimmer {0%{background-position:0%}100%{background-position:200%}}
 
-    /* Tiny UI bits */
+    /* small UI */
     .chip{
-      background: linear-gradient(90deg, rgba(0,229,255,0.08), rgba(0,120,255,0.05));
-      padding: 6px 10px;
+      background: linear-gradient(90deg, rgba(0,229,255,0.06), rgba(0,120,255,0.04));
+      padding:6px 10px;
       border-radius:999px;
       color:var(--accent-1);
-      border:1px solid rgba(0,229,255,0.08);
+      border:1px solid rgba(0,229,255,0.06);
       font-weight:600;
       font-size:13px;
     }
 
-    /* Scrollbar small */
-    ::-webkit-scrollbar{height:8px;width:8px}
-    ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:8px}
+    /* console lines */
+    .log-line { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size:13px; line-height:1.4; white-space:pre-wrap; word-break:break-word; }
+    .log-meta { font-size:12px; color:var(--muted); margin-right:8px; }
+    .log-msg { color:#e6f7ff; }
 
-    /* Code area */
-    .code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
-      font-size:13px;
-      line-height:1.5;
-      color:#cbeefe;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-      padding: 14px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.03);
-    }
+    /* levels */
+    .lvl-INFO { color:var(--info) }
+    .lvl-WARN { color:var(--warn) }
+    .lvl-ERROR { color:var(--danger) }
+    .lvl-DEBUG { color:#a3e635 }
 
-    /* Tiny responsive adjustments */
-    @media (max-width: 860px){
-      .sidebar { display: none; }
-      .mobile-top { display: flex; }
-    }
-
-    /* subtle animated status dot */
-    .status-dot { width:10px;height:10px;border-radius:10px;display:inline-block;margin-right:8px;box-shadow:0 0 12px rgba(0,229,255,0.08) }
+    /* status dots */
+    .status-dot{width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:8px;box-shadow:0 0 12px rgba(0,229,255,0.06)}
     .status-online{ background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); }
-    .status-offline{ background: #444; box-shadow:none }
+    .status-offline{ background:#444; box-shadow:none }
+
+    /* search bar small */
+    .input-plain { background:transparent; border:1px solid rgba(255,255,255,0.03); padding:.45rem .6rem; border-radius:8px; color:inherit; outline:none; }
+    .btn-primary { background:linear-gradient(90deg,var(--accent-1),var(--accent-2)); color:#041022; padding:.55rem .9rem; border-radius:999px; font-weight:600; box-shadow:0 6px 20px rgba(0,229,255,0.06); }
+    .btn-ghost { border:1px solid rgba(255,255,255,0.04); padding:.5rem .8rem; border-radius:8px; }
+
+    /* small responsive tweaks */
+    .sidebar { min-width:260px; max-width:300px; }
+    .main-area { min-width:0; } /* allow flex to shrink */
+
+    /* virtualization helper */
+    .logs-viewport { overflow:auto; max-height:480px; }
+
+    /* command palette overlay */
+    .cmd-palette { position:fixed; left:50%; top:12%; transform:translateX(-50%); width:min(880px,94%); z-index:60; }
+
+    /* lightweight scrollbar */
+    ::-webkit-scrollbar { width:10px; height:10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.04); border-radius:10px; }
+
+    /* terminal prompt */
+    .terminal-input { background:transparent; border:none; outline:none; color:#dbeafe; width:100%; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; }
+
+    /* small icons scale */
+    .icon-lg { font-size:18px; }
+    .icon-sm { font-size:13px; }
+
+    /* utility */
+    .hidden { display:none !important; }
+    .muted { color:var(--muted); }
+
+    /* accessibility focus */
+    [tabindex]:focus { outline:2px solid rgba(0,229,255,0.12); outline-offset:2px; border-radius:8px; }
+
+    /* layout full height */
+    .app-grid { height:100vh; display:grid; grid-template-columns: 280px 1fr 360px; gap:18px; padding:20px; box-sizing:border-box; }
+
+    @media (max-width:1100px){
+      .app-grid { grid-template-columns: 1fr; grid-auto-rows: min-content; height: auto; padding:12px; overflow:auto; }
+      .sidebar { display:flex; order:-1; position:sticky; top:12px; z-index:40; width:100%; }
+      .right-col { order:2; }
+      .main-col { order:1; }
+    }
   </style>
 </head>
-<body class="min-h-screen antialiased">
+<body>
 
-  <div class="min-h-screen max-w-7xl mx-auto grid grid-cols-[260px_1fr] gap-8 px-6 py-8">
+  <!-- Root grid -->
+  <div class="app-grid">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar panel p-5 sticky top-6 h-[calc(100vh-72px)] flex flex-col gap-6">
+    <!-- Left: Sidebar -->
+    <aside class="sidebar panel p-4 flex flex-col gap-4">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-sm">
-          <i class="fa-solid fa-fire text-black"></i>
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow">
+          <i class="fa-solid fa-fire text-black icon-lg"></i>
         </div>
         <div>
           <div class="brand-gradient text-lg">Forge Development</div>
-          <div class="text-xs text-gray-400">by Jax — Lead Developer</div>
+          <div class="text-xs muted">Jax — Lead Developer</div>
         </div>
       </div>
 
-      <nav class="mt-2 flex-1">
+      <nav aria-label="Main" class="mt-2">
         <ul class="space-y-1 text-sm">
-          <li><button data-tab="overview" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-house-chimney text-gray-300 w-4"></i> Dashboard</button></li>
-          <li><button data-tab="services" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-code-branch text-gray-300 w-4"></i> Services</button></li>
-          <li><button data-tab="projects" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-layer-group text-gray-300 w-4"></i> Projects</button></li>
-          <li><button data-tab="contact" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-envelopes-bulk text-gray-300 w-4"></i> Contact</button></li>
+          <li><button data-tab="overview" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-display text-gray-300 icon-sm w-4"></i> Overview</button></li>
+          <li><button data-tab="console" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-terminal text-gray-300 icon-sm w-4"></i> Live Console</button></li>
+          <li><button data-tab="metrics" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-chart-line text-gray-300 icon-sm w-4"></i> Metrics</button></li>
+          <li><button data-tab="projects" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-layer-group text-gray-300 icon-sm w-4"></i> Projects</button></li>
+          <li><button data-tab="settings" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-gear text-gray-300 icon-sm w-4"></i> Settings</button></li>
         </ul>
       </nav>
 
+      <div class="divider border-t border-white/6"></div>
+
       <div class="space-y-3">
         <div class="flex items-center justify-between">
-          <div class="text-xs text-gray-400">Server</div>
+          <div class="text-xs muted">Server</div>
           <div class="chip"><span class="status-dot status-online"></span> Online</div>
         </div>
 
-        <div class="text-xs text-gray-400">Uptime</div>
+        <div class="text-xs muted">Uptime</div>
         <div class="w-full bg-white/3 h-2 rounded-full overflow-hidden">
-          <div style="width:86%" class="h-2 bg-gradient-to-r from-cyan-400 to-blue-600"></div>
+          <div id="uptimeBar" style="width:86%" class="h-2 bg-gradient-to-r from-cyan-400 to-blue-600"></div>
         </div>
 
-        <div class="mt-3 text-xs text-gray-400">Quick Actions</div>
+        <div class="mt-2 text-xs muted">Quick Actions</div>
         <div class="flex gap-2">
-          <button onclick="copyEmail()" class="w-full py-2 btn flex items-center justify-center gap-2 text-sm"><i class="fa-solid fa-copy"></i> Copy Email</button>
+          <button id="btnDeploy" class="btn-primary flex items-center gap-2"><i class="fa-solid fa-rocket"></i> Deploy</button>
+          <button id="btnRestart" class="btn-ghost flex items-center gap-2"><i class="fa-solid fa-arrow-rotate-right"></i> Restart</button>
         </div>
       </div>
 
-      <div class="text-[11px] text-gray-500 text-center">© 2025 Forge Development</div>
+      <div class="mt-auto text-[11px] muted text-center">© 2025 Forge Development</div>
     </aside>
 
-    <!-- MAIN -->
-    <main class="relative z-10">
+    <!-- Center: Main area -->
+    <main class="main-area flex flex-col gap-4">
 
-      <!-- Topbar -->
-      <div class="panel p-3 px-4 mb-6 flex items-center justify-between gap-4">
+      <!-- Top bar -->
+      <div class="panel p-3 flex items-center justify-between">
         <div class="flex items-center gap-4">
-          <div class="hidden mobile-top items-center gap-3">
-            <button class="p-2 rounded-md hover:bg-white/3"><i class="fa-solid fa-bars"></i></button>
-          </div>
-          <div class="text-sm text-gray-400">Welcome back, <strong class="text-white">Jax</strong></div>
-          <div class="ml-3"><span class="chip">Forge UI</span></div>
+          <div class="text-sm muted">Welcome back,</div>
+          <div class="text-white font-semibold">Jax</div>
+          <div class="chip">Forge Console</div>
+          <div class="text-xs muted ml-4">Session: <strong class="text-white">dev-local</strong></div>
         </div>
 
         <div class="flex items-center gap-3">
-          <div class="text-sm text-gray-400 hidden md:block">Status: <span class="text-white font-semibold ml-2">Active</span></div>
-          <button id="themeToggle" class="p-2 rounded-md hover:bg-white/3" title="Toggle theme"><i class="fa-solid fa-moon"></i></button>
-          <div class="w-10 h-10 rounded-full bg-white/3 flex items-center justify-center">
-            <i class="fa-solid fa-user"></i>
+          <div class="text-sm muted hidden sm:block">Live: <strong id="liveStatus" class="text-white">Streaming</strong></div>
+          <button id="toggleTheme" class="btn-ghost" title="Toggle theme"><i class="fa-solid fa-moon icon-sm"></i></button>
+          <div class="w-9 h-9 rounded-full bg-white/4 flex items-center justify-center"><i class="fa-solid fa-user"></i></div>
+        </div>
+      </div>
+
+      <!-- Overview / Console / Metrics area -->
+      <section id="overview" class="panel p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        <!-- Left: Console panel + controls -->
+        <div class="flex flex-col gap-4">
+
+          <!-- Console header & controls -->
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-xs muted">Console</div>
+              <h3 class="text-lg font-semibold">Live Log Stream</h3>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <input id="searchInput" class="input-plain" placeholder="Search (regex supported) — press /" aria-label="Search logs" />
+              <select id="levelFilter" class="input-plain" title="Level filter" aria-label="Level filter">
+                <option value="ALL">All levels</option>
+                <option value="INFO">INFO</option>
+                <option value="WARN">WARN</option>
+                <option value="ERROR">ERROR</option>
+                <option value="DEBUG">DEBUG</option>
+              </select>
+              <button id="btnPause" class="btn-ghost">Pause</button>
+              <button id="btnClear" class="btn-ghost">Clear</button>
+              <button id="btnExport" class="btn-primary">Export</button>
+            </div>
+          </div>
+
+          <!-- Console body -->
+          <div class="panel p-2 logs-viewport" id="logsViewport" role="log" aria-live="polite" aria-atomic="false">
+            <!-- Logs appended here -->
+            <div id="logsContainer" class="space-y-1"></div>
+          </div>
+
+          <!-- Console footer: terminal input -->
+          <div class="panel p-3 flex items-center gap-3">
+            <div class="text-xs muted">Terminal</div>
+            <div class="flex-1">
+              <form id="terminalForm" class="flex items-center gap-2">
+                <span class="text-xs muted">➜</span>
+                <input id="terminalInput" autocomplete="off" class="terminal-input" placeholder="Type command (help, deploy, stats, clear)" aria-label="Terminal input" />
+                <button type="submit" class="btn-ghost">Run</button>
+              </form>
+              <div id="terminalHint" class="text-xs muted mt-2">Commands: <code>help</code>, <code>deploy</code>, <code>stats</code>, <code>tail 200</code></div>
+            </div>
+            <div class="w-28 text-right">
+              <div class="text-xs muted">Auto-scroll</div>
+              <label class="inline-flex items-center gap-2">
+                <input id="autoScroll" type="checkbox" checked />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Metrics snapshot -->
+        <div class="flex flex-col gap-4">
+
+          <!-- Metrics header -->
+          <div>
+            <div class="text-xs muted">Metrics</div>
+            <h3 class="text-lg font-semibold">Realtime System Metrics</h3>
+          </div>
+
+          <!-- Gauges -->
+          <div class="grid grid-cols-1 gap-4">
+            <div class="panel p-3 flex items-center justify-between">
+              <div>
+                <div class="text-xs muted">CPU</div>
+                <div class="text-white font-semibold" id="cpuValue">--%</div>
+                <div class="text-xs muted">Load averages: <span id="cpuLoad" class="text-white">--</span></div>
+              </div>
+              <canvas id="cpuChart" width="200" height="80"></canvas>
+            </div>
+
+            <div class="panel p-3 flex items-center justify-between">
+              <div>
+                <div class="text-xs muted">Memory</div>
+                <div class="text-white font-semibold" id="memValue">--%</div>
+                <div class="text-xs muted">Used / Total: <span id="memUsed" class="text-white">--</span></div>
+              </div>
+              <canvas id="memChart" width="200" height="80"></canvas>
+            </div>
+
+            <div class="panel p-3 flex items-center justify-between">
+              <div>
+                <div class="text-xs muted">TPS</div>
+                <div class="text-white font-semibold" id="tpsValue">--</div>
+                <div class="text-xs muted">Target: 60</div>
+              </div>
+              <canvas id="tpsChart" width="200" height="80"></canvas>
+            </div>
+          </div>
+
+          <!-- Small quick components -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="panel p-3 text-sm">
+              <div class="text-xs muted">Active Players</div>
+              <div class="text-white font-semibold" id="playersCount">--</div>
+              <div class="text-xs muted">Peak: <span id="playersPeak">--</span></div>
+            </div>
+            <div class="panel p-3 text-sm">
+              <div class="text-xs muted">Deploys Today</div>
+              <div class="text-white font-semibold" id="deployCount">--</div>
+              <div class="text-xs muted">Last: <span id="deployLast">--</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Console dedicated view -->
+      <section id="console" class="panel p-4 hidden">
+
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <div class="text-xs muted">Console</div>
+            <h3 class="text-lg font-semibold">Advanced Live Console</h3>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="btnToggleErrors" class="btn-ghost">Only errors</button>
+            <button id="btnDownload" class="btn-primary">Download Logs</button>
+            <button id="btnExportJSON" class="btn-ghost">Export JSON</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="col-span-2">
+            <div class="panel p-2 logs-viewport" id="consoleViewport" aria-live="polite">
+              <div id="consoleLogs" class="space-y-1"></div>
+            </div>
+
+            <div class="panel p-3 mt-3 flex items-center gap-2">
+              <button id="btnTail" class="btn-ghost">Tail: <span id="tailValue">500</span></button>
+              <button id="btnCopySelection" class="btn-ghost">Copy Selected</button>
+              <input id="regexFilter" class="input-plain" placeholder="Regex filter (leave blank to clear)" />
+              <button id="btnApplyRegex" class="btn-ghost">Apply</button>
+              <div class="ml-auto muted text-xs">Memory safe mode enabled</div>
+            </div>
+          </div>
+
+          <aside class="right-col">
+            <div class="panel p-3">
+              <div class="text-xs muted">Legend</div>
+              <div class="mt-2 space-y-2">
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-400"></span><div class="text-sm muted">INFO</div></div>
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-yellow-400"></span><div class="text-sm muted">WARN</div></div>
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500"></span><div class="text-sm muted">ERROR</div></div>
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-lime-400"></span><div class="text-sm muted">DEBUG</div></div>
+              </div>
+            </div>
+
+            <div class="panel p-3 mt-3">
+              <div class="text-xs muted">Log Controls</div>
+              <div class="mt-2 flex flex-col gap-2">
+                <label class="inline-flex items-center gap-2"><input type="checkbox" id="cbInfo" checked /> <span class="muted">INFO</span></label>
+                <label class="inline-flex items-center gap-2"><input type="checkbox" id="cbWarn" checked /> <span class="muted">WARN</span></label>
+                <label class="inline-flex items-center gap-2"><input type="checkbox" id="cbError" checked /> <span class="muted">ERROR</span></label>
+                <label class="inline-flex items-center gap-2"><input type="checkbox" id="cbDebug" checked /> <span class="muted">DEBUG</span></label>
+              </div>
+            </div>
+
+          </aside>
+        </div>
+
+      </section>
+
+      <!-- Metrics dedicated view -->
+      <section id="metrics" class="panel p-4 hidden">
+        <div class="text-xs muted">Metrics</div>
+        <h3 class="text-lg font-semibold">Detailed Metrics</h3>
+        <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="panel p-3">
+            <div class="text-xs muted">CPU History</div>
+            <canvas id="cpuChartBig" width="400" height="120"></canvas>
+          </div>
+          <div class="panel p-3">
+            <div class="text-xs muted">Memory History</div>
+            <canvas id="memChartBig" width="400" height="120"></canvas>
+          </div>
+          <div class="panel p-3">
+            <div class="text-xs muted">TPS History</div>
+            <canvas id="tpsChartBig" width="400" height="120"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects / Settings -->
+      <section id="projects" class="panel p-4 hidden">
+        <div class="text-xs muted">Projects</div>
+        <h3 class="text-lg font-semibold">Selected Work</h3>
+        <div class="mt-3 grid sm:grid-cols-2 gap-3">
+          <div class="panel p-3">
+            <div class="text-xs muted">Manchester Roleplay</div>
+            <div class="text-white font-medium mt-1">Large RP server with custom economy & UI</div>
+            <div class="text-xs muted mt-2">Role: Lead dev, systems, UI/UX</div>
+          </div>
+          <div class="panel p-3">
+            <div class="text-xs muted">One Drone Media</div>
+            <div class="text-white font-medium mt-1">Website & booking platform</div>
+            <div class="text-xs muted mt-2">Role: Frontend & backend</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="settings" class="panel p-4 hidden">
+        <div class="text-xs muted">Settings</div>
+        <h3 class="text-lg font-semibold">Console Settings</h3>
+        <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="panel p-3">
+            <div class="text-xs muted">Stream Rate</div>
+            <input id="streamRate" type="range" min="10" max="2000" value="200" class="w-full" />
+            <div class="text-xs muted mt-2">Adjust simulated log rate (ms)</div>
+          </div>
+          <div class="panel p-3">
+            <div class="text-xs muted">Retention</div>
+            <input id="retention" type="number" min="100" max="20000" value="5000" class="input-plain w-full" />
+            <div class="text-xs muted mt-2">Max log lines kept in memory</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Right: side widgets -->
+    <aside class="panel p-4 right-col flex flex-col gap-4">
+
+      <div>
+        <div class="text-xs muted">Quick Summary</div>
+        <h4 class="text-lg font-semibold mt-1">Overview</h4>
+        <div class="mt-3 grid grid-cols-2 gap-2">
+          <div class="panel p-3">
+            <div class="text-xs muted">Players</div>
+            <div class="text-white font-semibold" id="widgetsPlayers">--</div>
+          </div>
+          <div class="panel p-3">
+            <div class="text-xs muted">Peak</div>
+            <div class="text-white font-semibold" id="widgetsPeak">--</div>
+          </div>
+          <div class="panel p-3">
+            <div class="text-xs muted">Deploys</div>
+            <div class="text-white font-semibold" id="widgetsDeploys">--</div>
+          </div>
+          <div class="panel p-3">
+            <div class="text-xs muted">Errors</div>
+            <div class="text-white font-semibold" id="widgetsErrors">--</div>
           </div>
         </div>
       </div>
 
-      <!-- Grid content -->
-      <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        <!-- Left column: Overview & Metrics -->
-        <div class="md:col-span-2 space-y-6">
-
-          <!-- Overview Panel -->
-          <div id="overview" class="panel p-5">
-            <div class="flex items-start justify-between">
-              <div>
-                <div class="text-sm text-gray-400">Dashboard</div>
-                <h2 class="text-2xl font-semibold">Forge Control Center</h2>
-                <p class="text-sm text-gray-400 mt-1">A single place for server health, deployments, and portfolio previews.</p>
-              </div>
-
-              <div class="flex items-center gap-3">
-                <button class="btn px-4 py-2 inline-flex items-center gap-2"><i class="fa-solid fa-rocket"></i> Deploy</button>
-                <button class="px-3 py-2 rounded-md border border-white/6 hover:bg-white/3 text-sm">Settings</button>
-              </div>
-            </div>
-
-            <!-- Metrics -->
-            <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div class="panel p-4 flex flex-col gap-2">
-                <div class="flex items-center justify-between text-sm text-gray-400"><div>Active Players</div><div class="text-white font-semibold">1,248</div></div>
-                <div class="w-full bg-white/3 h-2 rounded-full overflow-hidden"><div style="width:62%" class="h-2 bg-gradient-to-r from-cyan-400 to-blue-600"></div></div>
-                <div class="text-xs text-gray-400">Peak today: 1,552</div>
-              </div>
-
-              <div class="panel p-4 flex flex-col gap-2">
-                <div class="flex items-center justify-between text-sm text-gray-400"><div>Deploys</div><div class="text-white font-semibold">9</div></div>
-                <div class="text-xs text-gray-400">Last deploy: 2 hours ago</div>
-                <div class="h-10 mt-2 flex items-end gap-1">
-                  <!-- tiny sparkline bars -->
-                  <div class="h-6 w-2 rounded bg-white/6"></div>
-                  <div class="h-8 w-2 rounded bg-white/6"></div>
-                  <div class="h-4 w-2 rounded bg-white/6"></div>
-                  <div class="h-10 w-2 rounded bg-gradient-to-b from-cyan-400 to-blue-600"></div>
-                  <div class="h-7 w-2 rounded bg-white/6"></div>
-                  <div class="h-3 w-2 rounded bg-white/6"></div>
-                </div>
-              </div>
-
-              <div class="panel p-4 flex flex-col gap-2">
-                <div class="flex items-center justify-between text-sm text-gray-400"><div>Uptime</div><div class="text-white font-semibold">99.98%</div></div>
-                <div class="text-xs text-gray-400">Since last maintenance</div>
-                <div class="mt-3">
-                  <div class="w-full bg-white/6 rounded-full h-2 overflow-hidden">
-                    <div style="width:99.98%" class="h-2 bg-gradient-to-r from-cyan-400 to-blue-600"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tabbed content -->
-            <div class="mt-6">
-              <div class="flex gap-2 text-sm">
-                <button data-section="activity" class="py-2 px-3 rounded-md bg-white/3">Activity</button>
-                <button data-section="code" class="py-2 px-3 rounded-md hover:bg-white/3">Code</button>
-                <button data-section="preview" class="py-2 px-3 rounded-md hover:bg-white/3">Live Preview</button>
-              </div>
-
-              <div id="section-activity" class="mt-4">
-                <div class="text-xs text-gray-400">Recent Activity</div>
-                <ul class="mt-2 space-y-2 text-sm">
-                  <li class="flex items-center justify-between panel p-3">
-                    <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 rounded bg-white/4 flex items-center justify-center"><i class="fa-solid fa-upload"></i></div>
-                      <div><div class="text-white font-medium">Deploy v1.12</div><div class="text-xs text-gray-400">Improved economy and optimized scripts</div></div>
-                    </div>
-                    <div class="text-xs text-gray-400">2h ago</div>
-                  </li>
-                  <li class="flex items-center justify-between panel p-3">
-                    <div class="flex items-center gap-3">
-                      <div class="w-8 h-8 rounded bg-white/4 flex items-center justify-center"><i class="fa-solid fa-bolt"></i></div>
-                      <div><div class="text-white font-medium">Performance tuning</div><div class="text-xs text-gray-400">Reduced tick impact by 28%</div></div>
-                    </div>
-                    <div class="text-xs text-gray-400">8h ago</div>
-                  </li>
-                </ul>
-              </div>
-
-              <div id="section-code" class="hidden mt-4">
-                <div class="text-xs text-gray-400">Sample snippet</div>
-                <pre class="code mt-2">
--- FiveM sample: optimized currency update
-local function updateBalance(player, amount)
-  if not player or amount == 0 then return end
-  local id = player.id
-  local current = core.getBalance(id)
-  core.setBalance(id, current + amount)
-end
-                </pre>
-              </div>
-
-              <div id="section-preview" class="hidden mt-4">
-                <div class="text-xs text-gray-400">UI Preview</div>
-                <div class="mt-3 panel p-3">
-                  <div class="flex items-center justify-between">
-                    <div class="text-sm text-white font-medium">Forge Dev — Home</div>
-                    <div class="text-xs text-gray-400">Preview mode</div>
-                  </div>
-                  <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="panel p-3">
-                      <div class="text-sm text-gray-400">Landing</div>
-                      <div class="text-white font-medium mt-1">Fast. Polished. Stable.</div>
-                    </div>
-                    <div class="panel p-3">
-                      <div class="text-sm text-gray-400">Features</div>
-                      <div class="text-white font-medium mt-1">Custom UI, anti-cheat, staff tools</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Services panel (hidden until nav selects 'services') -->
-          <div id="services" class="panel p-5 hidden">
-            <div class="flex items-center justify-between">
-              <div>
-                <div class="text-sm text-gray-400">Services</div>
-                <h3 class="text-xl font-semibold">What I ship</h3>
-              </div>
-            </div>
-
-            <div class="mt-4 grid gap-4 sm:grid-cols-2">
-              <div class="panel p-4">
-                <div class="text-sm text-gray-400">FiveM Development</div>
-                <div class="text-white font-semibold mt-1">Full stack server builds</div>
-                <div class="text-xs text-gray-400 mt-2">Custom scripts, economy, anti-cheat, UI, and staff tools.</div>
-                <div class="mt-3 flex gap-2">
-                  <button class="btn text-sm px-3 py-2">Get a Quote</button>
-                </div>
-              </div>
-
-              <div class="panel p-4">
-                <div class="text-sm text-gray-400">Web Development</div>
-                <div class="text-white font-semibold mt-1">Landing pages & control panels</div>
-                <div class="text-xs text-gray-400 mt-2">Fast, accessible, and designed to convert.</div>
-                <div class="mt-3 flex gap-2">
-                  <a class="btn text-sm px-3 py-2" href="https://onedronemedia.co.uk" target="_blank">View Example</a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Projects panel -->
-          <div id="projects" class="panel p-5 hidden">
-            <div class="flex items-center justify-between">
-              <div>
-                <div class="text-sm text-gray-400">Projects</div>
-                <h3 class="text-xl font-semibold">Selected work</h3>
-              </div>
-            </div>
-
-            <div class="mt-4 grid sm:grid-cols-2 gap-4">
-              <div class="panel p-3">
-                <div class="text-sm text-gray-400">Manchester Roleplay</div>
-                <div class="text-white font-medium mt-1">Large-scale RP server; custom systems and UI.</div>
-              </div>
-              <div class="panel p-3">
-                <div class="text-sm text-gray-400">One Drone Media</div>
-                <div class="text-white font-medium mt-1">Website & booking platform.</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Contact -->
-          <div id="contact" class="panel p-5 hidden">
-            <div class="text-sm text-gray-400">Contact</div>
-            <h3 class="text-xl font-semibold mt-1">Let's build something</h3>
-            <p class="text-sm text-gray-400 mt-2">Interested in a quote or collaboration? Message me on Discord or email.</p>
-
-            <div class="mt-4 grid sm:grid-cols-2 gap-4">
-              <div class="panel p-4">
-                <div class="text-sm text-gray-400">Discord</div>
-                <div class="text-white font-medium mt-1">Join the community</div>
-                <a href="https://discord.gg/YOURDISCORD" target="_blank" class="mt-3 inline-block btn px-4 py-2">Open Discord</a>
-              </div>
-              <div class="panel p-4">
-                <div class="text-sm text-gray-400">Email</div>
-                <div class="text-white font-medium mt-1">jax@forgedevelopment.co.uk</div>
-                <button onclick="copyEmail()" class="mt-3 inline-block px-4 py-2 rounded-md border border-white/6 hover:bg-white/3 text-sm">Copy</button>
-              </div>
-            </div>
-          </div>
-
+      <div class="panel p-3">
+        <div class="text-xs muted">Alerts</div>
+        <div class="mt-2 text-sm">
+          <div id="alertsList" class="space-y-2"></div>
         </div>
+      </div>
 
-        <!-- Right column: Live console / quick preview -->
-        <aside class="space-y-6 md:col-span-1">
+      <div class="panel p-3">
+        <div class="text-xs muted">Shortcuts</div>
+        <div class="mt-2 text-sm muted">
+          <div><strong>Ctrl/Cmd + K</strong> — Open command palette</div>
+          <div><strong>/</strong> — Focus search</div>
+          <div><strong>Esc</strong> — Close palette / blur</div>
+        </div>
+      </div>
 
-          <div class="panel p-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <div class="text-xs text-gray-400">Live Console</div>
-                <div class="text-sm font-medium">Server Logs</div>
-              </div>
-              <div class="text-xs text-gray-400">Auto</div>
-            </div>
+      <div class="panel p-3">
+        <div class="text-xs muted">Connect</div>
+        <div class="mt-2 flex flex-col gap-2">
+          <a class="text-sm text-gray-300 hover:text-white" href="https://twitter.com/sybu__" target="_blank"><i class="fa-brands fa-x-twitter"></i> @sybu__</a>
+          <a class="text-sm text-gray-300 hover:text-white" href="https://github.com/sybumrp" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
+          <a class="text-sm text-gray-300 hover:text-white" href="https://forgedevelopment.co.uk" target="_blank"><i class="fa-solid fa-globe"></i> Website</a>
+        </div>
+      </div>
 
-            <div class="mt-3 code h-44 overflow-auto">
-              [14:22:01] Server started
-              [14:22:18] PlayerConnected: id=248 name=Max
-              [14:23:02] Deploy v1.12 applied
-              [14:23:25] Economy tick: processed 1243 accounts
-              [14:24:03] Warning: high CPU on resource 'car_handler'
-            </div>
-          </div>
-
-          <div class="panel p-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <div class="text-xs text-gray-400">Quick Preview</div>
-                <div class="text-sm font-medium">UI Snapshot</div>
-              </div>
-              <div class="text-xs text-gray-400">v1.12</div>
-            </div>
-
-            <div class="mt-3 grid grid-cols-2 gap-2">
-              <div class="panel p-2 text-xs text-gray-400">Core</div>
-              <div class="panel p-2 text-xs text-gray-400">UI</div>
-              <div class="panel p-2 text-xs text-gray-400">Security</div>
-              <div class="panel p-2 text-xs text-gray-400">Performance</div>
-            </div>
-          </div>
-
-          <div class="panel p-4">
-            <div class="text-xs text-gray-400">Connect</div>
-            <div class="flex items-center gap-2 mt-3">
-              <a class="text-sm text-gray-300 hover:text-white" href="https://twitter.com/sybu__" target="_blank"><i class="fa-brands fa-x-twitter"></i> @sybu__</a>
-              <a class="text-sm text-gray-300 hover:text-white" href="https://github.com/sybumrp" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
-            </div>
-          </div>
-
-        </aside>
-
-      </section>
-    </main>
+    </aside>
 
   </div>
 
+  <!-- Command palette (hidden by default) -->
+  <div id="cmdPalette" class="cmd-palette hidden panel p-3">
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-xs muted">Command Palette</div>
+        <input id="cmdInput" class="input-plain mt-2 w-full" placeholder="Type a command (deploy, status, tail 200, filter warn)"/>
+      </div>
+      <div class="ml-3">
+        <button id="closePalette" class="btn-ghost">Close</button>
+      </div>
+    </div>
+    <div id="cmdResults" class="mt-3 text-sm muted">Type to run commands... (Press Enter)</div>
+  </div>
+
   <script>
-    // Minimal interaction: tabs + nav + small utilities
-    document.addEventListener('click', (e) => {
-      const t = e.target.closest && e.target.closest('[data-tab]');
-      if (t) {
-        // sidebar nav switches main sections (overview, services, projects, contact)
-        const target = t.getAttribute('data-tab');
-        ['overview','services','projects','contact'].forEach(id=>{
-          const el = document.getElementById(id);
-          if(!el) return;
-          el.classList.toggle('hidden', id!==target);
-        });
-        // highlight nav (light visual feedback)
-        document.querySelectorAll('[data-tab]').forEach(btn => btn.classList.remove('bg-white/5'));
-        t.classList.add('bg-white/5');
+    /*********************************************************************
+     * Advanced Live Console JS
+     * - Simulated log stream
+     * - Efficient DOM handling and retention
+     * - Filters, regex search, export, terminal commands
+     * - Simple canvas charts for CPU/Memory/TPS
+     *********************************************************************/
+
+    (function(){
+      // ---- Configuration ----
+      const DEFAULT_TAIL = 500;                 // default max lines kept in console
+      const DEFAULT_RETENTION = 5000;           // retention cap to avoid runaway
+      const DEFAULT_STREAM_RATE = 200;          // ms between simulated log events
+      const LOG_BATCH_SIZE = 8;                 // how many to emit at once (simulate bursts)
+      const MAX_RENDER_BATCH = 60;              // render up to this many DOM inserts per animation frame
+
+      // ---- DOM refs ----
+      const logsContainer = document.getElementById('logsContainer');
+      const consoleLogs = document.getElementById('consoleLogs');
+      const logsViewport = document.getElementById('logsViewport');
+      const consoleViewport = document.getElementById('consoleViewport');
+      const searchInput = document.getElementById('searchInput');
+      const levelFilter = document.getElementById('levelFilter');
+      const btnPause = document.getElementById('btnPause');
+      const btnClear = document.getElementById('btnClear');
+      const btnExport = document.getElementById('btnExport');
+      const terminalForm = document.getElementById('terminalForm');
+      const terminalInput = document.getElementById('terminalInput');
+      const autoScrollCheckbox = document.getElementById('autoScroll');
+      const tailValue = document.getElementById('tailValue');
+      const btnTail = document.getElementById('btnTail');
+      const regexFilter = document.getElementById('regexFilter');
+      const btnApplyRegex = document.getElementById('btnApplyRegex');
+      const btnDownload = document.getElementById('btnDownload');
+      const btnExportJSON = document.getElementById('btnExportJSON');
+      const cbInfo = document.getElementById('cbInfo');
+      const cbWarn = document.getElementById('cbWarn');
+      const cbError = document.getElementById('cbError');
+      const cbDebug = document.getElementById('cbDebug');
+      const streamRateInput = document.getElementById('streamRate');
+      const retentionInput = document.getElementById('retention');
+
+      // metrics elements
+      const cpuValue = document.getElementById('cpuValue');
+      const memValue = document.getElementById('memValue');
+      const tpsValue = document.getElementById('tpsValue');
+      const cpuChart = document.getElementById('cpuChart');
+      const memChart = document.getElementById('memChart');
+      const tpsChart = document.getElementById('tpsChart');
+
+      // right widgets
+      const widgetsPlayers = document.getElementById('widgetsPlayers');
+      const widgetsPeak = document.getElementById('widgetsPeak');
+      const widgetsDeploys = document.getElementById('widgetsDeploys');
+      const widgetsErrors = document.getElementById('widgetsErrors');
+      const alertsList = document.getElementById('alertsList');
+
+      // local state
+      let paused = false;
+      let autoScroll = true;
+      let tail = DEFAULT_TAIL;
+      let retention = DEFAULT_RETENTION;
+      let streamRate = DEFAULT_STREAM_RATE;
+      let logId = 0;
+      let logs = []; // in-memory store of logs {id,ts,level,msg,meta}
+      let consoleBuffer = []; // buffer used for batched rendering
+      let renderScheduled = false;
+      let regex = null;
+
+      // metrics data
+      const metrics = {
+        cpuHistory: new Array(120).fill(0),
+        memHistory: new Array(120).fill(0),
+        tpsHistory: new Array(120).fill(0),
+      };
+
+      // quick counters
+      let players = 1248;
+      let playersPeak = 1552;
+      let deployCount = 9;
+      let errorsCount = 0;
+
+      // levels & weights for simulated selection
+      const LEVELS = ['INFO','INFO','INFO','DEBUG','WARN','ERROR']; // weighted
+
+      // Utility: safe HTML escape
+      function escapeHTML(s){ return s.replace(/[&<>"']/g, (c)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
+
+      // Utility: pretty timestamp
+      function ts(){ return new Date().toISOString(); }
+
+      // ---- Log generator ----
+      function genRandomLog(){
+        const level = LEVELS[Math.floor(Math.random()*LEVELS.length)];
+        const id = ++logId;
+        const now = new Date();
+        const payload = {
+          playerId: Math.floor(Math.random()*3500),
+          event: ['tick','deploy','econ_update','player_connect','player_disconnect','resource_error'][Math.floor(Math.random()*6)],
+          value: Math.round(Math.random()*10000)/100,
+          tag: ['core','economy','ui','security','net'][Math.floor(Math.random()*5)]
+        };
+        let msg = '';
+        switch(payload.event){
+          case 'tick': msg = `Tick processed: ${Math.round(Math.random()*1000)} items`; break;
+          case 'deploy': msg = `Deployment triggered: v${Math.floor(Math.random()*20)}.${Math.floor(Math.random()*100)}`; break;
+          case 'econ_update': msg = `Balance updated for id=${payload.playerId}`; break;
+          case 'player_connect': msg = `Player connected: id=${payload.playerId}`; break;
+          case 'player_disconnect': msg = `Player disconnected: id=${payload.playerId}`; break;
+          case 'resource_error': msg = `Resource ${payload.tag} reported runtime exception`; break;
+        }
+
+        const log = {
+          id,
+          ts: now.toISOString(),
+          level,
+          msg,
+          meta: payload
+        };
+        return log;
       }
-      const ts = e.target.closest && e.target.closest('[data-section]');
-      if (ts){
-        // top tabs inside overview
-        const sec = ts.getAttribute('data-section');
-        ['activity','code','preview'].forEach(s=>{
-          const el = document.getElementById('section-'+s);
-          if(el) el.classList.toggle('hidden', s !== sec);
-        });
-        document.querySelectorAll('[data-section]').forEach(btn => btn.classList.remove('bg-white/5'));
-        ts.classList.add('bg-white/5');
+
+      // ---- Log ingestion ----
+      function ingestLogs(batch){
+        // append to in-memory store
+        for(const l of batch){
+          logs.push(l);
+          if(l.level === 'ERROR') errorsCount++;
+        }
+        // enforce retention
+        if(logs.length > retention){
+          const removed = logs.splice(0, logs.length - retention);
+          // update counters if needed (example: decrement errorsCount)
+          for(const r of removed){
+            if(r.level === 'ERROR') errorsCount = Math.max(0, errorsCount - 1);
+          }
+        }
+        // push to buffer for rendering
+        consoleBuffer.push(...batch);
+        scheduleRender();
       }
-    });
 
-    // copy email util
-    function copyEmail(){
-      const email = 'jax@forgedevelopment.co.uk';
-      navigator.clipboard?.writeText(email).then(()=> {
-        const btn = document.querySelector('button[onclick="copyEmail()"]');
-        if(btn){ btn.textContent = 'Copied ✓'; setTimeout(()=> btn.textContent = 'Copy', 1400); }
-      }).catch(()=> alert(email));
-    }
+      // ---- Rendering (batched) ----
+      function scheduleRender(){
+        if(renderScheduled) return;
+        renderScheduled = true;
+        requestAnimationFrame(() => {
+          renderScheduled = false;
+          const batch = consoleBuffer.splice(0, MAX_RENDER_BATCH);
+          for(const l of batch){
+            renderLogLine(l);
+          }
+          // update widgets
+          updateWidgets();
+          // if buffer still has items, schedule next frame
+          if(consoleBuffer.length > 0) scheduleRender();
+        });
+      }
 
-    // theme toggle (light/dim) - simple class toggle
-    document.getElementById('themeToggle').addEventListener('click', () => {
-      document.body.classList.toggle('dim-theme');
-      // small icon swap
-      const i = document.querySelector('#themeToggle i');
-      if(i) i.classList.toggle('fa-sun');
-    });
+      // Render a single log line into both compact and console views (if passes filters)
+      function renderLogLine(l){
+        // filter by level checkboxes
+        if(!levelAllowed(l.level)) return;
 
-    // Initial: mark overview active
-    document.querySelector('[data-tab="overview"]').classList.add('bg-white/5');
-    // initial inner section
-    document.querySelector('[data-section="activity"]').classList.add('bg-white/5');
+        // regex / search filter
+        if(searchInput.value.trim()){
+          try{
+            const s = searchInput.value.trim();
+            const re = new RegExp(s, 'i');
+            if(!re.test(l.msg) && !re.test(JSON.stringify(l.meta))) return;
+          }catch(e){
+            // ignore invalid regex (we could show error)
+          }
+        }
+        if(regex){
+          if(!regex.test(l.msg) && !regex.test(JSON.stringify(l.meta))) return;
+        }
+
+        // create DOM node
+        const line = document.createElement('div');
+        line.className = 'panel p-2 log-line flex items-start gap-3';
+        line.dataset.logId = l.id;
+
+        const meta = document.createElement('div');
+        meta.className = 'log-meta muted';
+        meta.innerText = `[${l.ts}] ${l.level}`;
+
+        const content = document.createElement('div');
+        content.className = 'flex-1';
+
+        const title = document.createElement('div');
+        title.innerHTML = `<span class="muted">${escapeHTML(l.meta.tag)}</span> <span class="text-sm log-msg">${escapeHTML(l.msg)}</span>`;
+
+        const details = document.createElement('div');
+        details.className = 'text-xs muted mt-1';
+        details.innerText = JSON.stringify(l.meta);
+
+        content.appendChild(title);
+        content.appendChild(details);
+
+        // severity styling
+        const severityDot = document.createElement('span');
+        severityDot.className = 'status-dot';
+        if(l.level === 'INFO') severityDot.style.background = 'linear-gradient(90deg,#60a5fa,#38bdf8)';
+        if(l.level === 'WARN') severityDot.style.background = 'linear-gradient(90deg,#f59e0b,#f97316)';
+        if(l.level === 'ERROR') severityDot.style.background = 'linear-gradient(90deg,#ff4d6d,#ff6b6b)';
+        if(l.level === 'DEBUG') severityDot.style.background = 'linear-gradient(90deg,#a3e635,#86efac)';
+
+        line.appendChild(severityDot);
+        line.appendChild(meta);
+        line.appendChild(content);
+
+        // append to small logs view
+        logsContainer.appendChild(line.cloneNode(true));
+
+        // append to large console view
+        consoleLogs.appendChild(line);
+
+        // retention trimming for DOM
+        trimDOM();
+
+        // autoscroll if enabled
+        if(autoScrollCheckbox.checked) {
+          logsViewport.scrollTop = logsViewport.scrollHeight;
+          consoleViewport.scrollTop = consoleViewport.scrollHeight;
+        }
+      }
+
+      function levelAllowed(level){
+        if(level === 'INFO' && !cbInfo.checked) return false;
+        if(level === 'WARN' && !cbWarn.checked) return false;
+        if(level === 'ERROR' && !cbError.checked) return false;
+        if(level === 'DEBUG' && !cbDebug.checked) return false;
+        return true;
+      }
+
+      // Keep DOM nodes bounded: don't allow more than tail lines in the DOM
+      function trimDOM(){
+        // trim logsContainer
+        const max = tail;
+        while(logsContainer.children.length > max){
+          logsContainer.removeChild(logsContainer.firstChild);
+        }
+        while(consoleLogs.children.length > Math.max(max, 2000)){
+          consoleLogs.removeChild(consoleLogs.firstChild);
+        }
+      }
+
+      // ---- Simulation loop ----
+      let streamTimer = null;
+      function startStream(){
+        stopStream();
+        streamTimer = setInterval(() => {
+          if(paused) return;
+          // produce a burst
+          const batch = [];
+          const bs = Math.max(1, Math.floor(Math.random()*LOG_BATCH_SIZE));
+          for(let i=0;i<bs;i++){
+            batch.push(genRandomLog());
+          }
+          ingestLogs(batch);
+        }, streamRate);
+      }
+      function stopStream(){ if(streamTimer) clearInterval(streamTimer); streamTimer = null; }
+
+      // ---- Controls ----
+      btnPause.addEventListener('click', ()=> {
+        paused = !paused;
+        btnPause.textContent = paused ? 'Resume' : 'Pause';
+      });
+      btnClear.addEventListener('click', ()=> {
+        logs = [];
+        consoleBuffer = [];
+        logsContainer.innerHTML = '';
+        consoleLogs.innerHTML = '';
+        errorsCount = 0;
+        updateWidgets();
+      });
+      btnExport.addEventListener('click', ()=> {
+        exportLogsText();
+      });
+
+      btnDownload.addEventListener('click', ()=> {
+        downloadLogsFile();
+      });
+
+      btnExportJSON.addEventListener('click', ()=> {
+        exportLogsJSON();
+      });
+
+      // level checkboxes
+      [cbInfo, cbWarn, cbError, cbDebug].forEach(cb => {
+        cb.addEventListener('change', ()=> {
+          // re-render visible logs (simple approach: clear and re-evaluate recent logs)
+          reRenderAll();
+        });
+      });
+
+      // search input (with debounce)
+      let searchTimeout = null;
+      searchInput.addEventListener('input', ()=> {
+        if(searchTimeout) clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(()=> {
+          reRenderAll();
+        }, 250);
+      });
+
+      // regex filter
+      btnApplyRegex.addEventListener('click', ()=> {
+        const v = regexFilter.value.trim();
+        if(!v) { regex = null; reRenderAll(); return; }
+        try {
+          regex = new RegExp(v, 'i');
+          reRenderAll();
+        } catch(e){
+          alert('Invalid regex');
+        }
+      });
+
+      // tail control
+      btnTail.addEventListener('click', ()=> {
+        const n = prompt('Tail lines (max 5000):', tail);
+        const nn = Number(n) || tail;
+        tail = Math.max(100, Math.min(5000, nn));
+        tailValue.textContent = tail;
+        reRenderAll();
+      });
+
+      // copy selection (copy visible logs text)
+      document.getElementById('btnCopySelection').addEventListener('click', ()=> {
+        const text = Array.from(consoleLogs.children).map(node => node.innerText).join('\n');
+        navigator.clipboard?.writeText(text).then(()=> alert('Copied visible logs to clipboard'));
+      });
+
+      // terminal commands
+      terminalForm.addEventListener('submit', (e)=> {
+        e.preventDefault();
+        const v = terminalInput.value.trim();
+        if(!v) return;
+        runCommand(v);
+        terminalInput.value = '';
+      });
+
+      // stream rate control
+      streamRateInput.addEventListener('input', (e)=> {
+        streamRate = Number(e.target.value);
+        startStream();
+      });
+
+      // retention control
+      retentionInput.addEventListener('change', (e)=> {
+        retention = Math.max(100, Math.min(20000, Number(e.target.value)));
+        reRenderAll();
+      });
+
+      // keyboard shortcuts
+      document.addEventListener('keydown', (e)=> {
+        // / focuses search input
+        if(e.key === '/' && document.activeElement !== searchInput){
+          e.preventDefault();
+          searchInput.focus();
+          return;
+        }
+        // ctrl/cmd + K opens command palette
+        if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+          e.preventDefault();
+          openCommandPalette();
+        }
+        // esc closes palette
+        if(e.key === 'Escape'){
+          closeCommandPalette();
+        }
+      });
+
+      // ---- Render helpers ----
+      function reRenderAll(){
+        logsContainer.innerHTML = '';
+        consoleLogs.innerHTML = '';
+        // render last N logs respecting retention and tail
+        const visible = logs.slice(Math.max(0, logs.length - retention));
+        // render at most tail to logsContainer
+        const renderArr = visible.slice(-tail);
+        for(const l of renderArr){
+          renderLogToContainers(l);
+        }
+      }
+
+      function renderLogToContainers(l){
+        // replicate what renderLogLine does but without adding to logs array
+        if(!levelAllowed(l.level)) return;
+        if(searchInput.value.trim()){
+          try {
+            const s = searchInput.value.trim();
+            const re = new RegExp(s, 'i');
+            if(!re.test(l.msg) && !re.test(JSON.stringify(l.meta))) return;
+          } catch(e){}
+        }
+        if(regex){
+          if(!regex.test(l.msg) && !regex.test(JSON.stringify(l.meta))) return;
+        }
+
+        const line = document.createElement('div');
+        line.className = 'panel p-2 log-line flex items-start gap-3';
+        line.dataset.logId = l.id;
+        const meta = document.createElement('div');
+        meta.className = 'log-meta muted';
+        meta.innerText = `[${l.ts}] ${l.level}`;
+        const content = document.createElement('div');
+        content.className = 'flex-1';
+        const title = document.createElement('div');
+        title.innerHTML = `<span class="muted">${escapeHTML(l.meta.tag)}</span> <span class="text-sm log-msg">${escapeHTML(l.msg)}</span>`;
+        const details = document.createElement('div');
+        details.className = 'text-xs muted mt-1';
+        details.innerText = JSON.stringify(l.meta);
+        content.appendChild(title);
+        content.appendChild(details);
+        const severityDot = document.createElement('span');
+        severityDot.className = 'status-dot';
+        if(l.level === 'INFO') severityDot.style.background = 'linear-gradient(90deg,#60a5fa,#38bdf8)';
+        if(l.level === 'WARN') severityDot.style.background = 'linear-gradient(90deg,#f59e0b,#f97316)';
+        if(l.level === 'ERROR') severityDot.style.background = 'linear-gradient(90deg,#ff4d6d,#ff6b6b)';
+        if(l.level === 'DEBUG') severityDot.style.background = 'linear-gradient(90deg,#a3e635,#86efac)';
+        line.appendChild(severityDot);
+        line.appendChild(meta);
+        line.appendChild(content);
+        logsContainer.appendChild(line.cloneNode(true));
+        consoleLogs.appendChild(line);
+      }
+
+      // small export helpers
+      function exportLogsText(){
+        const text = logs.map(l => `[${l.ts}] ${l.level} ${l.msg} ${JSON.stringify(l.meta)}`).join('\n');
+        const blob = new Blob([text], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `forgedev-logs-${new Date().toISOString()}.log`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function exportLogsJSON(){
+        const blob = new Blob([JSON.stringify(logs, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `forgedev-logs-${new Date().toISOString()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function downloadLogsFile(){
+        // combine last retention logs and download
+        const arr = logs.slice(Math.max(0, logs.length - retention));
+        const blob = new Blob([JSON.stringify(arr, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `forgedev-backup-${new Date().toISOString()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      // ---- Terminal commands ----
+      function runCommand(cmdRaw){
+        const parts = cmdRaw.split(' ').filter(Boolean);
+        const cmd = parts[0].toLowerCase();
+        const args = parts.slice(1);
+        appendSystemLog(`> ${cmdRaw}`);
+        switch(cmd){
+          case 'help':
+            appendSystemLog('Available commands: help, deploy, stats, tail <n>, clear, filter <level>, players <n>');
+            break;
+          case 'deploy':
+            appendSystemLog('Starting deployment process...');
+            simulateDeploy();
+            break;
+          case 'stats':
+            appendSystemLog(`Players: ${players} | Peak: ${playersPeak} | Deploys: ${deployCount} | Errors: ${errorsCount}`);
+            break;
+          case 'tail':
+            const n = Number(args[0]) || tail;
+            tail = Math.max(100, Math.min(5000, n));
+            tailValue.textContent = tail;
+            appendSystemLog(`Tail set to ${tail}`);
+            reRenderAll();
+            break;
+          case 'clear':
+            btnClear.click();
+            appendSystemLog('Cleared logs.');
+            break;
+          case 'filter':
+            if(args[0]){
+              const lvl = args[0].toUpperCase();
+              levelFilter.value = lvl;
+              reRenderAll();
+              appendSystemLog(`Level filter set to ${lvl}`);
+            }
+            break;
+          case 'players':
+            const p = Number(args[0]);
+            if(!isNaN(p)){ players = p; playersPeak = Math.max(playersPeak, players); appendSystemLog(`Players set to ${players}`); updateWidgets(); }
+            break;
+          default:
+            appendSystemLog(`Unknown command: ${cmd}`, 'WARN');
+        }
+      }
+
+      function appendSystemLog(msg, level='INFO'){
+        const systemLog = {
+          id: ++logId,
+          ts: new Date().toISOString(),
+          level,
+          msg,
+          meta: { system: true }
+        };
+        ingestLogs([systemLog]);
+      }
+
+      // ---- Simulate deploy sequence ----
+      function simulateDeploy(){
+        appendSystemLog('Validating manifest...');
+        setTimeout(()=> appendSystemLog('Packaging assets...'), 800);
+        setTimeout(()=> appendSystemLog('Applying migration scripts...'), 1700);
+        setTimeout(()=> {
+          appendSystemLog('Deploy complete: success', 'INFO');
+          deployCount++;
+          document.getElementById('deployCount').innerText = deployCount;
+          document.getElementById('deployLast').innerText = new Date().toLocaleTimeString();
+          addAlert('Deployment successful', 'success');
+        }, 2600);
+      }
+
+      // ---- Alerts ----
+      function addAlert(txt, type='info'){
+        const div = document.createElement('div');
+        div.className = 'p-2 rounded text-sm';
+        if(type==='success') div.style.background='linear-gradient(90deg,#062b10,#073216)'; 
+        if(type==='warn') div.style.background='linear-gradient(90deg,#2a1b03,#3a230a)';
+        if(type==='info') div.style.background='linear-gradient(90deg,#051028,#07203b)';
+        div.innerText = txt;
+        alertsList.appendChild(div);
+        // auto remove after time
+        setTimeout(()=> {
+          try { alertsList.removeChild(div); } catch(e){}
+        }, 9000);
+      }
+
+      // ---- Widgets update ----
+      function updateWidgets(){
+        widgetsPlayers.innerText = players;
+        widgetsPeak.innerText = playersPeak;
+        widgetsDeploys.innerText = deployCount;
+        widgetsErrors.innerText = errorsCount;
+        document.getElementById('playersCount').innerText = players;
+        document.getElementById('playersPeak').innerText = playersPeak;
+        document.getElementById('deployCount').innerText = deployCount;
+        document.getElementById('deployLast').innerText = new Date().toLocaleTimeString();
+      }
+
+      // ---- Canvas charts (micro) ----
+      function drawSpark(canvas, data, colorStart, colorEnd){
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width, h = canvas.height;
+        ctx.clearRect(0,0,w,h);
+        ctx.lineWidth = 2;
+        // background gradient
+        const grad = ctx.createLinearGradient(0,0,w,0);
+        grad.addColorStop(0, colorStart);
+        grad.addColorStop(1, colorEnd);
+        ctx.strokeStyle = grad;
+        ctx.beginPath();
+        const len = data.length;
+        for(let i=0;i<len;i++){
+          const x = (i/(len-1)) * w;
+          const y = h - (data[i] / 100) * h;
+          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+      }
+
+      // update metrics values & shift history
+      function updateMetrics(){
+        // random-ish but stable numbers for demonstration
+        const cpu = Math.min(99, Math.max(1, Math.round(20 + Math.random()*60 + Math.sin(Date.now()/5000)*10)));
+        const mem = Math.min(99, Math.max(5, Math.round(30 + Math.random()*50)));
+        // tps sim around 50-60
+        const tps = Math.round(48 + Math.random()*12);
+
+        metrics.cpuHistory.push(cpu); metrics.cpuHistory.shift();
+        metrics.memHistory.push(mem); metrics.memHistory.shift();
+        metrics.tpsHistory.push(tps); metrics.tpsHistory.shift();
+
+        cpuValue.innerText = `${cpu}%`;
+        memValue.innerText = `${mem}%`;
+        tpsValue.innerText = `${tps}`;
+
+        // draw small canvases
+        drawSpark(cpuChart, metrics.cpuHistory, '#60a5fa', '#22d3ee');
+        drawSpark(memChart, metrics.memHistory, '#34d399', '#60a5fa');
+        drawSpark(tpsChart, metrics.tpsHistory, '#f97316', '#ffb86b');
+      }
+
+      // Also draw big charts when metrics page is visible
+      const cpuChartBig = document.getElementById('cpuChartBig')?.getContext?.('2d');
+      const memChartBig = document.getElementById('memChartBig')?.getContext?.('2d');
+      const tpsChartBig = document.getElementById('tpsChartBig')?.getContext?.('2d');
+
+      function drawBigChart(ctx, data, colorStart, colorEnd){
+        if(!ctx) return;
+        const canvas = ctx.canvas;
+        const w = canvas.width, h = canvas.height;
+        ctx.clearRect(0,0,w,h);
+        ctx.lineWidth = 2;
+        // fill
+        ctx.beginPath();
+        for(let i=0;i<data.length;i++){
+          const x = (i/(data.length-1))*w;
+          const y = h - (data[i]/100)*h;
+          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+        const gradFill = ctx.createLinearGradient(0,0,0,h);
+        gradFill.addColorStop(0, colorStart); gradFill.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = gradFill;
+        ctx.fill();
+        // stroke
+        const grad = ctx.createLinearGradient(0,0,w,0);
+        grad.addColorStop(0, colorStart); grad.addColorStop(1, colorEnd);
+        ctx.strokeStyle = grad;
+        ctx.beginPath();
+        for(let i=0;i<data.length;i++){
+          const x = (i/(data.length-1))*w;
+          const y = h - (data[i]/100)*h;
+          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+      }
+
+      // ---- Main animation frame ----
+      function tick(){
+        updateMetrics();
+        if(cpuChartBig) drawBigChart(cpuChartBig, metrics.cpuHistory, 'rgba(96,165,250,0.6)', 'rgba(34,211,238,0.4)');
+        if(memChartBig) drawBigChart(memChartBig, metrics.memHistory, 'rgba(34,197,94,0.6)', 'rgba(96,165,250,0.2)');
+        if(tpsChartBig) drawBigChart(tpsChartBig, metrics.tpsHistory, 'rgba(249,115,22,0.6)', 'rgba(255,184,107,0.2)');
+        requestAnimationFrame(tick);
+      }
+
+      // ---- Command palette behavior ----
+      const cmdPalette = document.getElementById('cmdPalette');
+      const cmdInput = document.getElementById('cmdInput');
+      const cmdResults = document.getElementById('cmdResults');
+      function openCommandPalette(){
+        cmdPalette.classList.remove('hidden');
+        setTimeout(()=> cmdInput.focus(), 80);
+      }
+      function closeCommandPalette(){
+        cmdPalette.classList.add('hidden');
+        cmdInput.value = '';
+      }
+      document.getElementById('closePalette').addEventListener('click', closeCommandPalette);
+      cmdInput.addEventListener('keydown', (e)=> {
+        if(e.key === 'Enter'){ runCommand(cmdInput.value); closeCommandPalette(); }
+      });
+
+      // ---- Theme toggle (simple) ----
+      document.getElementById('toggleTheme').addEventListener('click', ()=>{
+        document.body.classList.toggle('dim-theme');
+        const i = document.querySelector('#toggleTheme i');
+        if(i) i.classList.toggle('fa-sun');
+      });
+
+      // ---- Navigation tabs ----
+      document.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.addEventListener('click', ()=> {
+          const target = btn.getAttribute('data-tab');
+          document.querySelectorAll('main section, main > section').forEach(sec => {
+            if(sec.id === target) sec.classList.remove('hidden'); else sec.classList.add('hidden');
+          });
+          // update active visual
+          document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('bg-white/5'));
+          btn.classList.add('bg-white/5');
+        });
+      });
+      // set default active
+      document.querySelector('[data-tab="overview"]').classList.add('bg-white/5');
+
+      // ---- Initial seeding & start ----
+      (function init(){
+        // set initial metrics arrays to some values
+        for(let i=0;i<metrics.cpuHistory.length;i++){
+          metrics.cpuHistory[i] = 12 + Math.random()*40;
+          metrics.memHistory[i] = 24 + Math.random()*50;
+          metrics.tpsHistory[i] = 48 + Math.random()*8;
+        }
+        // seed some logs for immediate appearance
+        const seed = [];
+        for(let i=0;i<120;i++) seed.push(genRandomLog());
+        ingestLogs(seed);
+        // start metric ticks and stream
+        tick();
+        startStream();
+        // wire up export buttons
+        document.getElementById('btnExport').addEventListener('click', exportLogsText);
+        document.getElementById('btnExportJSON').addEventListener('click', exportLogsJSON);
+        document.getElementById('btnDownload').addEventListener('click', downloadLogsFile);
+        // wire small interactions
+        document.getElementById('btnPause').click(); // toggle initial? no, ensure text sync
+        document.getElementById('btnPause').click(); // double click to ensure correct label
+      })();
+
+      // ---- helper to append to both containers used by re-render ---
+      function renderLogLine(l){
+        // for compatibility with earlier references
+        renderLogToContainers(l);
+      }
+
+      // ---- lastly: expose some functions globally for debugging in console (optional) ----
+      window.__forgeConsole = {
+        logs, ingestLogs, genRandomLog, exportLogsText, exportLogsJSON, downloadLogsFile,
+        reRenderAll, runCommand, addAlert
+      };
+
+    })();
   </script>
-
 </body>
 </html>
