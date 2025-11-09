@@ -1,61 +1,54 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Forge Development — Advanced Live Console | Jax</title>
-  <meta name="description" content="Forge Development — advanced live console & dashboard for Jax. Real-time logs, metrics, terminal, and deployment controls."/>
+  <title>Forge Development — Live Console (HTML)</title>
+  <meta name="description" content="Forge Development — interactive FiveM-style live console. Restart, deploy, logs, terminal, and metrics — pure HTML+JS."/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    /* Custom styling for console UI - minimal and performant */
     :root{
-      --bg-900: #03060a;
+      --bg-1:#02040a;
+      --bg-2:#071027;
       --panel: rgba(255,255,255,0.03);
       --glass-border: rgba(255,255,255,0.06);
-      --accent-1: #00e5ff;
-      --accent-2: #0078ff;
-      --muted: #9ca3af;
-      --success: #22c55e;
-      --warn: #f59e0b;
-      --danger: #ff4d6d;
-      --info: #60a5fa;
+      --accent-1:#00e5ff;
+      --accent-2:#0078ff;
+      --muted:#9ca3af;
+      --success:#22c55e;
+      --warn:#f59e0b;
+      --danger:#ff4d6d;
+      --info:#60a5fa;
     }
     html,body{height:100%}
     body{
       margin:0;
+      min-height:100%;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       color:#dbeafe;
       background:
         radial-gradient(800px 400px at 10% 10%, rgba(0,229,255,0.02), transparent 8%),
         radial-gradient(600px 300px at 90% 90%, rgba(0,120,255,0.02), transparent 10%),
-        linear-gradient(180deg,#02040a,var(--bg-900));
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        linear-gradient(180deg,var(--bg-1),var(--bg-2));
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
-      overflow:hidden;
     }
-
-    /* panel base */
-    .panel{
+    .panel {
       background:var(--panel);
       border:1px solid var(--glass-border);
       backdrop-filter: blur(12px) saturate(150%);
       border-radius:12px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.6);
+      box-shadow:0 10px 30px rgba(2,8,23,0.6);
     }
-
-    /* brand gradient */
-    .brand-gradient{
+    .brand {
       background: linear-gradient(90deg,var(--accent-1),var(--accent-2));
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
-      background-size:200% 200%;
-      animation: shimmer 6s linear infinite;
       font-weight:700;
     }
-    @keyframes shimmer {0%{background-position:0%}100%{background-position:200%}}
-
-    /* small UI */
-    .chip{
+    .chip {
       background: linear-gradient(90deg, rgba(0,229,255,0.06), rgba(0,120,255,0.04));
       padding:6px 10px;
       border-radius:999px;
@@ -64,1150 +57,1004 @@
       font-weight:600;
       font-size:13px;
     }
-
-    /* console lines */
-    .log-line { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size:13px; line-height:1.4; white-space:pre-wrap; word-break:break-word; }
-    .log-meta { font-size:12px; color:var(--muted); margin-right:8px; }
-    .log-msg { color:#e6f7ff; }
-
-    /* levels */
-    .lvl-INFO { color:var(--info) }
-    .lvl-WARN { color:var(--warn) }
-    .lvl-ERROR { color:var(--danger) }
-    .lvl-DEBUG { color:#a3e635 }
-
-    /* status dots */
-    .status-dot{width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:8px;box-shadow:0 0 12px rgba(0,229,255,0.06)}
-    .status-online{ background: linear-gradient(90deg,var(--accent-1),var(--accent-2)); }
-    .status-offline{ background:#444; box-shadow:none }
-
-    /* search bar small */
+    .log-line { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size:13px; line-height:1.45; white-space:pre-wrap; word-break:break-word; }
+    .muted { color:var(--muted); }
+    .status-dot { width:10px;height:10px;border-radius:999px; display:inline-block; margin-right:8px; box-shadow:0 0 12px rgba(0,229,255,0.06); }
+    .lvl-info { color:var(--info); } .lvl-warn { color:var(--warn); } .lvl-error { color:var(--danger); } .lvl-debug { color:#a3e635; }
     .input-plain { background:transparent; border:1px solid rgba(255,255,255,0.03); padding:.45rem .6rem; border-radius:8px; color:inherit; outline:none; }
     .btn-primary { background:linear-gradient(90deg,var(--accent-1),var(--accent-2)); color:#041022; padding:.55rem .9rem; border-radius:999px; font-weight:600; box-shadow:0 6px 20px rgba(0,229,255,0.06); }
-    .btn-ghost { border:1px solid rgba(255,255,255,0.04); padding:.5rem .8rem; border-radius:8px; }
-
-    /* small responsive tweaks */
-    .sidebar { min-width:260px; max-width:300px; }
-    .main-area { min-width:0; } /* allow flex to shrink */
-
-    /* virtualization helper */
-    .logs-viewport { overflow:auto; max-height:480px; }
-
-    /* command palette overlay */
-    .cmd-palette { position:fixed; left:50%; top:12%; transform:translateX(-50%); width:min(880px,94%); z-index:60; }
-
-    /* lightweight scrollbar */
-    ::-webkit-scrollbar { width:10px; height:10px; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.04); border-radius:10px; }
-
-    /* terminal prompt */
-    .terminal-input { background:transparent; border:none; outline:none; color:#dbeafe; width:100%; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; }
-
-    /* small icons scale */
-    .icon-lg { font-size:18px; }
-    .icon-sm { font-size:13px; }
-
-    /* utility */
+    .btn-ghost { border:1px solid rgba(255,255,255,0.04); padding:.45rem .7rem; border-radius:8px; background:transparent; color:inherit; }
+    .kbd { background:rgba(255,255,255,0.03); padding:.12rem .4rem; border-radius:6px; font-size:12px; border:1px solid rgba(255,255,255,0.02); }
     .hidden { display:none !important; }
-    .muted { color:var(--muted); }
-
-    /* accessibility focus */
-    [tabindex]:focus { outline:2px solid rgba(0,229,255,0.12); outline-offset:2px; border-radius:8px; }
-
-    /* layout full height */
-    .app-grid { height:100vh; display:grid; grid-template-columns: 280px 1fr 360px; gap:18px; padding:20px; box-sizing:border-box; }
-
-    @media (max-width:1100px){
-      .app-grid { grid-template-columns: 1fr; grid-auto-rows: min-content; height: auto; padding:12px; overflow:auto; }
-      .sidebar { display:flex; order:-1; position:sticky; top:12px; z-index:40; width:100%; }
-      .right-col { order:2; }
-      .main-col { order:1; }
+    /* scrollbars */
+    ::-webkit-scrollbar{width:10px;height:10px}
+    ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.04);border-radius:10px}
+    /* responsive */
+    @media (max-width:1024px){
+      .grid-layout { grid-template-columns: 1fr; grid-auto-rows: min-content; padding:12px; }
+      .sidebar { position:sticky; top:12px; z-index:40; width:100%; order:-1; margin-bottom:12px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Root grid -->
-  <div class="app-grid">
+  <!-- APP WRAPPER -->
+  <div class="max-w-[1400px] mx-auto p-6 grid grid-cols-[280px_1fr_360px] gap-6 grid-layout min-h-screen">
 
-    <!-- Left: Sidebar -->
+    <!-- SIDEBAR -->
     <aside class="sidebar panel p-4 flex flex-col gap-4">
       <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow">
-          <i class="fa-solid fa-fire text-black icon-lg"></i>
-        </div>
+        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-black font-bold">FD</div>
         <div>
-          <div class="brand-gradient text-lg">Forge Development</div>
+          <div class="brand text-lg">Forge Development</div>
           <div class="text-xs muted">Jax — Lead Developer</div>
         </div>
       </div>
 
-      <nav aria-label="Main" class="mt-2">
+      <nav aria-label="Main navigation" class="mt-2">
         <ul class="space-y-1 text-sm">
-          <li><button data-tab="overview" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-display text-gray-300 icon-sm w-4"></i> Overview</button></li>
-          <li><button data-tab="console" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-terminal text-gray-300 icon-sm w-4"></i> Live Console</button></li>
-          <li><button data-tab="metrics" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-chart-line text-gray-300 icon-sm w-4"></i> Metrics</button></li>
-          <li><button data-tab="projects" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-layer-group text-gray-300 icon-sm w-4"></i> Projects</button></li>
-          <li><button data-tab="settings" class="w-full text-left py-2 px-3 rounded-md hover:bg-white/3 transition flex items-center gap-3"><i class="fa-solid fa-gear text-gray-300 icon-sm w-4"></i> Settings</button></li>
+          <li><button data-nav="overview" class="w-full text-left p-2 rounded hover:bg-white/3 transition focus:outline-none">Overview</button></li>
+          <li><button data-nav="console" class="w-full text-left p-2 rounded hover:bg-white/3 transition focus:outline-none">Console</button></li>
+          <li><button data-nav="metrics" class="w-full text-left p-2 rounded hover:bg-white/3 transition focus:outline-none">Metrics</button></li>
+          <li><button data-nav="projects" class="w-full text-left p-2 rounded hover:bg-white/3 transition focus:outline-none">Projects</button></li>
+          <li><button data-nav="settings" class="w-full text-left p-2 rounded hover:bg-white/3 transition focus:outline-none">Settings</button></li>
         </ul>
       </nav>
 
       <div class="divider border-t border-white/6"></div>
 
-      <div class="space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="text-xs muted">Server</div>
-          <div class="chip"><span class="status-dot status-online"></span> Online</div>
+      <div class="flex flex-col gap-2">
+        <div class="flex items-center justify-between text-xs muted">
+          <div>Server</div>
+          <div class="flex items-center gap-2"><span id="serverDot" class="status-dot bg-gradient-to-br from-cyan-400 to-blue-600"></span><span id="serverState" class="font-semibold">running</span></div>
         </div>
-
         <div class="text-xs muted">Uptime</div>
-        <div class="w-full bg-white/3 h-2 rounded-full overflow-hidden">
-          <div id="uptimeBar" style="width:86%" class="h-2 bg-gradient-to-r from-cyan-400 to-blue-600"></div>
+        <div class="w-full bg-white/3 h-2 rounded-full overflow-hidden"><div id="uptimeBar" class="h-2 bg-gradient-to-r from-cyan-400 to-blue-600" style="width:86%"></div></div>
+
+        <div class="mt-2 text-xs muted">Quick actions</div>
+        <div class="flex gap-2">
+          <button id="btnRestart" class="btn-primary flex-1"><i class="fa-solid fa-rotate fa-fw"></i> Restart</button>
+          <button id="btnDeploy" class="btn-ghost flex-1"><i class="fa-solid fa-rocket fa-fw"></i> Deploy</button>
         </div>
 
-        <div class="mt-2 text-xs muted">Quick Actions</div>
         <div class="flex gap-2">
-          <button id="btnDeploy" class="btn-primary flex items-center gap-2"><i class="fa-solid fa-rocket"></i> Deploy</button>
-          <button id="btnRestart" class="btn-ghost flex items-center gap-2"><i class="fa-solid fa-arrow-rotate-right"></i> Restart</button>
+          <button id="btnStop" class="btn-ghost flex-1"><i class="fa-solid fa-power-off fa-fw"></i> Stop</button>
+          <button id="btnStart" class="btn-ghost flex-1"><i class="fa-solid fa-play fa-fw"></i> Start</button>
         </div>
       </div>
 
       <div class="mt-auto text-[11px] muted text-center">© 2025 Forge Development</div>
     </aside>
 
-    <!-- Center: Main area -->
-    <main class="main-area flex flex-col gap-4">
+    <!-- MAIN AREA -->
+    <main class="panel p-4 min-h-[70vh]">
 
-      <!-- Top bar -->
-      <div class="panel p-3 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <div class="text-sm muted">Welcome back,</div>
-          <div class="text-white font-semibold">Jax</div>
-          <div class="chip">Forge Console</div>
-          <div class="text-xs muted ml-4">Session: <strong class="text-white">dev-local</strong></div>
+      <!-- TOPBAR -->
+      <div class="flex items-center justify-between gap-4 mb-4">
+        <div>
+          <div class="text-xs muted">Forge Console</div>
+          <h1 class="text-2xl font-semibold">Development Control Center</h1>
         </div>
 
         <div class="flex items-center gap-3">
-          <div class="text-sm muted hidden sm:block">Live: <strong id="liveStatus" class="text-white">Streaming</strong></div>
-          <button id="toggleTheme" class="btn-ghost" title="Toggle theme"><i class="fa-solid fa-moon icon-sm"></i></button>
-          <div class="w-9 h-9 rounded-full bg-white/4 flex items-center justify-center"><i class="fa-solid fa-user"></i></div>
+          <div class="text-sm muted">Auto-scroll</div>
+          <input id="autoScroll" type="checkbox" checked />
+          <div class="text-sm muted">Paused</div>
+          <input id="paused" type="checkbox" />
+          <div class="text-sm muted">Search</div>
+          <input id="searchInput" class="input-plain" placeholder="Regex / text search — press / to focus" />
+          <button id="exportTxt" class="btn-ghost">Export .log</button>
+          <button id="exportJson" class="btn-ghost">Export .json</button>
         </div>
       </div>
 
-      <!-- Overview / Console / Metrics area -->
-      <section id="overview" class="panel p-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <!-- CONTENT PANELS -->
+      <section id="panel-overview" class="space-y-4">
+        <!-- Live console + terminal -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="panel p-3 flex flex-col">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs muted">Live Console</div>
+                <h2 class="text-lg font-semibold">Logs</h2>
+              </div>
+              <div class="flex items-center gap-2">
+                <select id="levelFilter" class="input-plain">
+                  <option value="ALL">All Levels</option>
+                  <option value="INFO">INFO</option>
+                  <option value="WARN">WARN</option>
+                  <option value="ERROR">ERROR</option>
+                  <option value="DEBUG">DEBUG</option>
+                </select>
+                <button id="btnPause" class="btn-ghost">Pause</button>
+                <button id="btnClear" class="btn-ghost">Clear</button>
+                <button id="btnCopy" class="btn-ghost">Copy</button>
+              </div>
+            </div>
 
-        <!-- Left: Console panel + controls -->
-        <div class="flex flex-col gap-4">
+            <div id="logsViewport" class="mt-3 overflow-auto p-2 space-y-2 logs-viewport" style="max-height:360px" aria-live="polite"></div>
 
-          <!-- Console header & controls -->
-          <div class="flex items-center justify-between">
+            <div class="mt-3 panel p-2 flex items-center gap-3">
+              <div class="text-xs muted">Terminal:</div>
+              <input id="terminalInput" class="flex-1 input-plain" placeholder="Type command (help, restart, deploy, restartResource <name>)" />
+              <button id="terminalSend" class="btn-primary">Send</button>
+            </div>
+
+            <div class="mt-2 text-xs muted">History (Up/Down to navigate)</div>
+            <div id="termHistory" class="panel p-2 mt-1 max-h-20 overflow-auto text-xs"></div>
+          </div>
+
+          <!-- Metrics snapshot -->
+          <div class="panel p-3">
             <div>
-              <div class="text-xs muted">Console</div>
-              <h3 class="text-lg font-semibold">Live Log Stream</h3>
+              <div class="text-xs muted">System Metrics</div>
+              <h2 class="text-lg font-semibold">Realtime</h2>
             </div>
 
-            <div class="flex items-center gap-2">
-              <input id="searchInput" class="input-plain" placeholder="Search (regex supported) — press /" aria-label="Search logs" />
-              <select id="levelFilter" class="input-plain" title="Level filter" aria-label="Level filter">
-                <option value="ALL">All levels</option>
-                <option value="INFO">INFO</option>
-                <option value="WARN">WARN</option>
-                <option value="ERROR">ERROR</option>
-                <option value="DEBUG">DEBUG</option>
-              </select>
-              <button id="btnPause" class="btn-ghost">Pause</button>
-              <button id="btnClear" class="btn-ghost">Clear</button>
-              <button id="btnExport" class="btn-primary">Export</button>
-            </div>
-          </div>
+            <div class="mt-3 grid grid-cols-1 gap-3">
+              <div class="panel p-3 flex items-center justify-between">
+                <div>
+                  <div class="text-xs muted">CPU</div>
+                  <div id="cpuValue" class="text-lg font-semibold">--%</div>
+                </div>
+                <canvas id="cpuSpark" width="160" height="60"></canvas>
+              </div>
 
-          <!-- Console body -->
-          <div class="panel p-2 logs-viewport" id="logsViewport" role="log" aria-live="polite" aria-atomic="false">
-            <!-- Logs appended here -->
-            <div id="logsContainer" class="space-y-1"></div>
-          </div>
+              <div class="panel p-3 flex items-center justify-between">
+                <div>
+                  <div class="text-xs muted">Memory</div>
+                  <div id="memValue" class="text-lg font-semibold">--%</div>
+                </div>
+                <canvas id="memSpark" width="160" height="60"></canvas>
+              </div>
 
-          <!-- Console footer: terminal input -->
-          <div class="panel p-3 flex items-center gap-3">
-            <div class="text-xs muted">Terminal</div>
-            <div class="flex-1">
-              <form id="terminalForm" class="flex items-center gap-2">
-                <span class="text-xs muted">➜</span>
-                <input id="terminalInput" autocomplete="off" class="terminal-input" placeholder="Type command (help, deploy, stats, clear)" aria-label="Terminal input" />
-                <button type="submit" class="btn-ghost">Run</button>
-              </form>
-              <div id="terminalHint" class="text-xs muted mt-2">Commands: <code>help</code>, <code>deploy</code>, <code>stats</code>, <code>tail 200</code></div>
-            </div>
-            <div class="w-28 text-right">
-              <div class="text-xs muted">Auto-scroll</div>
-              <label class="inline-flex items-center gap-2">
-                <input id="autoScroll" type="checkbox" checked />
-              </label>
+              <div class="panel p-3 flex items-center justify-between">
+                <div>
+                  <div class="text-xs muted">TPS</div>
+                  <div id="tpsValue" class="text-lg font-semibold">--</div>
+                </div>
+                <canvas id="tpsSpark" width="160" height="60"></canvas>
+              </div>
+
+              <div class="panel p-3">
+                <div class="text-xs muted">Players</div>
+                <div id="playersValue" class="text-lg font-semibold">--</div>
+              </div>
             </div>
           </div>
         </div>
-
-        <!-- Right: Metrics snapshot -->
-        <div class="flex flex-col gap-4">
-
-          <!-- Metrics header -->
-          <div>
-            <div class="text-xs muted">Metrics</div>
-            <h3 class="text-lg font-semibold">Realtime System Metrics</h3>
-          </div>
-
-          <!-- Gauges -->
-          <div class="grid grid-cols-1 gap-4">
-            <div class="panel p-3 flex items-center justify-between">
-              <div>
-                <div class="text-xs muted">CPU</div>
-                <div class="text-white font-semibold" id="cpuValue">--%</div>
-                <div class="text-xs muted">Load averages: <span id="cpuLoad" class="text-white">--</span></div>
-              </div>
-              <canvas id="cpuChart" width="200" height="80"></canvas>
-            </div>
-
-            <div class="panel p-3 flex items-center justify-between">
-              <div>
-                <div class="text-xs muted">Memory</div>
-                <div class="text-white font-semibold" id="memValue">--%</div>
-                <div class="text-xs muted">Used / Total: <span id="memUsed" class="text-white">--</span></div>
-              </div>
-              <canvas id="memChart" width="200" height="80"></canvas>
-            </div>
-
-            <div class="panel p-3 flex items-center justify-between">
-              <div>
-                <div class="text-xs muted">TPS</div>
-                <div class="text-white font-semibold" id="tpsValue">--</div>
-                <div class="text-xs muted">Target: 60</div>
-              </div>
-              <canvas id="tpsChart" width="200" height="80"></canvas>
-            </div>
-          </div>
-
-          <!-- Small quick components -->
-          <div class="grid grid-cols-2 gap-3">
-            <div class="panel p-3 text-sm">
-              <div class="text-xs muted">Active Players</div>
-              <div class="text-white font-semibold" id="playersCount">--</div>
-              <div class="text-xs muted">Peak: <span id="playersPeak">--</span></div>
-            </div>
-            <div class="panel p-3 text-sm">
-              <div class="text-xs muted">Deploys Today</div>
-              <div class="text-white font-semibold" id="deployCount">--</div>
-              <div class="text-xs muted">Last: <span id="deployLast">--</span></div>
-            </div>
-          </div>
-
-        </div>
-
       </section>
 
-      <!-- Console dedicated view -->
-      <section id="console" class="panel p-4 hidden">
-
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <div class="text-xs muted">Console</div>
-            <h3 class="text-lg font-semibold">Advanced Live Console</h3>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button id="btnToggleErrors" class="btn-ghost">Only errors</button>
-            <button id="btnDownload" class="btn-primary">Download Logs</button>
-            <button id="btnExportJSON" class="btn-ghost">Export JSON</button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div class="col-span-2">
-            <div class="panel p-2 logs-viewport" id="consoleViewport" aria-live="polite">
-              <div id="consoleLogs" class="space-y-1"></div>
-            </div>
-
-            <div class="panel p-3 mt-3 flex items-center gap-2">
-              <button id="btnTail" class="btn-ghost">Tail: <span id="tailValue">500</span></button>
-              <button id="btnCopySelection" class="btn-ghost">Copy Selected</button>
-              <input id="regexFilter" class="input-plain" placeholder="Regex filter (leave blank to clear)" />
-              <button id="btnApplyRegex" class="btn-ghost">Apply</button>
-              <div class="ml-auto muted text-xs">Memory safe mode enabled</div>
-            </div>
-          </div>
-
-          <aside class="right-col">
-            <div class="panel p-3">
-              <div class="text-xs muted">Legend</div>
+      <section id="panel-console" class="hidden">
+        <div class="panel p-3">
+          <div class="text-xs muted">Console</div>
+          <h2 class="text-lg font-semibold">Advanced Console</h2>
+          <div class="mt-3 grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <div class="col-span-2 panel p-2 logs-viewport" id="consoleViewport" style="max-height:480px; overflow:auto"></div>
+            <aside class="panel p-3">
+              <div class="text-xs muted">Filters</div>
               <div class="mt-2 space-y-2">
-                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-400"></span><div class="text-sm muted">INFO</div></div>
-                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-yellow-400"></span><div class="text-sm muted">WARN</div></div>
-                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-500"></span><div class="text-sm muted">ERROR</div></div>
-                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-lime-400"></span><div class="text-sm muted">DEBUG</div></div>
+                <label><input id="cbInfo" type="checkbox" checked/> <span class="muted ml-2">INFO</span></label>
+                <label><input id="cbWarn" type="checkbox" checked/> <span class="muted ml-2">WARN</span></label>
+                <label><input id="cbError" type="checkbox" checked/> <span class="muted ml-2">ERROR</span></label>
+                <label><input id="cbDebug" type="checkbox" checked/> <span class="muted ml-2">DEBUG</span></label>
               </div>
-            </div>
-
-            <div class="panel p-3 mt-3">
-              <div class="text-xs muted">Log Controls</div>
-              <div class="mt-2 flex flex-col gap-2">
-                <label class="inline-flex items-center gap-2"><input type="checkbox" id="cbInfo" checked /> <span class="muted">INFO</span></label>
-                <label class="inline-flex items-center gap-2"><input type="checkbox" id="cbWarn" checked /> <span class="muted">WARN</span></label>
-                <label class="inline-flex items-center gap-2"><input type="checkbox" id="cbError" checked /> <span class="muted">ERROR</span></label>
-                <label class="inline-flex items-center gap-2"><input type="checkbox" id="cbDebug" checked /> <span class="muted">DEBUG</span></label>
+              <div class="mt-3">
+                <button id="btnExportJSON" class="btn-ghost w-full">Export JSON</button>
+                <button id="btnDownload" class="btn-ghost w-full mt-2">Download</button>
               </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-metrics" class="hidden">
+        <div class="panel p-3">
+          <div class="text-xs muted">Metrics</div>
+          <h2 class="text-lg font-semibold">Historical</h2>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="panel p-3"><canvas id="chartCpu" width="400" height="120"></canvas></div>
+            <div class="panel p-3"><canvas id="chartMem" width="400" height="120"></canvas></div>
+            <div class="panel p-3"><canvas id="chartTps" width="400" height="120"></canvas></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-projects" class="hidden">
+        <div class="panel p-3">
+          <div class="text-xs muted">Projects</div>
+          <h2 class="text-lg font-semibold">Selected Work</h2>
+          <div class="mt-3 grid sm:grid-cols-2 gap-3">
+            <div class="panel p-3">
+              <div class="text-xs muted">Manchester Roleplay</div>
+              <div class="text-white font-medium mt-1">Large-scale RP server: custom economy, UI and tools</div>
             </div>
-
-          </aside>
-        </div>
-
-      </section>
-
-      <!-- Metrics dedicated view -->
-      <section id="metrics" class="panel p-4 hidden">
-        <div class="text-xs muted">Metrics</div>
-        <h3 class="text-lg font-semibold">Detailed Metrics</h3>
-        <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="panel p-3">
-            <div class="text-xs muted">CPU History</div>
-            <canvas id="cpuChartBig" width="400" height="120"></canvas>
-          </div>
-          <div class="panel p-3">
-            <div class="text-xs muted">Memory History</div>
-            <canvas id="memChartBig" width="400" height="120"></canvas>
-          </div>
-          <div class="panel p-3">
-            <div class="text-xs muted">TPS History</div>
-            <canvas id="tpsChartBig" width="400" height="120"></canvas>
+            <div class="panel p-3">
+              <div class="text-xs muted">One Drone Media</div>
+              <div class="text-white font-medium mt-1">Website & booking platform</div>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Projects / Settings -->
-      <section id="projects" class="panel p-4 hidden">
-        <div class="text-xs muted">Projects</div>
-        <h3 class="text-lg font-semibold">Selected Work</h3>
-        <div class="mt-3 grid sm:grid-cols-2 gap-3">
-          <div class="panel p-3">
-            <div class="text-xs muted">Manchester Roleplay</div>
-            <div class="text-white font-medium mt-1">Large RP server with custom economy & UI</div>
-            <div class="text-xs muted mt-2">Role: Lead dev, systems, UI/UX</div>
-          </div>
-          <div class="panel p-3">
-            <div class="text-xs muted">One Drone Media</div>
-            <div class="text-white font-medium mt-1">Website & booking platform</div>
-            <div class="text-xs muted mt-2">Role: Frontend & backend</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="settings" class="panel p-4 hidden">
-        <div class="text-xs muted">Settings</div>
-        <h3 class="text-lg font-semibold">Console Settings</h3>
-        <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="panel p-3">
-            <div class="text-xs muted">Stream Rate</div>
-            <input id="streamRate" type="range" min="10" max="2000" value="200" class="w-full" />
-            <div class="text-xs muted mt-2">Adjust simulated log rate (ms)</div>
-          </div>
-          <div class="panel p-3">
-            <div class="text-xs muted">Retention</div>
-            <input id="retention" type="number" min="100" max="20000" value="5000" class="input-plain w-full" />
-            <div class="text-xs muted mt-2">Max log lines kept in memory</div>
+      <section id="panel-settings" class="hidden">
+        <div class="panel p-3">
+          <div class="text-xs muted">Settings</div>
+          <h2 class="text-lg font-semibold">Console Settings</h2>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="panel p-3">
+              <div class="text-xs muted">Stream Rate (ms)</div>
+              <input id="streamRate" type="range" min="50" max="2000" value="200" class="w-full"/>
+              <div class="text-xs muted mt-2">Controls simulated log frequency</div>
+            </div>
+            <div class="panel p-3">
+              <div class="text-xs muted">Retention (max logs)</div>
+              <input id="retention" type="number" min="100" max="20000" value="5000" class="input-plain w-full"/>
+              <div class="text-xs muted mt-2">How many log lines to keep in memory (localStorage)</div>
+            </div>
           </div>
         </div>
       </section>
 
     </main>
 
-    <!-- Right: side widgets -->
-    <aside class="panel p-4 right-col flex flex-col gap-4">
-
+    <!-- RIGHT COLUMN -->
+    <aside class="panel p-4 flex flex-col gap-4">
       <div>
-        <div class="text-xs muted">Quick Summary</div>
-        <h4 class="text-lg font-semibold mt-1">Overview</h4>
+        <div class="text-xs muted">Summary</div>
+        <h3 class="text-lg font-semibold">Snapshot</h3>
         <div class="mt-3 grid grid-cols-2 gap-2">
-          <div class="panel p-3">
-            <div class="text-xs muted">Players</div>
-            <div class="text-white font-semibold" id="widgetsPlayers">--</div>
-          </div>
-          <div class="panel p-3">
-            <div class="text-xs muted">Peak</div>
-            <div class="text-white font-semibold" id="widgetsPeak">--</div>
-          </div>
-          <div class="panel p-3">
-            <div class="text-xs muted">Deploys</div>
-            <div class="text-white font-semibold" id="widgetsDeploys">--</div>
-          </div>
-          <div class="panel p-3">
-            <div class="text-xs muted">Errors</div>
-            <div class="text-white font-semibold" id="widgetsErrors">--</div>
-          </div>
+          <div class="panel p-3"><div class="text-xs muted">Players</div><div id="widgetPlayers" class="text-lg font-semibold">--</div></div>
+          <div class="panel p-3"><div class="text-xs muted">Peak</div><div id="widgetPeak" class="text-lg font-semibold">--</div></div>
+          <div class="panel p-3"><div class="text-xs muted">Deploys</div><div id="widgetDeploys" class="text-lg font-semibold">0</div></div>
+          <div class="panel p-3"><div class="text-xs muted">Errors</div><div id="widgetErrors" class="text-lg font-semibold">0</div></div>
         </div>
       </div>
 
       <div class="panel p-3">
         <div class="text-xs muted">Alerts</div>
-        <div class="mt-2 text-sm">
-          <div id="alertsList" class="space-y-2"></div>
-        </div>
+        <div id="alerts" class="mt-2 space-y-2 text-sm"></div>
       </div>
 
       <div class="panel p-3">
         <div class="text-xs muted">Shortcuts</div>
         <div class="mt-2 text-sm muted">
-          <div><strong>Ctrl/Cmd + K</strong> — Open command palette</div>
-          <div><strong>/</strong> — Focus search</div>
-          <div><strong>Esc</strong> — Close palette / blur</div>
+          <div><span class="kbd">Ctrl/Cmd</span> + <span class="kbd">K</span> — Command palette</div>
+          <div><span class="kbd">/</span> — Focus search</div>
+          <div><span class="kbd">Esc</span> — Close palette</div>
         </div>
       </div>
 
       <div class="panel p-3">
         <div class="text-xs muted">Connect</div>
         <div class="mt-2 flex flex-col gap-2">
-          <a class="text-sm text-gray-300 hover:text-white" href="https://twitter.com/sybu__" target="_blank"><i class="fa-brands fa-x-twitter"></i> @sybu__</a>
-          <a class="text-sm text-gray-300 hover:text-white" href="https://github.com/sybumrp" target="_blank"><i class="fa-brands fa-github"></i> GitHub</a>
-          <a class="text-sm text-gray-300 hover:text-white" href="https://forgedevelopment.co.uk" target="_blank"><i class="fa-solid fa-globe"></i> Website</a>
+          <a href="https://twitter.com/sybu__" target="_blank" class="text-sm text-gray-300 hover:text-white"><i class="fa-brands fa-x-twitter"></i> @sybu__</a>
+          <a href="https://github.com/sybumrp" target="_blank" class="text-sm text-gray-300 hover:text-white"><i class="fa-brands fa-github"></i> GitHub</a>
         </div>
       </div>
-
     </aside>
-
   </div>
 
-  <!-- Command palette (hidden by default) -->
-  <div id="cmdPalette" class="cmd-palette hidden panel p-3">
-    <div class="flex items-center justify-between">
-      <div>
-        <div class="text-xs muted">Command Palette</div>
-        <input id="cmdInput" class="input-plain mt-2 w-full" placeholder="Type a command (deploy, status, tail 200, filter warn)"/>
+  <!-- Command Palette Overlay -->
+  <div id="cmdPalette" class="hidden fixed left-1/2 top-14 transform -translate-x-1/2 w-[min(900px,94%)] z-50">
+    <div class="panel p-3">
+      <div class="flex items-center justify-between gap-3">
+        <input id="paletteInput" class="input-plain w-full" placeholder="Type command (deploy, restart, status, restartResource res_name)"/>
+        <button id="paletteClose" class="btn-ghost">Close</button>
       </div>
-      <div class="ml-3">
-        <button id="closePalette" class="btn-ghost">Close</button>
-      </div>
+      <div id="paletteResults" class="text-xs muted mt-2">Press Enter to run command</div>
     </div>
-    <div id="cmdResults" class="mt-3 text-sm muted">Type to run commands... (Press Enter)</div>
   </div>
 
   <script>
-    /*********************************************************************
-     * Advanced Live Console JS
-     * - Simulated log stream
-     * - Efficient DOM handling and retention
-     * - Filters, regex search, export, terminal commands
-     * - Simple canvas charts for CPU/Memory/TPS
-     *********************************************************************/
+    /*
+      Forge Development Console (single-file)
+      - Client-side simulation of a FiveM control console
+      - Replace executeFiveMCommand with real server integration when ready
+      - Persist logs and settings to localStorage
+    */
 
-    (function(){
+    (function () {
       // ---- Configuration ----
-      const DEFAULT_TAIL = 500;                 // default max lines kept in console
-      const DEFAULT_RETENTION = 5000;           // retention cap to avoid runaway
-      const DEFAULT_STREAM_RATE = 200;          // ms between simulated log events
-      const LOG_BATCH_SIZE = 8;                 // how many to emit at once (simulate bursts)
-      const MAX_RENDER_BATCH = 60;              // render up to this many DOM inserts per animation frame
+      const DEFAULT_RETENTION = 5000;
+      const DEFAULT_STREAM_RATE = 200; // ms
+      const APP_KEY = 'forge_console_v1';
+      const LOG_KEY = APP_KEY + '_logs';
+      const SETTINGS_KEY = APP_KEY + '_settings';
 
-      // ---- DOM refs ----
-      const logsContainer = document.getElementById('logsContainer');
-      const consoleLogs = document.getElementById('consoleLogs');
+      // ---- DOM ----
       const logsViewport = document.getElementById('logsViewport');
       const consoleViewport = document.getElementById('consoleViewport');
+      const autoScrollEl = document.getElementById('autoScroll');
+      const pausedEl = document.getElementById('paused');
       const searchInput = document.getElementById('searchInput');
       const levelFilter = document.getElementById('levelFilter');
       const btnPause = document.getElementById('btnPause');
       const btnClear = document.getElementById('btnClear');
-      const btnExport = document.getElementById('btnExport');
-      const terminalForm = document.getElementById('terminalForm');
+      const btnCopy = document.getElementById('btnCopy');
       const terminalInput = document.getElementById('terminalInput');
-      const autoScrollCheckbox = document.getElementById('autoScroll');
-      const tailValue = document.getElementById('tailValue');
-      const btnTail = document.getElementById('btnTail');
-      const regexFilter = document.getElementById('regexFilter');
-      const btnApplyRegex = document.getElementById('btnApplyRegex');
-      const btnDownload = document.getElementById('btnDownload');
-      const btnExportJSON = document.getElementById('btnExportJSON');
-      const cbInfo = document.getElementById('cbInfo');
-      const cbWarn = document.getElementById('cbWarn');
-      const cbError = document.getElementById('cbError');
-      const cbDebug = document.getElementById('cbDebug');
-      const streamRateInput = document.getElementById('streamRate');
-      const retentionInput = document.getElementById('retention');
+      const terminalSend = document.getElementById('terminalSend');
+      const termHistoryEl = document.getElementById('termHistory');
+      const exportTxtBtn = document.getElementById('exportTxt');
+      const exportJsonBtn = document.getElementById('exportJson');
+      const btnRestart = document.getElementById('btnRestart');
+      const btnDeploy = document.getElementById('btnDeploy');
+      const btnStop = document.getElementById('btnStop');
+      const btnStart = document.getElementById('btnStart');
+      const uptimeBar = document.getElementById('uptimeBar');
+      const serverStateEl = document.getElementById('serverState');
+      const serverDot = document.getElementById('serverDot');
+      const widgetPlayers = document.getElementById('widgetPlayers');
+      const widgetPeak = document.getElementById('widgetPeak');
+      const widgetDeploys = document.getElementById('widgetDeploys');
+      const widgetErrors = document.getElementById('widgetErrors');
+      const alertsEl = document.getElementById('alerts');
+      const streamRateEl = document.getElementById('streamRate');
+      const retentionEl = document.getElementById('retention');
 
-      // metrics elements
-      const cpuValue = document.getElementById('cpuValue');
-      const memValue = document.getElementById('memValue');
-      const tpsValue = document.getElementById('tpsValue');
-      const cpuChart = document.getElementById('cpuChart');
-      const memChart = document.getElementById('memChart');
-      const tpsChart = document.getElementById('tpsChart');
-
-      // right widgets
-      const widgetsPlayers = document.getElementById('widgetsPlayers');
-      const widgetsPeak = document.getElementById('widgetsPeak');
-      const widgetsDeploys = document.getElementById('widgetsDeploys');
-      const widgetsErrors = document.getElementById('widgetsErrors');
-      const alertsList = document.getElementById('alertsList');
-
-      // local state
-      let paused = false;
-      let autoScroll = true;
-      let tail = DEFAULT_TAIL;
-      let retention = DEFAULT_RETENTION;
-      let streamRate = DEFAULT_STREAM_RATE;
-      let logId = 0;
-      let logs = []; // in-memory store of logs {id,ts,level,msg,meta}
-      let consoleBuffer = []; // buffer used for batched rendering
-      let renderScheduled = false;
-      let regex = null;
-
-      // metrics data
-      const metrics = {
-        cpuHistory: new Array(120).fill(0),
-        memHistory: new Array(120).fill(0),
-        tpsHistory: new Array(120).fill(0),
+      const consoleNavButtons = document.querySelectorAll('[data-nav]');
+      const panels = {
+        overview: document.getElementById('panel-overview'),
+        console: document.getElementById('panel-console'),
+        metrics: document.getElementById('panel-metrics'),
+        projects: document.getElementById('panel-projects'),
+        settings: document.getElementById('panel-settings')
       };
 
-      // quick counters
+      // Command palette
+      const cmdPalette = document.getElementById('cmdPalette');
+      const paletteInput = document.getElementById('paletteInput');
+      const paletteClose = document.getElementById('paletteClose');
+      const paletteResults = document.getElementById('paletteResults');
+
+      // charts/spares
+      const cpuSpark = document.getElementById('cpuSpark');
+      const memSpark = document.getElementById('memSpark');
+      const tpsSpark = document.getElementById('tpsSpark');
+      const chartCpu = document.getElementById('chartCpu');
+      const chartMem = document.getElementById('chartMem');
+      const chartTps = document.getElementById('chartTps');
+
+      // settings
+      let settings = loadSettings() || {
+        streamRate: DEFAULT_STREAM_RATE,
+        retention: DEFAULT_RETENTION,
+        autoScroll: true,
+        tail: 1500
+      };
+
+      // state
+      let logs = loadLogs() || [];
+      let running = true;
+      let tail = settings.tail || 1500;
+      let retention = settings.retention || DEFAULT_RETENTION;
+      let streamRate = settings.streamRate || DEFAULT_STREAM_RATE;
+      let paused = false;
+      let autoScroll = true;
       let players = 1248;
-      let playersPeak = 1552;
-      let deployCount = 9;
-      let errorsCount = 0;
+      let peakPlayers = 1552;
+      let deploys = 0;
+      let errorCount = 0;
+      let serverState = 'running'; // running, stopped, restarting
+      let logTimer = null;
+      let metricsTimer = null;
+      let commandHistory = [];
+      let commandHistoryIdx = -1;
 
-      // levels & weights for simulated selection
-      const LEVELS = ['INFO','INFO','INFO','DEBUG','WARN','ERROR']; // weighted
+      // metrics data arrays for drawing
+      const metrics = {
+        cpu: new Array(120).fill(12),
+        mem: new Array(120).fill(28),
+        tps: new Array(120).fill(60),
+        players: new Array(120).fill(200)
+      };
 
-      // Utility: safe HTML escape
-      function escapeHTML(s){ return s.replace(/[&<>"']/g, (c)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
+      // ---- Utilities ----
+      function saveSettings() {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      }
+      function loadSettings() {
+        try {
+          const s = localStorage.getItem(SETTINGS_KEY);
+          return s ? JSON.parse(s) : null;
+        } catch (e) { return null; }
+      }
+      function saveLogs() {
+        try {
+          const copy = logs.slice(-retention);
+          localStorage.setItem(LOG_KEY, JSON.stringify(copy));
+        } catch (e) { console.warn('Saving logs failed', e); }
+      }
+      function loadLogs() {
+        try {
+          const s = localStorage.getItem(LOG_KEY);
+          return s ? JSON.parse(s) : null;
+        } catch (e) { return null; }
+      }
+      function nowISO() { return new Date().toISOString(); }
+      function formatTS(ts) {
+        const d = new Date(ts);
+        return d.toLocaleString();
+      }
 
-      // Utility: pretty timestamp
-      function ts(){ return new Date().toISOString(); }
-
-      // ---- Log generator ----
-      function genRandomLog(){
-        const level = LEVELS[Math.floor(Math.random()*LEVELS.length)];
-        const id = ++logId;
-        const now = new Date();
-        const payload = {
-          playerId: Math.floor(Math.random()*3500),
-          event: ['tick','deploy','econ_update','player_connect','player_disconnect','resource_error'][Math.floor(Math.random()*6)],
-          value: Math.round(Math.random()*10000)/100,
-          tag: ['core','economy','ui','security','net'][Math.floor(Math.random()*5)]
-        };
-        let msg = '';
-        switch(payload.event){
-          case 'tick': msg = `Tick processed: ${Math.round(Math.random()*1000)} items`; break;
-          case 'deploy': msg = `Deployment triggered: v${Math.floor(Math.random()*20)}.${Math.floor(Math.random()*100)}`; break;
-          case 'econ_update': msg = `Balance updated for id=${payload.playerId}`; break;
-          case 'player_connect': msg = `Player connected: id=${payload.playerId}`; break;
-          case 'player_disconnect': msg = `Player disconnected: id=${payload.playerId}`; break;
-          case 'resource_error': msg = `Resource ${payload.tag} reported runtime exception`; break;
-        }
-
-        const log = {
-          id,
-          ts: now.toISOString(),
+      function makeLog(level, msg, meta = {}) {
+        const entry = {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+          ts: nowISO(),
           level,
           msg,
-          meta: payload
+          meta
         };
-        return log;
-      }
-
-      // ---- Log ingestion ----
-      function ingestLogs(batch){
-        // append to in-memory store
-        for(const l of batch){
-          logs.push(l);
-          if(l.level === 'ERROR') errorsCount++;
-        }
+        // update error counter
+        if (level === 'ERROR') errorCount++;
+        logs.push(entry);
         // enforce retention
-        if(logs.length > retention){
-          const removed = logs.splice(0, logs.length - retention);
-          // update counters if needed (example: decrement errorsCount)
-          for(const r of removed){
-            if(r.level === 'ERROR') errorsCount = Math.max(0, errorsCount - 1);
-          }
-        }
-        // push to buffer for rendering
-        consoleBuffer.push(...batch);
-        scheduleRender();
+        if (logs.length > retention) logs.splice(0, logs.length - retention);
+        saveLogs();
+        return entry;
       }
 
-      // ---- Rendering (batched) ----
-      function scheduleRender(){
-        if(renderScheduled) return;
-        renderScheduled = true;
-        requestAnimationFrame(() => {
-          renderScheduled = false;
-          const batch = consoleBuffer.splice(0, MAX_RENDER_BATCH);
-          for(const l of batch){
-            renderLogLine(l);
-          }
-          // update widgets
-          updateWidgets();
-          // if buffer still has items, schedule next frame
-          if(consoleBuffer.length > 0) scheduleRender();
-        });
-      }
+      function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
-      // Render a single log line into both compact and console views (if passes filters)
-      function renderLogLine(l){
-        // filter by level checkboxes
-        if(!levelAllowed(l.level)) return;
+      // Simple HTML escape
+      function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-        // regex / search filter
-        if(searchInput.value.trim()){
-          try{
-            const s = searchInput.value.trim();
-            const re = new RegExp(s, 'i');
-            if(!re.test(l.msg) && !re.test(JSON.stringify(l.meta))) return;
-          }catch(e){
-            // ignore invalid regex (we could show error)
-          }
+      // ---- Render / UI updates ----
+      function renderLogs() {
+        // level filter and search apply
+        const level = levelFilter.value || 'ALL';
+        const q = (searchInput.value || '').trim();
+        const re = q ? safeRegExp(q) : null;
+
+        // virtualized approach: render only tail last N matching lines
+        const matched = [];
+        for (let i = logs.length - 1; i >= 0 && matched.length < tail; i--) {
+          const l = logs[i];
+          if (level !== 'ALL' && l.level !== level) continue;
+          if (re && !re.test(l.msg + ' ' + JSON.stringify(l.meta))) continue;
+          matched.push(l);
         }
-        if(regex){
-          if(!regex.test(l.msg) && !regex.test(JSON.stringify(l.meta))) return;
+        matched.reverse(); // chronological
+
+        logsViewport.innerHTML = '';
+        const frag = document.createDocumentFragment();
+        for (const l of matched) {
+          const el = createLogElement(l);
+          frag.appendChild(el);
+        }
+        logsViewport.appendChild(frag);
+
+        // consoleViewport (advanced)
+        if (consoleViewport) {
+          consoleViewport.innerHTML = '';
+          const ff = document.createDocumentFragment();
+          for (let i = Math.max(0, logs.length - matched.length); i < logs.length; i++) {
+            const l = logs[i];
+            const el = createLogElement(l);
+            ff.appendChild(el);
+          }
+          consoleViewport.appendChild(ff);
         }
 
-        // create DOM node
-        const line = document.createElement('div');
-        line.className = 'panel p-2 log-line flex items-start gap-3';
-        line.dataset.logId = l.id;
+        // update sidebar widgets
+        widgetPlayers.innerText = players;
+        widgetPeak.innerText = peakPlayers;
+        widgetDeploys.innerText = deploys;
+        widgetErrors.innerText = errorCount;
 
-        const meta = document.createElement('div');
-        meta.className = 'log-meta muted';
-        meta.innerText = `[${l.ts}] ${l.level}`;
-
-        const content = document.createElement('div');
-        content.className = 'flex-1';
-
-        const title = document.createElement('div');
-        title.innerHTML = `<span class="muted">${escapeHTML(l.meta.tag)}</span> <span class="text-sm log-msg">${escapeHTML(l.msg)}</span>`;
-
-        const details = document.createElement('div');
-        details.className = 'text-xs muted mt-1';
-        details.innerText = JSON.stringify(l.meta);
-
-        content.appendChild(title);
-        content.appendChild(details);
-
-        // severity styling
-        const severityDot = document.createElement('span');
-        severityDot.className = 'status-dot';
-        if(l.level === 'INFO') severityDot.style.background = 'linear-gradient(90deg,#60a5fa,#38bdf8)';
-        if(l.level === 'WARN') severityDot.style.background = 'linear-gradient(90deg,#f59e0b,#f97316)';
-        if(l.level === 'ERROR') severityDot.style.background = 'linear-gradient(90deg,#ff4d6d,#ff6b6b)';
-        if(l.level === 'DEBUG') severityDot.style.background = 'linear-gradient(90deg,#a3e635,#86efac)';
-
-        line.appendChild(severityDot);
-        line.appendChild(meta);
-        line.appendChild(content);
-
-        // append to small logs view
-        logsContainer.appendChild(line.cloneNode(true));
-
-        // append to large console view
-        consoleLogs.appendChild(line);
-
-        // retention trimming for DOM
-        trimDOM();
-
-        // autoscroll if enabled
-        if(autoScrollCheckbox.checked) {
+        if (autoScroll && autoScrollEl.checked) {
           logsViewport.scrollTop = logsViewport.scrollHeight;
-          consoleViewport.scrollTop = consoleViewport.scrollHeight;
+          if (consoleViewport) consoleViewport.scrollTop = consoleViewport.scrollHeight;
         }
       }
 
-      function levelAllowed(level){
-        if(level === 'INFO' && !cbInfo.checked) return false;
-        if(level === 'WARN' && !cbWarn.checked) return false;
-        if(level === 'ERROR' && !cbError.checked) return false;
-        if(level === 'DEBUG' && !cbDebug.checked) return false;
-        return true;
-      }
-
-      // Keep DOM nodes bounded: don't allow more than tail lines in the DOM
-      function trimDOM(){
-        // trim logsContainer
-        const max = tail;
-        while(logsContainer.children.length > max){
-          logsContainer.removeChild(logsContainer.firstChild);
-        }
-        while(consoleLogs.children.length > Math.max(max, 2000)){
-          consoleLogs.removeChild(consoleLogs.firstChild);
-        }
-      }
-
-      // ---- Simulation loop ----
-      let streamTimer = null;
-      function startStream(){
-        stopStream();
-        streamTimer = setInterval(() => {
-          if(paused) return;
-          // produce a burst
-          const batch = [];
-          const bs = Math.max(1, Math.floor(Math.random()*LOG_BATCH_SIZE));
-          for(let i=0;i<bs;i++){
-            batch.push(genRandomLog());
-          }
-          ingestLogs(batch);
-        }, streamRate);
-      }
-      function stopStream(){ if(streamTimer) clearInterval(streamTimer); streamTimer = null; }
-
-      // ---- Controls ----
-      btnPause.addEventListener('click', ()=> {
-        paused = !paused;
-        btnPause.textContent = paused ? 'Resume' : 'Pause';
-      });
-      btnClear.addEventListener('click', ()=> {
-        logs = [];
-        consoleBuffer = [];
-        logsContainer.innerHTML = '';
-        consoleLogs.innerHTML = '';
-        errorsCount = 0;
-        updateWidgets();
-      });
-      btnExport.addEventListener('click', ()=> {
-        exportLogsText();
-      });
-
-      btnDownload.addEventListener('click', ()=> {
-        downloadLogsFile();
-      });
-
-      btnExportJSON.addEventListener('click', ()=> {
-        exportLogsJSON();
-      });
-
-      // level checkboxes
-      [cbInfo, cbWarn, cbError, cbDebug].forEach(cb => {
-        cb.addEventListener('change', ()=> {
-          // re-render visible logs (simple approach: clear and re-evaluate recent logs)
-          reRenderAll();
-        });
-      });
-
-      // search input (with debounce)
-      let searchTimeout = null;
-      searchInput.addEventListener('input', ()=> {
-        if(searchTimeout) clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(()=> {
-          reRenderAll();
-        }, 250);
-      });
-
-      // regex filter
-      btnApplyRegex.addEventListener('click', ()=> {
-        const v = regexFilter.value.trim();
-        if(!v) { regex = null; reRenderAll(); return; }
-        try {
-          regex = new RegExp(v, 'i');
-          reRenderAll();
-        } catch(e){
-          alert('Invalid regex');
-        }
-      });
-
-      // tail control
-      btnTail.addEventListener('click', ()=> {
-        const n = prompt('Tail lines (max 5000):', tail);
-        const nn = Number(n) || tail;
-        tail = Math.max(100, Math.min(5000, nn));
-        tailValue.textContent = tail;
-        reRenderAll();
-      });
-
-      // copy selection (copy visible logs text)
-      document.getElementById('btnCopySelection').addEventListener('click', ()=> {
-        const text = Array.from(consoleLogs.children).map(node => node.innerText).join('\n');
-        navigator.clipboard?.writeText(text).then(()=> alert('Copied visible logs to clipboard'));
-      });
-
-      // terminal commands
-      terminalForm.addEventListener('submit', (e)=> {
-        e.preventDefault();
-        const v = terminalInput.value.trim();
-        if(!v) return;
-        runCommand(v);
-        terminalInput.value = '';
-      });
-
-      // stream rate control
-      streamRateInput.addEventListener('input', (e)=> {
-        streamRate = Number(e.target.value);
-        startStream();
-      });
-
-      // retention control
-      retentionInput.addEventListener('change', (e)=> {
-        retention = Math.max(100, Math.min(20000, Number(e.target.value)));
-        reRenderAll();
-      });
-
-      // keyboard shortcuts
-      document.addEventListener('keydown', (e)=> {
-        // / focuses search input
-        if(e.key === '/' && document.activeElement !== searchInput){
-          e.preventDefault();
-          searchInput.focus();
-          return;
-        }
-        // ctrl/cmd + K opens command palette
-        if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
-          e.preventDefault();
-          openCommandPalette();
-        }
-        // esc closes palette
-        if(e.key === 'Escape'){
-          closeCommandPalette();
-        }
-      });
-
-      // ---- Render helpers ----
-      function reRenderAll(){
-        logsContainer.innerHTML = '';
-        consoleLogs.innerHTML = '';
-        // render last N logs respecting retention and tail
-        const visible = logs.slice(Math.max(0, logs.length - retention));
-        // render at most tail to logsContainer
-        const renderArr = visible.slice(-tail);
-        for(const l of renderArr){
-          renderLogToContainers(l);
-        }
-      }
-
-      function renderLogToContainers(l){
-        // replicate what renderLogLine does but without adding to logs array
-        if(!levelAllowed(l.level)) return;
-        if(searchInput.value.trim()){
-          try {
-            const s = searchInput.value.trim();
-            const re = new RegExp(s, 'i');
-            if(!re.test(l.msg) && !re.test(JSON.stringify(l.meta))) return;
-          } catch(e){}
-        }
-        if(regex){
-          if(!regex.test(l.msg) && !regex.test(JSON.stringify(l.meta))) return;
-        }
-
-        const line = document.createElement('div');
-        line.className = 'panel p-2 log-line flex items-start gap-3';
-        line.dataset.logId = l.id;
+      function createLogElement(l) {
+        const div = document.createElement('div');
+        div.className = 'log-line panel p-2 flex items-start gap-3 rounded';
+        const dot = document.createElement('div');
+        dot.className = 'status-dot';
+        if (l.level === 'INFO') dot.style.background = 'linear-gradient(90deg,#60a5fa,#38bdf8)';
+        if (l.level === 'WARN') dot.style.background = 'linear-gradient(90deg,#f59e0b,#f97316)';
+        if (l.level === 'ERROR') dot.style.background = 'linear-gradient(90deg,#ff4d6d,#ff6b6b)';
+        if (l.level === 'DEBUG') dot.style.background = 'linear-gradient(90deg,#a3e635,#86efac)';
         const meta = document.createElement('div');
-        meta.className = 'log-meta muted';
-        meta.innerText = `[${l.ts}] ${l.level}`;
+        meta.className = 'text-xs muted';
+        meta.innerText = `[${formatTS(l.ts)}] ${l.level}`;
         const content = document.createElement('div');
         content.className = 'flex-1';
         const title = document.createElement('div');
-        title.innerHTML = `<span class="muted">${escapeHTML(l.meta.tag)}</span> <span class="text-sm log-msg">${escapeHTML(l.msg)}</span>`;
+        title.className = 'text-sm';
+        title.innerHTML = `<strong class="muted">${escapeHtml(l.meta.tag || l.meta.subsystem || 'sys')}</strong> ${escapeHtml(l.msg)}`;
         const details = document.createElement('div');
         details.className = 'text-xs muted mt-1';
         details.innerText = JSON.stringify(l.meta);
         content.appendChild(title);
         content.appendChild(details);
-        const severityDot = document.createElement('span');
-        severityDot.className = 'status-dot';
-        if(l.level === 'INFO') severityDot.style.background = 'linear-gradient(90deg,#60a5fa,#38bdf8)';
-        if(l.level === 'WARN') severityDot.style.background = 'linear-gradient(90deg,#f59e0b,#f97316)';
-        if(l.level === 'ERROR') severityDot.style.background = 'linear-gradient(90deg,#ff4d6d,#ff6b6b)';
-        if(l.level === 'DEBUG') severityDot.style.background = 'linear-gradient(90deg,#a3e635,#86efac)';
-        line.appendChild(severityDot);
-        line.appendChild(meta);
-        line.appendChild(content);
-        logsContainer.appendChild(line.cloneNode(true));
-        consoleLogs.appendChild(line);
+        div.appendChild(dot);
+        div.appendChild(meta);
+        div.appendChild(content);
+        return div;
       }
 
-      // small export helpers
-      function exportLogsText(){
-        const text = logs.map(l => `[${l.ts}] ${l.level} ${l.msg} ${JSON.stringify(l.meta)}`).join('\n');
-        const blob = new Blob([text], {type: 'text/plain'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = `forgedev-logs-${new Date().toISOString()}.log`;
-        a.click();
-        URL.revokeObjectURL(url);
+      function addAlert(text, type='info') {
+        const d = document.createElement('div');
+        d.className = 'p-2 rounded text-sm';
+        d.style.background = type === 'success' ? 'linear-gradient(90deg,#062b10,#073216)' : type === 'warn' ? 'linear-gradient(90deg,#2a1b03,#3a230a)' : 'linear-gradient(90deg,#051028,#07203b)';
+        d.innerText = text;
+        alertsEl.appendChild(d);
+        setTimeout(() => {
+          try { alertsEl.removeChild(d); } catch (e) {}
+        }, 7000);
       }
 
-      function exportLogsJSON(){
-        const blob = new Blob([JSON.stringify(logs, null, 2)], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = `forgedev-logs-${new Date().toISOString()}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
+      // ---- Simulated engine / command execution ----
+      // This is the place to plug a real WebSocket / HTTP / RCON integration.
+      async function executeFiveMCommand(command, args = []) {
+        // placeholder: simulate latency and responses. Return {ok:true, message:'..', data: {...}}
+        await new Promise(r => setTimeout(r, 350 + Math.random() * 700));
+        switch (command) {
+          case 'restartServer':
+            return { ok:true, message:'Server restarted successfully' };
+          case 'stopServer': return { ok:true, message:'Server stopped' };
+          case 'startServer': return { ok:true, message:'Server started' };
+          case 'status': return { ok:true, data:{ state: serverState, players } };
+          case 'restartResource': return { ok:true, message:`Resource ${args[0]} restarted` };
+          case 'startResource': return { ok:true, message:`Resource ${args[0]} started` };
+          case 'stopResource': return { ok:true, message:`Resource ${args[0]} stopped` };
+          case 'ensure': return { ok:true, message:`Ensured ${args[0]}` };
+          default: return { ok:false, message:'Unknown command' };
+        }
       }
 
-      function downloadLogsFile(){
-        // combine last retention logs and download
-        const arr = logs.slice(Math.max(0, logs.length - retention));
-        const blob = new Blob([JSON.stringify(arr, null, 2)], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = `forgedev-backup-${new Date().toISOString()}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
+      // High-level commands that mutate visible state and push logs
+      async function doRestartServer() {
+        // guard
+        if (serverState === 'restarting') { makeLog('WARN','Restart already in progress'); return; }
+        makeLog('INFO','Announcement: Server will restart in 5 seconds',{action:'announce'});
+        addAlert('Server restart scheduled (5s)', 'info');
+        await sleep(2500);
+        makeLog('INFO','Saving world state...',{action:'snapshot'});
+        await sleep(700);
+        makeLog('DEBUG','Stopping resources...', {step:1});
+        serverState = 'restarting'; updateServerState();
+        const res = await executeFiveMCommand('restartServer');
+        if (res.ok) {
+          makeLog('INFO',res.message);
+          await sleep(1500);
+          serverState = 'running'; updateServerState();
+          makeLog('INFO','Restart complete');
+        } else {
+          serverState = 'running'; updateServerState();
+          makeLog('ERROR',`Restart failed: ${res.message}`);
+        }
       }
 
-      // ---- Terminal commands ----
-      function runCommand(cmdRaw){
-        const parts = cmdRaw.split(' ').filter(Boolean);
+      async function doStopServer() {
+        makeLog('INFO','Stopping server...'); serverState = 'stopped'; updateServerState();
+        const res = await executeFiveMCommand('stopServer');
+        if (res.ok) makeLog('WARN', res.message); else makeLog('ERROR',`Stop failed: ${res.message}`);
+      }
+
+      async function doStartServer() {
+        makeLog('INFO','Starting server...'); serverState = 'starting'; updateServerState();
+        const res = await executeFiveMCommand('startServer');
+        if (res.ok) {
+          await sleep(800);
+          serverState = 'running'; updateServerState();
+          makeLog('INFO',res.message);
+        } else {
+          serverState = 'stopped'; updateServerState();
+          makeLog('ERROR',`Start failed: ${res.message}`);
+        }
+      }
+
+      async function doDeploy() {
+        makeLog('INFO','Starting deployment pipeline...'); addAlert('Deploy started', 'info');
+        makeLog('DEBUG','Running lint & tests');
+        await sleep(700);
+        makeLog('DEBUG','Building assets');
+        await sleep(900);
+        makeLog('INFO','Deploying to servers');
+        await sleep(1100);
+        makeLog('INFO','Deployment complete - applying updates');
+        deploys++;
+        widgetDeploys.innerText = deploys;
+        addAlert('Deployment complete', 'success');
+      }
+
+      async function doRestartResource(name) {
+        makeLog('INFO',`Restarting resource ${name}...`);
+        const res = await executeFiveMCommand('restartResource',[name]);
+        if (res.ok) makeLog('INFO', res.message); else makeLog('ERROR', `Restart resource failed: ${res.message}`);
+      }
+
+      async function doEnsureResource(name) {
+        makeLog('INFO',`Ensuring resource ${name}...`);
+        const res = await executeFiveMCommand('ensure',[name]);
+        if (res.ok) makeLog('INFO', res.message); else makeLog('ERROR', `Ensure resource failed: ${res.message}`);
+      }
+
+      // ---- Terminal handling ----
+      function pushCommandHistory(cmd) {
+        if (!cmd) return;
+        commandHistory.unshift(cmd);
+        commandHistory = commandHistory.slice(0, 200);
+        renderTermHistory();
+        // persist
+        settings.lastCommands = commandHistory;
+        saveSettings();
+      }
+      function renderTermHistory() {
+        termHistoryEl.innerHTML = '';
+        for (const c of commandHistory.slice(0, 50)) {
+          const d = document.createElement('div'); d.className = 'py-0.5'; d.innerText = c; termHistoryEl.appendChild(d);
+        }
+      }
+
+      async function runTerminalCommand(line) {
+        if (!line || !line.trim()) return;
+        pushCommandHistory(line);
+        makeLog('INFO','> ' + line, {source:'terminal'});
+        const parts = line.trim().split(/\s+/);
         const cmd = parts[0].toLowerCase();
         const args = parts.slice(1);
-        appendSystemLog(`> ${cmdRaw}`);
-        switch(cmd){
+        switch (cmd) {
           case 'help':
-            appendSystemLog('Available commands: help, deploy, stats, tail <n>, clear, filter <level>, players <n>');
+            makeLog('INFO','Commands: help, restart, stop, start, status, deploy, restartResource <name>, ensure <name>');
             break;
+          case 'restart':
+            await doRestartServer();
+            break;
+          case 'stop':
+            await doStopServer();
+            break;
+          case 'start':
+            await doStartServer();
+            break;
+          case 'status': {
+            const r = await executeFiveMCommand('status');
+            makeLog('INFO', `Status: ${r.data && r.data.state ? r.data.state : serverState} players=${r.data && r.data.players ? r.data.players : players}`);
+            break;
+          }
           case 'deploy':
-            appendSystemLog('Starting deployment process...');
-            simulateDeploy();
+            await doDeploy();
             break;
-          case 'stats':
-            appendSystemLog(`Players: ${players} | Peak: ${playersPeak} | Deploys: ${deployCount} | Errors: ${errorsCount}`);
+          case 'restartresource':
+          case 'restartr':
+            if (!args[0]) makeLog('WARN','Usage: restartResource <name>');
+            else await doRestartResource(args[0]);
+            break;
+          case 'ensure':
+            if (!args[0]) makeLog('WARN','Usage: ensure <name>');
+            else await doEnsureResource(args[0]);
             break;
           case 'tail':
-            const n = Number(args[0]) || tail;
-            tail = Math.max(100, Math.min(5000, n));
-            tailValue.textContent = tail;
-            appendSystemLog(`Tail set to ${tail}`);
-            reRenderAll();
+            const n = Number(args[0]); if (!isNaN(n)) { tail = clamp(n,100,5000); makeLog('INFO',`Tail set to ${tail}`); renderLogs(); }
             break;
           case 'clear':
-            btnClear.click();
-            appendSystemLog('Cleared logs.');
-            break;
-          case 'filter':
-            if(args[0]){
-              const lvl = args[0].toUpperCase();
-              levelFilter.value = lvl;
-              reRenderAll();
-              appendSystemLog(`Level filter set to ${lvl}`);
-            }
-            break;
-          case 'players':
-            const p = Number(args[0]);
-            if(!isNaN(p)){ players = p; playersPeak = Math.max(playersPeak, players); appendSystemLog(`Players set to ${players}`); updateWidgets(); }
+            logs = []; saveLogs(); renderLogs(); makeLog('INFO','Cleared logs');
             break;
           default:
-            appendSystemLog(`Unknown command: ${cmd}`, 'WARN');
+            makeLog('WARN',`Unknown command: ${cmd}`);
         }
       }
 
-      function appendSystemLog(msg, level='INFO'){
-        const systemLog = {
-          id: ++logId,
-          ts: new Date().toISOString(),
-          level,
-          msg,
-          meta: { system: true }
-        };
-        ingestLogs([systemLog]);
+      // ---- Simulated live log stream and metrics ----
+      function startStream() {
+        stopStream();
+        logTimer = setInterval(() => {
+          if (paused || serverState === 'stopped') return;
+          const burst = Math.max(1, Math.floor(Math.random()*4));
+          for (let i=0;i<burst;i++) {
+            const ev = randomEvent();
+            makeLog(ev.level, ev.msg, ev.meta);
+          }
+          // trim
+          if (logs.length > retention) logs.splice(0, logs.length - retention);
+          saveLogs();
+          renderLogs();
+        }, streamRate);
+      }
+      function stopStream() { if (logTimer) clearInterval(logTimer); logTimer = null; }
+
+      function randomEvent() {
+        const levels = ['INFO','INFO','INFO','DEBUG','WARN','ERROR'];
+        const level = levels[Math.floor(Math.random()*levels.length)];
+        const msgs = [
+          () => ({msg:`PlayerConnected: id=${Math.floor(Math.random()*5000)}`, meta:{subsystem:'net'}}),
+          () => ({msg:`EconomyTick: ${Math.round(Math.random()*5000)} accounts`, meta:{subsystem:'economy'}}),
+          () => ({msg:`Resource started: res_${Math.floor(Math.random()*40)}`, meta:{subsystem:'resource'}}),
+          () => ({msg:`Warning: resource cpu high`, meta:{subsystem:'resource'}}),
+          () => ({msg:`Error: null ref in handler`, meta:{subsystem:'engine'}}),
+          () => ({msg:`Debug: cache warmed`, meta:{subsystem:'cache'}})
+        ];
+        const item = msgs[Math.floor(Math.random()*msgs.length)]();
+        return { level, msg: item.msg, meta: item.meta };
       }
 
-      // ---- Simulate deploy sequence ----
-      function simulateDeploy(){
-        appendSystemLog('Validating manifest...');
-        setTimeout(()=> appendSystemLog('Packaging assets...'), 800);
-        setTimeout(()=> appendSystemLog('Applying migration scripts...'), 1700);
-        setTimeout(()=> {
-          appendSystemLog('Deploy complete: success', 'INFO');
-          deployCount++;
-          document.getElementById('deployCount').innerText = deployCount;
-          document.getElementById('deployLast').innerText = new Date().toLocaleTimeString();
-          addAlert('Deployment successful', 'success');
-        }, 2600);
+      // metrics tick
+      function startMetrics() {
+        metricsTimer = setInterval(()=> {
+          // bump metrics
+          const cpu = clamp(Math.round(metrics.cpu[metrics.cpu.length-1] + (Math.random()-0.5)*8),1,99);
+          const mem = clamp(Math.round(metrics.mem[metrics.mem.length-1] + (Math.random()-0.5)*6),5,99);
+          const tps = clamp(Math.round(48 + Math.random()*12),30,64);
+          const pl = clamp(Math.round(200 + Math.random()*1200),0,6000);
+          metrics.cpu.push(cpu); metrics.cpu.shift();
+          metrics.mem.push(mem); metrics.mem.shift();
+          metrics.tps.push(tps); metrics.tps.shift();
+          metrics.players.push(pl); metrics.players.shift();
+          players = pl; peakPlayers = Math.max(peakPlayers, players);
+          document.getElementById('cpuValue').innerText = cpu + '%';
+          document.getElementById('memValue').innerText = mem + '%';
+          document.getElementById('tpsValue').innerText = tps;
+          document.getElementById('playersValue').innerText = players;
+          widgetPlayers.innerText = players;
+          widgetPeak.innerText = peakPlayers;
+          drawSpark(cpuSpark, metrics.cpu, '#60a5fa', '#22d3ee');
+          drawSpark(memSpark, metrics.mem, '#34d399', '#60a5fa');
+          drawSpark(tpsSpark, metrics.tps, '#f97316', '#ffb86b');
+        }, 1200);
       }
+      function stopMetrics() { if (metricsTimer) clearInterval(metricsTimer); metricsTimer = null; }
 
-      // ---- Alerts ----
-      function addAlert(txt, type='info'){
-        const div = document.createElement('div');
-        div.className = 'p-2 rounded text-sm';
-        if(type==='success') div.style.background='linear-gradient(90deg,#062b10,#073216)'; 
-        if(type==='warn') div.style.background='linear-gradient(90deg,#2a1b03,#3a230a)';
-        if(type==='info') div.style.background='linear-gradient(90deg,#051028,#07203b)';
-        div.innerText = txt;
-        alertsList.appendChild(div);
-        // auto remove after time
-        setTimeout(()=> {
-          try { alertsList.removeChild(div); } catch(e){}
-        }, 9000);
-      }
-
-      // ---- Widgets update ----
-      function updateWidgets(){
-        widgetsPlayers.innerText = players;
-        widgetsPeak.innerText = playersPeak;
-        widgetsDeploys.innerText = deployCount;
-        widgetsErrors.innerText = errorsCount;
-        document.getElementById('playersCount').innerText = players;
-        document.getElementById('playersPeak').innerText = playersPeak;
-        document.getElementById('deployCount').innerText = deployCount;
-        document.getElementById('deployLast').innerText = new Date().toLocaleTimeString();
-      }
-
-      // ---- Canvas charts (micro) ----
-      function drawSpark(canvas, data, colorStart, colorEnd){
+      // ---- Small canvas sparkline drawing ----
+      function drawSpark(canvas, arr, colorA, colorB) {
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
         const w = canvas.width, h = canvas.height;
         ctx.clearRect(0,0,w,h);
         ctx.lineWidth = 2;
-        // background gradient
         const grad = ctx.createLinearGradient(0,0,w,0);
-        grad.addColorStop(0, colorStart);
-        grad.addColorStop(1, colorEnd);
+        grad.addColorStop(0, colorA); grad.addColorStop(1, colorB);
         ctx.strokeStyle = grad;
         ctx.beginPath();
-        const len = data.length;
-        for(let i=0;i<len;i++){
-          const x = (i/(len-1)) * w;
-          const y = h - (data[i] / 100) * h;
-          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        const len = arr.length;
+        for (let i=0;i<len;i++) {
+          const x = (i/(len-1))*w;
+          const y = h - (arr[i]/100)*h;
+          if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
         }
         ctx.stroke();
       }
 
-      // update metrics values & shift history
-      function updateMetrics(){
-        // random-ish but stable numbers for demonstration
-        const cpu = Math.min(99, Math.max(1, Math.round(20 + Math.random()*60 + Math.sin(Date.now()/5000)*10)));
-        const mem = Math.min(99, Math.max(5, Math.round(30 + Math.random()*50)));
-        // tps sim around 50-60
-        const tps = Math.round(48 + Math.random()*12);
-
-        metrics.cpuHistory.push(cpu); metrics.cpuHistory.shift();
-        metrics.memHistory.push(mem); metrics.memHistory.shift();
-        metrics.tpsHistory.push(tps); metrics.tpsHistory.shift();
-
-        cpuValue.innerText = `${cpu}%`;
-        memValue.innerText = `${mem}%`;
-        tpsValue.innerText = `${tps}`;
-
-        // draw small canvases
-        drawSpark(cpuChart, metrics.cpuHistory, '#60a5fa', '#22d3ee');
-        drawSpark(memChart, metrics.memHistory, '#34d399', '#60a5fa');
-        drawSpark(tpsChart, metrics.tpsHistory, '#f97316', '#ffb86b');
-      }
-
-      // Also draw big charts when metrics page is visible
-      const cpuChartBig = document.getElementById('cpuChartBig')?.getContext?.('2d');
-      const memChartBig = document.getElementById('memChartBig')?.getContext?.('2d');
-      const tpsChartBig = document.getElementById('tpsChartBig')?.getContext?.('2d');
-
-      function drawBigChart(ctx, data, colorStart, colorEnd){
-        if(!ctx) return;
-        const canvas = ctx.canvas;
+      // Draw bigger historical charts (simple)
+      function drawBigChart(ctx, arr, colorA, colorB) {
+        if (!ctx) return;
+        const canvas = ctx;
+        const c = ctx.getContext('2d');
         const w = canvas.width, h = canvas.height;
-        ctx.clearRect(0,0,w,h);
-        ctx.lineWidth = 2;
-        // fill
-        ctx.beginPath();
-        for(let i=0;i<data.length;i++){
-          const x = (i/(data.length-1))*w;
-          const y = h - (data[i]/100)*h;
-          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        c.clearRect(0,0,w,h);
+        c.lineWidth = 2;
+        // fill area
+        c.beginPath();
+        for (let i=0;i<arr.length;i++){
+          const x = (i/(arr.length-1))*w;
+          const y = h - (arr[i]/100)*h;
+          if (i===0) c.moveTo(x,y); else c.lineTo(x,y);
         }
-        ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
-        const gradFill = ctx.createLinearGradient(0,0,0,h);
-        gradFill.addColorStop(0, colorStart); gradFill.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = gradFill;
-        ctx.fill();
+        c.lineTo(w,h); c.lineTo(0,h); c.closePath();
+        const gf = c.createLinearGradient(0,0,0,h);
+        gf.addColorStop(0, colorA); gf.addColorStop(1, 'rgba(0,0,0,0)');
+        c.fillStyle = gf; c.fill();
         // stroke
-        const grad = ctx.createLinearGradient(0,0,w,0);
-        grad.addColorStop(0, colorStart); grad.addColorStop(1, colorEnd);
-        ctx.strokeStyle = grad;
-        ctx.beginPath();
-        for(let i=0;i<data.length;i++){
-          const x = (i/(data.length-1))*w;
-          const y = h - (data[i]/100)*h;
-          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        const grad = c.createLinearGradient(0,0,w,0); grad.addColorStop(0, colorA); grad.addColorStop(1,colorB);
+        c.strokeStyle = grad; c.beginPath();
+        for (let i=0;i<arr.length;i++) {
+          const x = (i/(arr.length-1))*w;
+          const y = h - (arr[i]/100)*h;
+          if (i===0) c.moveTo(x,y); else c.lineTo(x,y);
         }
-        ctx.stroke();
+        c.stroke();
       }
 
-      // ---- Main animation frame ----
-      function tick(){
-        updateMetrics();
-        if(cpuChartBig) drawBigChart(cpuChartBig, metrics.cpuHistory, 'rgba(96,165,250,0.6)', 'rgba(34,211,238,0.4)');
-        if(memChartBig) drawBigChart(memChartBig, metrics.memHistory, 'rgba(34,197,94,0.6)', 'rgba(96,165,250,0.2)');
-        if(tpsChartBig) drawBigChart(tpsChartBig, metrics.tpsHistory, 'rgba(249,115,22,0.6)', 'rgba(255,184,107,0.2)');
-        requestAnimationFrame(tick);
+      // ---- Helpers ----
+      function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+      function safeRegExp(s) {
+        try { return new RegExp(s, 'i'); } catch (e) { return null; }
       }
 
-      // ---- Command palette behavior ----
-      const cmdPalette = document.getElementById('cmdPalette');
-      const cmdInput = document.getElementById('cmdInput');
-      const cmdResults = document.getElementById('cmdResults');
-      function openCommandPalette(){
-        cmdPalette.classList.remove('hidden');
-        setTimeout(()=> cmdInput.focus(), 80);
+      // ---- Export / Copy functions ----
+      function exportTxt() {
+        const text = logs.map(l => `[${l.ts}] ${l.level} ${l.msg} ${JSON.stringify(l.meta)}`).join('\n');
+        const blob = new Blob([text], {type:'text/plain'});
+        downloadBlob(blob, `forgedev-logs-${new Date().toISOString()}.log`);
       }
-      function closeCommandPalette(){
-        cmdPalette.classList.add('hidden');
-        cmdInput.value = '';
+      function exportJson() {
+        const blob = new Blob([JSON.stringify(logs, null, 2)], {type:'application/json'});
+        downloadBlob(blob, `forgedev-logs-${new Date().toISOString()}.json`);
       }
-      document.getElementById('closePalette').addEventListener('click', closeCommandPalette);
-      cmdInput.addEventListener('keydown', (e)=> {
-        if(e.key === 'Enter'){ runCommand(cmdInput.value); closeCommandPalette(); }
-      });
+      function downloadBlob(blob, filename) {
+        const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url);
+      }
+      function copyVisible() {
+        const text = logsViewport.innerText;
+        navigator.clipboard?.writeText(text).then(()=> alert('Copied visible logs'));
+      }
 
-      // ---- Theme toggle (simple) ----
-      document.getElementById('toggleTheme').addEventListener('click', ()=>{
-        document.body.classList.toggle('dim-theme');
-        const i = document.querySelector('#toggleTheme i');
-        if(i) i.classList.toggle('fa-sun');
-      });
+      // ---- Server state update UI ----
+      function updateServerState() {
+        serverStateEl.innerText = serverState;
+        if (serverState === 'running') {
+          serverDot.style.background = 'linear-gradient(90deg,#00e5ff,#0078ff)';
+        } else if (serverState === 'stopped') {
+          serverDot.style.background = '#444';
+        } else {
+          serverDot.style.background = 'linear-gradient(90deg,#f59e0b,#f97316)';
+        }
+      }
 
-      // ---- Navigation tabs ----
-      document.querySelectorAll('[data-tab]').forEach(btn => {
-        btn.addEventListener('click', ()=> {
-          const target = btn.getAttribute('data-tab');
-          document.querySelectorAll('main section, main > section').forEach(sec => {
-            if(sec.id === target) sec.classList.remove('hidden'); else sec.classList.add('hidden');
-          });
-          // update active visual
-          document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('bg-white/5'));
-          btn.classList.add('bg-white/5');
+      // ---- Navigation ----
+      consoleNavButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-nav');
+          for (const k in panels) panels[k].classList.add('hidden');
+          panels[target].classList.remove('hidden');
         });
       });
-      // set default active
-      document.querySelector('[data-tab="overview"]').classList.add('bg-white/5');
 
-      // ---- Initial seeding & start ----
-      (function init(){
-        // set initial metrics arrays to some values
-        for(let i=0;i<metrics.cpuHistory.length;i++){
-          metrics.cpuHistory[i] = 12 + Math.random()*40;
-          metrics.memHistory[i] = 24 + Math.random()*50;
-          metrics.tpsHistory[i] = 48 + Math.random()*8;
-        }
-        // seed some logs for immediate appearance
-        const seed = [];
-        for(let i=0;i<120;i++) seed.push(genRandomLog());
-        ingestLogs(seed);
-        // start metric ticks and stream
-        tick();
+      // ---- Bind UI events ----
+      btnRestart.addEventListener('click', () => { runUICommand('restart'); });
+      btnDeploy.addEventListener('click', () => { runUICommand('deploy'); });
+      btnStop.addEventListener('click', () => { runUICommand('stop'); });
+      btnStart.addEventListener('click', () => { runUICommand('start'); });
+
+      btnPause.addEventListener('click', () => {
+        paused = !paused; btnPause.innerText = paused ? 'Resume' : 'Pause'; pausedEl.checked = paused;
+      });
+      btnClear.addEventListener('click', () => { logs=[]; saveLogs(); renderLogs(); });
+      btnCopy.addEventListener('click', () => copyVisible());
+      terminalSend.addEventListener('click', () => { const v=terminalInput.value; runTerminalCommand(v); terminalInput.value=''; });
+      terminalInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); const v=terminalInput.value; runTerminalCommand(v); terminalInput.value=''; }
+        if (e.key === 'ArrowUp') { e.preventDefault(); if (commandHistoryIdx < commandHistory.length-1) commandHistoryIdx++; terminalInput.value = commandHistory[commandHistoryIdx] || ''; }
+        if (e.key === 'ArrowDown') { e.preventDefault(); if (commandHistoryIdx > 0) commandHistoryIdx--; else { commandHistoryIdx = -1; terminalInput.value = ''; } terminalInput.value = commandHistory[commandHistoryIdx] || ''; }
+      });
+      exportTxtBtn.addEventListener('click', exportTxt);
+      exportJsonBtn.addEventListener('click', exportJson);
+
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === '/') { e.preventDefault(); searchInput.focus(); }
+      });
+      searchInput.addEventListener('input', () => { renderLogs(); });
+
+      levelFilter.addEventListener('change', () => { renderLogs(); });
+
+      streamRateEl?.addEventListener('input', (e) => {
+        streamRate = Number(e.target.value);
+        settings.streamRate = streamRate; saveSettings();
         startStream();
-        // wire up export buttons
-        document.getElementById('btnExport').addEventListener('click', exportLogsText);
-        document.getElementById('btnExportJSON').addEventListener('click', exportLogsJSON);
-        document.getElementById('btnDownload').addEventListener('click', downloadLogsFile);
-        // wire small interactions
-        document.getElementById('btnPause').click(); // toggle initial? no, ensure text sync
-        document.getElementById('btnPause').click(); // double click to ensure correct label
-      })();
+      });
+      retentionEl?.addEventListener('change', (e) => {
+        retention = Number(e.target.value); settings.retention = retention; saveSettings();
+      });
 
-      // ---- helper to append to both containers used by re-render ---
-      function renderLogLine(l){
-        // for compatibility with earlier references
-        renderLogToContainers(l);
+      // Command palette
+      window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openPalette(); }
+        if (e.key === 'Escape') { closePalette(); }
+        if (e.key === '/') { if (document.activeElement !== searchInput) { e.preventDefault(); searchInput.focus(); } }
+      });
+      paletteClose.addEventListener('click', closePalette);
+      paletteInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { runUICommand(paletteInput.value); closePalette(); } });
+
+      function openPalette(){ cmdPalette.classList.remove('hidden'); paletteInput.focus(); }
+      function closePalette(){ cmdPalette.classList.add('hidden'); paletteInput.value=''; }
+
+      // ---- UI command runner wrapper ----
+      function runUICommand(cmd) {
+        // support button-triggered commands
+        runTerminalCommand(cmd);
       }
 
-      // ---- lastly: expose some functions globally for debugging in console (optional) ----
-      window.__forgeConsole = {
-        logs, ingestLogs, genRandomLog, exportLogsText, exportLogsJSON, downloadLogsFile,
-        reRenderAll, runCommand, addAlert
+      // ---- init / seed logs ----
+      function seedIfEmpty() {
+        if (!logs || logs.length === 0) {
+          for (let i=0;i<32;i++){
+            const level = ['INFO','DEBUG','INFO','WARN','INFO','ERROR'][Math.floor(Math.random()*6)];
+            const msg = i % 5 === 0 ? `Seed startup event ${i}` : `Seed log ${i}`;
+            makeLog(level, msg, {seed:true});
+          }
+          saveLogs();
+        }
+      }
+
+      // ---- start stream and metrics ----
+      function startStream() {
+        stopStream();
+        logTimer = setInterval(() => {
+          if (paused || serverState === 'stopped') return;
+          const burst = Math.floor(Math.random()*4) + 1;
+          for (let i=0;i<burst;i++) {
+            const e = randomEvent();
+            makeLog(e.level, e.msg, e.meta);
+          }
+          renderLogs();
+        }, streamRate);
+      }
+      function stopStream(){ if (logTimer) clearInterval(logTimer); logTimer=null; }
+
+      // ---- draw big charts periodically when metrics panel visible ----
+      function drawBigCharts() {
+        drawBigChart(chartCpu, metrics.cpu, 'rgba(96,165,250,0.6)','rgba(34,211,238,0.2)');
+        drawBigChart(chartMem, metrics.mem, 'rgba(34,197,94,0.6)','rgba(96,165,250,0.2)');
+        drawBigChart(chartTps, metrics.tps, 'rgba(249,115,22,0.6)','rgba(255,184,107,0.2)');
+      }
+
+      // ---- kick off ----
+      function init() {
+        settings = loadSettings() || settings;
+        streamRate = settings.streamRate || streamRate;
+        retention = settings.retention || retention;
+        tail = settings.tail || tail;
+        autoScroll = settings.autoScroll !== undefined ? settings.autoScroll : autoScroll;
+        autoScrollEl.checked = autoScroll;
+        paused = false;
+        pausedEl.checked = paused;
+        seedIfEmpty();
+        renderLogs();
+        startStream();
+        startMetrics();
+        updateServerState();
+        // wire direct functions
+        document.getElementById('btnExportJSON')?.addEventListener('click', exportJson);
+        document.getElementById('btnDownload')?.addEventListener('click', exportTxt);
+        // draw big charts occasionally
+        setInterval(drawBigCharts, 2000);
+      }
+
+      // begin
+      init();
+
+      // Expose for debugging
+      window._forgeConsole = {
+        logs, makeLog, doRestartServer, doStopServer, doStartServer, doDeploy, doRestartResource, doEnsureResource, settings
       };
+
+      // ---- helper functions used above not defined earlier (duplicate safe functions to avoid hoisting issues) ----
+
+      function randomEvent() {
+        const levels = ['INFO','INFO','INFO','DEBUG','WARN','ERROR'];
+        const level = levels[Math.floor(Math.random()*levels.length)];
+        const types = [
+          () => ({msg:`PlayerConnected id=${Math.floor(Math.random()*5000)}`, meta:{subsystem:'net'}}),
+          () => ({msg:`EconomyTick processed ${Math.round(Math.random()*4000)} accounts`, meta:{subsystem:'economy'}}),
+          () => ({msg:`Resource started: res_${Math.floor(Math.random()*40)}`, meta:{subsystem:'resource'}}),
+          () => ({msg:`Warning: resource cpu high`, meta:{subsystem:'resource'}}),
+          () => ({msg:`Error: null ref in handler`, meta:{subsystem:'engine'}}),
+          () => ({msg:`Debug: cache warmed`, meta:{subsystem:'cache'}})
+        ];
+        return (types[Math.floor(Math.random()*types.length)]) ? (types[Math.floor(Math.random()*types.length)])() : {msg:'tick', meta:{subsystem:'sys'}, level};
+      }
+
+      function drawBigChart(canvas, arr, colorA, colorB) {
+        if (!canvas) return;
+        const c = canvas.getContext('2d');
+        const w = canvas.width, h = canvas.height;
+        c.clearRect(0,0,w,h);
+        c.lineWidth = 2;
+        // area
+        c.beginPath();
+        for (let i=0;i<arr.length;i++){
+          const x = (i/(arr.length-1))*w;
+          const y = h - (arr[i]/100)*h;
+          if (i===0) c.moveTo(x,y); else c.lineTo(x,y);
+        }
+        c.lineTo(w,h); c.lineTo(0,h); c.closePath();
+        const gradFill = c.createLinearGradient(0,0,0,h);
+        gradFill.addColorStop(0, colorA); gradFill.addColorStop(1,'rgba(0,0,0,0)');
+        c.fillStyle = gradFill; c.fill();
+        const grad = c.createLinearGradient(0,0,w,0); grad.addColorStop(0,colorA); grad.addColorStop(1,colorB);
+        c.strokeStyle = grad; c.beginPath();
+        for (let i=0;i<arr.length;i++){
+          const x = (i/(arr.length-1))*w;
+          const y = h - (arr[i]/100)*h;
+          if (i===0) c.moveTo(x,y); else c.lineTo(x,y);
+        }
+        c.stroke();
+      }
+
+      // safeRegExp, escapeHtml, formatTS, etc. already defined above
 
     })();
   </script>
