@@ -20,12 +20,6 @@
             font-family: "Inter", sans-serif;
         }
 
-        .countdown {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #4f46e5; /* Tailwind brand color */
-        }
-
         .countdown-text {
             font-size: 1.25rem;
             color: #e0e0e0; /* Lighter color for contrast */
@@ -73,19 +67,14 @@
                     <p class="text-lg mt-4 text-gray-400">This website is currently under construction. Please check back later.</p>
                     <div class="countdown-container mt-8">
                         <p class="countdown-text">Estimated Launch in:</p>
+                        <!-- Logwork Countdown Timer Embed -->
                         <a href="https://logwork.com/countdown-timer" class="countdown-timer" data-style="flip2" data-timezone="Europe/London" data-date="2025-12-19 20:40">
-                            <div id="countdown" class="countdown"></div>
+                            Countdown Timer
                         </a>
                     </div>
                 </div>
             </div>`;
         }
-    </script>
-
-    <!-- Countdown Timer (Logwork Countdown) -->
-    <script>
-        // You can modify the target date or customize further as needed
-        document.querySelector(".countdown-timer").setAttribute("data-date", "2025-12-19 20:40"); // Set the countdown target date (for example)
     </script>
 
 </body>
