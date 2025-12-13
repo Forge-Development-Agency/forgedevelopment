@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Under Development | Flocks's Dev Portfolio</title>
+    <title>Under Development | Flock's Dev Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
 
@@ -27,13 +27,21 @@
 
         .countdown-text {
             font-size: 1.25rem;
-            color: #333;
+            color: #e0e0e0; /* Lighter color for contrast */
             margin-top: 1rem;
+        }
+
+        /* Ensures content is vertically and horizontally centered */
+        .full-height {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     </style>
 </head>
 
-<body class="bg-white dark:bg-darkbg text-gray-900 dark:text-gray-100 transition-colors duration-500">
+<body class="bg-darkbg dark:bg-darkbg text-gray-900 dark:text-gray-100 transition-colors duration-500">
 
     <!-- Check if bypass is needed -->
     <script>
@@ -44,35 +52,38 @@
             const password = prompt("Enter the password to view the site (developer only):");
             if (password === bypassPassword) {
                 localStorage.setItem("bypassDone", true);
+                window.location.reload(); // Refresh to show the site
             } else {
                 document.body.innerHTML = `
-                <div class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-darkbg text-center">
-                    <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
-                        <h1 class="text-4xl font-semibold text-gray-900 dark:text-gray-100">⚠️ Site Under Development ⚠️</h1>
-                        <p class="text-lg mt-4 text-gray-700 dark:text-gray-400">This website is currently under construction. Please check back later.</p>
-                        <p class="mt-8 text-2xl text-gray-700 dark:text-gray-300">Estimated Launch in: <span id="countdown"></span></p>
+                <div class="flex items-center justify-center min-h-screen bg-darkbg text-center">
+                    <div class="bg-gray-800 p-8 rounded-xl shadow-lg">
+                        <h1 class="text-4xl font-semibold text-gray-100">⚠️ Site Under Development ⚠️</h1>
+                        <p class="text-lg mt-4 text-gray-400">This website is currently under construction. Please check back later.</p>
+                        <p class="mt-8 text-2xl text-gray-300">Estimated Launch in: <span id="countdown"></span></p>
                     </div>
                 </div>`;
             }
+        } else {
+            // If bypass is already done, display the countdown
+            document.body.innerHTML = `
+            <div class="full-height bg-darkbg text-center">
+                <div class="bg-gray-800 p-8 rounded-xl shadow-lg">
+                    <h1 class="text-4xl font-semibold text-gray-100">⚠️ Site Under Development ⚠️</h1>
+                    <p class="text-lg mt-4 text-gray-400">This website is currently under construction. Please check back later.</p>
+                    <div class="countdown-container mt-8">
+                        <p class="countdown-text">Estimated Launch in:</p>
+                        <p id="countdown" class="countdown">Loading...</p>
+                    </div>
+                </div>
+            </div>`;
         }
     </script>
 
     <!-- Countdown Timer -->
-    <div id="countdownContainer" class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-darkbg text-center">
-        <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
-            <h1 class="text-4xl font-semibold text-gray-900 dark:text-gray-100">⚠️ Site Under Development ⚠️</h1>
-            <p class="text-lg mt-4 text-gray-700 dark:text-gray-400">This website is currently under construction. Please check back later.</p>
-            <div class="countdown-container mt-8">
-                <p class="countdown-text">Estimated Launch in:</p>
-                <p id="countdown" class="countdown">Loading...</p>
-            </div>
-        </div>
-    </div>
-
     <script>
         // Countdown Timer logic
         function updateCountdown() {
-            const targetDate = moment().add(5, 'days').add(24, 'hours');
+            const targetDate = moment().add(5, 'days').add(24, 'hours'); // 5 days and 24 hours from now
             const now = moment();
             const duration = moment.duration(targetDate.diff(now));
 
@@ -84,6 +95,7 @@
             document.getElementById('countdown').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
         }
 
+        // Update countdown every second
         setInterval(updateCountdown, 1000);
         updateCountdown(); // Initialize the countdown immediately
     </script>
