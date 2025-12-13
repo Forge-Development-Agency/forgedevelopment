@@ -13,6 +13,23 @@
             transform: scale(1.05);
             transition: all 0.3s ease;
         }
+
+        .countdown-container {
+            text-align: center;
+            font-family: "Inter", sans-serif;
+        }
+
+        .countdown {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4f46e5; /* Tailwind brand color */
+        }
+
+        .countdown-text {
+            font-size: 1.25rem;
+            color: #333;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 
@@ -31,7 +48,7 @@
                 document.body.innerHTML = `
                 <div class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-darkbg text-center">
                     <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
-                        <h1 class="text-4xl font-semibold text-gray-900 dark:text-gray-100">Site Under Development</h1>
+                        <h1 class="text-4xl font-semibold text-gray-900 dark:text-gray-100">⚠️ Site Under Development ⚠️</h1>
                         <p class="text-lg mt-4 text-gray-700 dark:text-gray-400">This website is currently under construction. Please check back later.</p>
                         <p class="mt-8 text-2xl text-gray-700 dark:text-gray-300">Estimated Launch in: <span id="countdown"></span></p>
                     </div>
@@ -43,9 +60,12 @@
     <!-- Countdown Timer -->
     <div id="countdownContainer" class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-darkbg text-center">
         <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
-            <h1 class="text-4xl font-semibold text-gray-900 dark:text-gray-100">Site Under Development</h1>
+            <h1 class="text-4xl font-semibold text-gray-900 dark:text-gray-100">⚠️ Site Under Development ⚠️</h1>
             <p class="text-lg mt-4 text-gray-700 dark:text-gray-400">This website is currently under construction. Please check back later.</p>
-            <p class="mt-8 text-2xl text-gray-700 dark:text-gray-300">Estimated Launch in: <span id="countdown"></span></p>
+            <div class="countdown-container mt-8">
+                <p class="countdown-text">Estimated Launch in:</p>
+                <p id="countdown" class="countdown">Loading...</p>
+            </div>
         </div>
     </div>
 
@@ -61,11 +81,11 @@
             const minutes = duration.minutes();
             const seconds = duration.seconds();
 
-            document.getElementById('countdown').innerHTML = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+            document.getElementById('countdown').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
         }
 
         setInterval(updateCountdown, 1000);
-        updateCountdown();
+        updateCountdown(); // Initialize the countdown immediately
     </script>
 
 </body>
