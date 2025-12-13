@@ -36,8 +36,10 @@
         .full-height {
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
         }
 
         /* Dark background */
@@ -52,6 +54,14 @@
 
         .text-dark {
             color: #e0e0e0; /* Lighter text for contrast */
+        }
+
+        /* Discord Widget */
+        .discord-widget {
+            margin-top: 2rem;
+            border: 1px solid #444;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -91,6 +101,10 @@
                         <a href="https://logwork.com/countdown-timer" class="countdown-timer" data-style="flip2" data-timezone="Europe/London" data-date="2025-12-19 20:40">
                             Countdown Timer
                         </a>
+                    </div>
+                    <!-- Embed Discord Widget -->
+                    <div class="discord-widget">
+                        <iframe src="https://discordapp.com/widget?id=1449441653961003040&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
                     </div>
                 </div>
             </div>`;
