@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en" class="transition-colors duration-300">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About Logan | Full Stack Developer</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+            heading: ['Plus Jakarta Sans', 'sans-serif']
+          },
+          colors: {
+            brand: '#4f46e5',
+            darkbg: '#111111'
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .fade-slide {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-slide.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .fade-slide-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .fade-slide-up.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn-hover:hover {
+      transform: scale(1.05);
+      transition: all 0.3s ease;
+    }
+  </style>
+</head>
+
+<body class="bg-white dark:bg-darkbg text-gray-900 dark:text-gray-100 transition-colors duration-500">
+
+  <!-- Navbar -->
+  <header class="fixed w-full z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md shadow-md">
+    <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-4">
+        <img src="assets/logo.jpg" alt="Logo" class="w-12 h-12 object-contain rounded" />
+        <span class="hidden md:block font-heading font-bold text-xl">Logan's Dev Portfolio</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-10 font-semibold text-gray-800 dark:text-gray-200">
+        <a href="#about" class="hover:text-brand transition-colors btn-hover">About</a>
+        <a href="#skills" class="hover:text-brand transition-colors btn-hover">Skills</a>
+        <a href="#projects" class="hover:text-brand transition-colors btn-hover">Projects</a>
+        <a href="#contact" class="hover:text-brand transition-colors btn-hover">Contact</a>
+      </nav>
+      <div class="flex items-center gap-3 md:hidden">
+        <button id="themeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition-colors btn-hover">🌙</button>
+        <button id="menuBtn" class="p-2 bg-gray-200 dark:bg-gray-700 rounded btn-hover">☰</button>
+      </div>
+    </div>
+    <div id="mobileMenu" class="flex flex-col md:hidden bg-white dark:bg-black overflow-hidden max-h-0 transition-[max-height] duration-300">
+      <a href="#about" class="py-3 px-6 hover:underline dark:hover:text-gray-300 btn-hover">About</a>
+      <a href="#skills" class="py-3 px-6 hover:underline dark:hover:text-gray-300 btn-hover">Skills</a>
+      <a href="#projects" class="py-3 px-6 hover:underline dark:hover:text-gray-300 btn-hover">Projects</a>
+      <a href="#contact" class="py-3 px-6 hover:underline dark:hover:text-gray-300 btn-hover">Contact</a>
+    </div>
+  </header>
+
+  <!-- About Section -->
+  <section id="about" class="max-w-7xl mx-auto px-8 py-32 grid md:grid-cols-2 gap-24 items-center fade-slide">
+    <div class="space-y-8">
+      <h2 class="text-4xl font-heading font-bold">About Me</h2>
+      <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+        Hi, I'm **Logan**, a passionate **Full Stack Developer**. I specialize in building interactive and dynamic web applications. With a background in both front-end and back-end technologies, I thrive on creating scalable, performant, and visually appealing applications. I also have a strong foundation in **cybersecurity** and enjoy exploring the world of **game development**. In my spare time, I create **custom clothing** and work on personal projects to hone my skills.
+      </p>
+      <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+        My goal is to craft high-quality, user-centered web experiences, and I am always excited to collaborate on projects that challenge my skills.
+      </p>
+    </div>
+    <img src="assets/portrait.jpg" alt="Logan's photo" class="w-full rounded-xl shadow-lg fade-slide" />
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills" class="bg-gray-50 dark:bg-darkbg py-24 px-8">
+    <div class="max-w-7xl mx-auto text-center space-y-6 fade-slide-up">
+      <h3 class="text-3xl sm:text-4xl font-heading font-bold">Skills</h3>
+      <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400">
+        Here's a quick overview of the skills I bring to the table:
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+          <h4 class="text-xl font-bold text-gray-900 dark:text-gray-200">Frontend</h4>
+          <ul class="list-disc list-inside text-gray-700 dark:text-gray-300">
+            <li>HTML, CSS, JavaScript</li>
+            <li>React.js, Vue.js</li>
+            <li>Tailwind CSS, Bootstrap</li>
+          </ul>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+          <h4 class="text-xl font-bold text-gray-900 dark:text-gray-200">Backend</h4>
+          <ul class="list-disc list-inside text-gray-700 dark:text-gray-300">
+            <li>Node.js, Express.js</li>
+            <li>Python, Flask</li>
+            <li>SQL, MongoDB, Firebase</li>
+          </ul>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+          <h4 class="text-xl font-bold text-gray-900 dark:text-gray-200">Tools & Platforms</h4>
+          <ul class="list-disc list-inside text-gray-700 dark:text-gray-300">
+            <li>Git, GitHub, GitLab</li>
+            <li>Docker, Kubernetes</li>
+            <li>AWS, Heroku, Netlify</li>
+          </ul>
+        </div>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+          <h4 class="text-xl font-bold text-gray-900 dark:text-gray-200">Other Skills</h4>
+          <ul class="list-disc list-inside text-gray-700 dark:text-gray-300">
+            <li>Cybersecurity Basics</li>
+            <li>Game Development (Unity, Unreal Engine)</li>
+            <li>Agile & Scrum Methodologies</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="py-24 px-8">
+    <div class="max-w-7xl mx-auto text-center space-y-6 fade-slide-up">
+      <h3 class="text-3xl sm:text-4xl font-heading font-bold">Featured Projects</h3>
+      <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400">Take a look at some of the projects I’ve worked on:</p>
+
+      <!-- Add Project Thumbnails Here -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
+        <!-- Project 1 -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+          <img src="assets/project1.jpg" alt="Project 1" class="w-full rounded-xl mb-4" />
+          <h4 class="text-xl font-semibold text-gray-900 dark:text-gray-200">Project 1</h4>
+          <p class="text-gray-600 dark:text-gray-400">Description of the project goes here. Include technologies used, the problem it solved, and any impact.</p>
+          <a href="#" class="text-brand hover:text-gray-500">View Project</a>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+          <img src="assets/project2.jpg" alt="Project 2" class="w-full rounded-xl mb-4" />
+          <h4 class="text-xl font-semibold text-gray-900 dark:text-gray-200">Project 2</h4>
+          <p class="text-gray-600 dark:text-gray-400">Description of the project goes here.</p>
+          <a href="#" class="text-brand hover:text-gray-500">View Project</a>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+          <img src="assets/project3.jpg" alt="Project 3" class="w-full rounded-xl mb-4" />
+          <h4 class="text-xl font-semibold text-gray-900 dark:text-gray-200">Project 3</h4>
+          <p class="text-gray-600 dark:text-gray-400">Description of the project goes here.</p>
+          <a href="#" class="text-brand hover:text-gray-500">View Project</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="bg-gray-50 dark:bg-darkbg py-24 px-8 text-center">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <h3 class="text-3xl sm:text-4xl font-heading font-bold">Contact Me</h3>
+      <p class="text-lg text-gray-600 dark:text-gray-400">I’m always open to new projects or collaborations. Feel free to reach out!</p>
+      <a href="mailto:logansemail@example.com" class="px-6 py-3 bg-brand text-white rounded-lg hover:bg-brand/80 font-semibold">Email Me</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 dark:bg-darkbg py-12 text-center text-gray-500 dark:text-gray-400 space-y-3">
+    <p>© 2025 Logan | All rights reserved</p>
+    <p>Contact: <a href="mailto:logansemail@example.com" class="underline dark:text-gray-300">logansemail@example.com</a></p>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      themeToggle.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+      localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+    });
+    if (localStorage.theme === 'dark' || (!localStorage.theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      themeToggle.textContent = '☀️';
+    }
+
+    // Mobile menu
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('max-h-96'));
+
+    // IntersectionObserver for smooth animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.fade-slide, .fade-slide-up').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+
+</html>
