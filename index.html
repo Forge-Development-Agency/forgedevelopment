@@ -7,6 +7,7 @@
     <title>Under Development | Flock's Dev Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://cdn.logwork.com/widget/countdown.js"></script>
 
     <style>
         .btn-hover:hover {
@@ -45,7 +46,7 @@
 
     <!-- Check if bypass is needed -->
     <script>
-        const bypassPassword = "admin";
+        const bypassPassword = "admin"; // Set the developer password
         const devMode = !localStorage.getItem("bypassDone");
 
         if (devMode) {
@@ -64,7 +65,7 @@
                 </div>`;
             }
         } else {
-            // If bypass is already done, display the countdown
+            // If bypass is already done, display the countdown with Logwork Countdown Timer
             document.body.innerHTML = `
             <div class="full-height bg-darkbg text-center">
                 <div class="bg-gray-800 p-8 rounded-xl shadow-lg">
@@ -72,32 +73,19 @@
                     <p class="text-lg mt-4 text-gray-400">This website is currently under construction. Please check back later.</p>
                     <div class="countdown-container mt-8">
                         <p class="countdown-text">Estimated Launch in:</p>
-                        <p id="countdown" class="countdown">Loading...</p>
+                        <a href="https://logwork.com/countdown-timer" class="countdown-timer" data-style="flip2" data-timezone="Europe/London" data-date="2025-12-19 20:40">
+                            <div id="countdown" class="countdown"></div>
+                        </a>
                     </div>
                 </div>
             </div>`;
         }
     </script>
 
-    <!-- Countdown Timer -->
+    <!-- Countdown Timer (Logwork Countdown) -->
     <script>
-        // Countdown Timer logic
-        function updateCountdown() {
-            const targetDate = moment().add(5, 'days').add(24, 'hours'); // 5 days and 24 hours from now
-            const now = moment();
-            const duration = moment.duration(targetDate.diff(now));
-
-            const days = duration.days();
-            const hours = duration.hours();
-            const minutes = duration.minutes();
-            const seconds = duration.seconds();
-
-            document.getElementById('countdown').innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-        }
-
-        // Update countdown every second
-        setInterval(updateCountdown, 1000);
-        updateCountdown(); // Initialize the countdown immediately
+        // You can modify the target date or customize further as needed
+        document.querySelector(".countdown-timer").setAttribute("data-date", "2025-12-19 20:40"); // Set the countdown target date (for example)
     </script>
 
 </body>
