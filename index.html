@@ -7,13 +7,14 @@
     <title>Under Development | Flock's Dev Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.logwork.com/widget/countdown.js"></script> <!-- Logwork Countdown Timer Script -->
-
     <style>
+        /* Button hover effect */
         .btn-hover:hover {
             transform: scale(1.05);
             transition: all 0.3s ease;
         }
 
+        /* Countdown Container */
         .countdown-container {
             text-align: center;
             font-family: "Inter", sans-serif;
@@ -32,7 +33,7 @@
             text-decoration: none;
         }
 
-        /* Ensures content is vertically and horizontally centered */
+        /* Centering the content */
         .full-height {
             min-height: 100vh;
             display: flex;
@@ -42,35 +43,36 @@
             text-align: center;
         }
 
-        /* Dark background */
+        /* Dark background theme */
         body {
-            background-color: #111111; /* Very dark background */
+            background-color: #111111;
             color: white;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease-in-out;
         }
 
-        .bg-darkbg {
-            background-color: #111111; /* Dark background */
-        }
-
-        .text-dark {
-            color: #e0e0e0; /* Lighter text for contrast */
-        }
-
-        /* Discord Widget */
-        .discord-widget {
-            margin-top: 2rem;
-            border: 1px solid #444;
+        /* Responsive iframe */
+        .discord-widget iframe {
+            max-width: 100%;
+            height: 500px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Elevated container box */
+        .container {
+            background-color: #1f1f1f;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
 
 <body class="bg-darkbg text-dark transition-colors duration-500">
 
-    <!-- Check if bypass is needed -->
+    <!-- Password bypass script -->
     <script>
-        const bypassPassword = "admin"; // Set the developer password
+        const bypassPassword = "admin"; // Developer password
         const devMode = !localStorage.getItem("bypassDone");
 
         if (devMode) {
@@ -81,30 +83,29 @@
             } else {
                 document.body.innerHTML = `
                 <div class="flex items-center justify-center min-h-screen bg-darkbg text-center">
-                    <div class="bg-gray-800 p-8 rounded-xl shadow-lg">
-                        <h1 class="text-4xl font-semibold text-gray-100">⚠️ Site Under Development ⚠️</h1>
+                    <div class="container">
+                        <h1 class="text-3xl font-semibold text-gray-100">⚠️ Site Under Development ⚠️</h1>
                         <p class="text-lg mt-4 text-gray-400">This website is currently under construction. Please check back later.</p>
-                        <p class="mt-8 text-2xl text-gray-300">Estimated Launch in: <span id="countdown"></span></p>
+                        <p class="mt-8 text-2xl text-gray-300">Enter the correct password to proceed.</p>
                     </div>
                 </div>`;
             }
         } else {
-            // If bypass is already done, display the countdown with Logwork Countdown Timer
             document.body.innerHTML = `
             <div class="full-height bg-darkbg text-center">
-                <div class="bg-gray-800 p-8 rounded-xl shadow-lg">
+                <div class="container">
                     <h1 class="text-4xl font-semibold text-gray-100">⚠️ Site Under Development ⚠️</h1>
                     <p class="text-lg mt-4 text-gray-400">This website is currently under construction. Please check back later.</p>
                     <div class="countdown-container mt-8">
                         <p class="countdown-text">Estimated Launch in:</p>
-                        <!-- Embed Logwork Countdown Timer correctly -->
+                        <!-- Embed Logwork Countdown Timer -->
                         <a href="https://logwork.com/countdown-timer" class="countdown-timer" data-style="flip2" data-timezone="Europe/London" data-date="2025-12-19 20:40">
                             Countdown Timer
                         </a>
                     </div>
-                    <!-- Embed Discord Widget -->
-                    <div class="discord-widget">
-                        <iframe src="https://discordapp.com/widget?id=1449441653961003040&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+                    <!-- Discord Widget -->
+                    <div class="discord-widget mt-8">
+                        <iframe src="https://discordapp.com/widget?id=1449441653961003040&theme=dark" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
                     </div>
                 </div>
             </div>`;
