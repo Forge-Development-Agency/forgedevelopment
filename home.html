@@ -100,13 +100,41 @@ section{ padding:6rem 1rem; max-width:1200px; margin:auto; }
 </div>
 
 <!-- Desktop nav -->
-<nav class="desktop">
-<a href="#hero">Home</a>
-<a href="#about">About</a>
-<a href="#services">Services</a>
-<a href="#projects">Projects</a>
-<a href="#contact">Contact</a>
-<a href="https://github.com/sybumrp" target="_blank" class="text-brand font-bold">View My Github</a>
+<nav class="desktop items-center gap-8 font-medium">
+
+  <a href="#hero" class="relative group transition duration-300">
+    <span class="hover:text-brand transition">Home</span>
+    <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-gradient-to-r from-brand to-neon transition-all duration-300 group-hover:w-full"></span>
+  </a>
+
+  <a href="#about" class="relative group transition duration-300">
+    <span class="hover:text-brand transition">About</span>
+    <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-gradient-to-r from-brand to-neon transition-all duration-300 group-hover:w-full"></span>
+  </a>
+
+  <a href="#services" class="relative group transition duration-300">
+    <span class="hover:text-brand transition">Services</span>
+    <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-gradient-to-r from-brand to-neon transition-all duration-300 group-hover:w-full"></span>
+  </a>
+
+  <a href="#projects" class="relative group transition duration-300">
+    <span class="hover:text-brand transition">Projects</span>
+    <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-gradient-to-r from-brand to-neon transition-all duration-300 group-hover:w-full"></span>
+  </a>
+
+  <a href="#contact" class="relative group transition duration-300">
+    <span class="hover:text-brand transition">Contact</span>
+    <span class="absolute left-0 -bottom-1 w-0 h-[2px] bg-gradient-to-r from-brand to-neon transition-all duration-300 group-hover:w-full"></span>
+  </a>
+
+  <!-- GitHub CTA -->
+  <a href="https://github.com/sybumrp" 
+     target="_blank" 
+     rel="noopener noreferrer"
+     class="ml-4 px-5 py-2 rounded-xl border border-brand text-brand font-semibold transition duration-300 hover:bg-brand hover:text-white hover:shadow-lg hover:shadow-brand/40">
+    View GitHub
+  </a>
+
 </nav>
 </header>
 
