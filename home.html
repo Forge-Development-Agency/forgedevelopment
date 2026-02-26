@@ -26,25 +26,84 @@
   </script>
 
   <style>
-    .fade-slide {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    .fade-slide.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .fade-slide-up {
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    .fade-slide-up.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    /* Fade animations */
+    .fade-slide { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .fade-slide.show { opacity: 1; transform: translateY(0); }
+    .fade-slide-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .fade-slide-up.show { opacity: 1; transform: translateY(0); }
     .btn-hover:hover { transform: scale(1.05); transition: all 0.3s ease; }
+
+    /* Cosmic search bar from Uiverse.io */
+    #search-container {
+      display: flex;
+      justify-content: center;
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+    }
+    .input {
+      background-color: #05071b;
+      border: none;
+      width: 320px;
+      height: 56px;
+      border-radius: 10px;
+      color: #a9c7ff;
+      padding-inline: 50px;
+      font-size: 18px;
+      position: relative;
+      z-index: 10;
+    }
+    .input::placeholder { color: #6e8cff; }
+    .input:focus { outline: none; }
+    #cosmic-glow {
+      pointer-events: none;
+      width: 30px;
+      height: 20px;
+      position: absolute;
+      background: #4d6dff;
+      top: 18px;
+      left: 10px;
+      filter: blur(20px);
+      opacity: 0.8;
+      transition: all 2s;
+    }
+    #search-container:hover > #cosmic-glow { opacity: 0; }
+    #search-results {
+      position: absolute;
+      top: 60px;
+      width: 320px;
+      background-color: #05071b;
+      border-radius: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      box-shadow: 0 0 15px #4d6dff70;
+      display: none;
+      z-index: 20;
+    }
+    #search-results div {
+      padding: 10px;
+      cursor: pointer;
+      color: #a9c7ff;
+    }
+    #search-results div:hover {
+      background-color: #4d6dff20;
+    }
+
+    /* Optional cosmic visuals */
+    .galaxy {
+      height: 800px;
+      width: 800px;
+      background-image: radial-gradient(#ffffff 1px, transparent 1px),
+                        radial-gradient(#ffffff 1px, transparent 1px);
+      background-size: 50px 50px;
+      background-position: 0 0, 25px 25px;
+      position: absolute;
+      z-index: -1;
+      animation: twinkle 5s infinite;
+    }
+    @keyframes twinkle { 0%,100%{opacity:0.5;}50%{opacity:1;} }
   </style>
 </head>
 
@@ -75,6 +134,13 @@
     <a href="#contact" class="py-3 px-6 hover:underline dark:hover:text-gray-300 btn-hover">Contact</a>
   </div>
 </header>
+
+<!-- Cosmic Search Bar -->
+<div id="search-container">
+  <div id="cosmic-glow"></div>
+  <input type="text" id="search-bar" class="input" placeholder="Search the portfolio..."/>
+  <div id="search-results"></div>
+</div>
 
 <!-- Hero Section -->
 <section id="hero" class="relative h-screen flex items-center justify-center overflow-hidden fade-slide">
@@ -144,21 +210,23 @@
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 <script>
+  // Theme toggle
   const themeToggle = document.getElementById('themeToggle');
   themeToggle.addEventListener('click', () => {
     document.documentElement.classList.toggle('dark');
     themeToggle.textContent = document.documentElement.classList.contains('dark')?'☀️':'🌙';
     localStorage.theme = document.documentElement.classList.contains('dark')?'dark':'light';
   });
-
   if(localStorage.theme==='dark'||(!localStorage.theme&&window.matchMedia('(prefers-color-scheme: dark)').matches)){
     document.documentElement.classList.add('dark'); themeToggle.textContent='☀️';
   }
 
+  // Mobile menu toggle
   const menuBtn=document.getElementById('menuBtn');
   const mobileMenu=document.getElementById('mobileMenu');
   menuBtn.addEventListener('click',()=>mobileMenu.classList.toggle('max-h-96'));
 
+  // Fade animations
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if(entry.isIntersecting){
@@ -167,9 +235,35 @@
       }
     });
   }, { threshold: 0.2 });
+  document.querySelectorAll('.fade-slide, .fade-slide-up').forEach(el => observer.observe(el));
 
-  document.querySelectorAll('.fade-slide, .fade-slide-up').forEach(el => {
-    observer.observe(el);
+  // Search functionality
+  const searchBar = document.getElementById('search-bar');
+  const results = document.getElementById('search-results');
+  const pages = [
+    { name: 'Home', link: '#hero' },
+    { name: 'About', link: '#about' },
+    { name: 'Projects', link: '#projects' },
+    { name: 'Contact', link: '#contact' }
+  ];
+
+  searchBar.addEventListener('input', () => {
+    const query = searchBar.value.toLowerCase();
+    results.innerHTML = '';
+    if(query) {
+      const matches = pages.filter(p => p.name.toLowerCase().includes(query));
+      matches.forEach(match => {
+        const div = document.createElement('div');
+        div.textContent = match.name;
+        div.addEventListener('click', () => {
+          window.location.href = match.link;
+        });
+        results.appendChild(div);
+      });
+      results.style.display = matches.length ? 'block' : 'none';
+    } else {
+      results.style.display = 'none';
+    }
   });
 </script>
 
