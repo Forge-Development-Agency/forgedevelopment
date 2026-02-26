@@ -1,270 +1,264 @@
-<!doctype html>
-<html lang="en" class="transition-colors duration-300">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Flock — Full Stack Developer & Clothing Creator</title>
-
-  <!-- Tailwind + Fonts -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
-            heading: ['Plus Jakarta Sans', 'sans-serif']
-          },
-          colors: {
-            brand: '#4f46e5',
-            darkbg: '#111111'
-          },
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flock — Full Stack Developer & Founder</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          heading: ['Plus Jakarta Sans','sans-serif'],
+          body: ['Inter','ui-sans-serif','system-ui']
+        },
+        colors: {
+          brand: '#4f46e5',
+          neon: '#cf30aa'
+        },
+        animation: {
+          'fade-in': 'fadeIn 0.5s ease forwards'
+        },
+        keyframes: {
+          fadeIn: {
+            '0%': { opacity: '0' },
+            '100%': { opacity: '1' }
+          }
         }
       }
     }
-  </script>
+  }
+</script>
+<style>
+body, html { margin:0; padding:0; font-family:'Inter',sans-serif; overflow-x:hidden; color:#fff; }
+.cyber-pattern { min-height:100%; width:100%; background-color: #050505;
+  background-image: radial-gradient(circle at center, transparent 30%, #000 90%),
+  linear-gradient(rgba(3, 233, 244, 0.1) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(3, 233, 244, 0.1) 1px, transparent 1px),
+  linear-gradient(rgba(217, 3, 244, 0.05) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(217, 3, 244, 0.05) 1px, transparent 1px);
+  background-size: 100% 100%, 60px 60px, 60px 60px, 20px 20px, 20px 20px;
+  animation: cyber-move 10s linear infinite;
+}
+@keyframes cyber-move {
+  0% { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+  100% { background-position: 0 0, 60px 60px, 60px 60px, 40px 40px, 40px 40px; }
+}
+header { background-color: rgba(0,0,0,0.7); transition: all 0.3s ease; }
+header a { color:#fff; transition: color 0.3s; }
+header a:hover { color:#4f46e5; }
+.btn-github { cursor:pointer; display:flex; gap:0.5rem; border:none; transition: all 0.5s ease; border-radius:100px; font-weight:800; place-content:center; padding:0.75rem 1rem; font-size:0.825rem; line-height:1rem; background-color: rgba(0,0,0,0.6); box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.04), inset 0 0 0 1px rgba(255,255,255,0.04); color: #fff; }
+.btn-github:hover { box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(252,232,3,0.08); color: #4f46e5; transform: translateY(-0.25rem); background-color: rgba(0,0,0,0.7); }
 
-  <style>
-    /* Fade animations */
-    .fade-slide { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
-    .fade-slide.show { opacity: 1; transform: translateY(0); }
-    .fade-slide-up { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
-    .fade-slide-up.show { opacity: 1; transform: translateY(0); }
-    .btn-hover:hover { transform: scale(1.05); transition: all 0.3s ease; }
+/* Neon Search */
+#main { position: relative; width: 100%; max-width: 400px; margin: 0 auto; }
+.glow-layer, .border-layer { position:absolute; top:0; left:0; width:100%; height:56px; border-radius:1rem; transition: transform 0.5s ease, opacity 0.5s ease; }
+.glow-layer { background: radial-gradient(circle, rgba(207,48,170,0.8) 0%, rgba(207,48,170,0.2) 70%); opacity:0.7; z-index:0; }
+.border-layer { border:2px solid rgba(207,48,170,0.5); z-index:-1; }
+#main:hover .glow-layer, #main:focus-within .glow-layer { transform: rotate(360deg); opacity:1; }
+#main:hover .border-layer, #main:focus-within .border-layer { transform: rotate(360deg); }
 
-    /* Cosmic search bar from Uiverse.io */
-    #search-container {
-      display: flex;
-      justify-content: center;
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 50;
-    }
-    .input {
-      background-color: #05071b;
-      border: none;
-      width: 320px;
-      height: 56px;
-      border-radius: 10px;
-      color: #a9c7ff;
-      padding-inline: 50px;
-      font-size: 18px;
-      position: relative;
-      z-index: 10;
-    }
-    .input::placeholder { color: #6e8cff; }
-    .input:focus { outline: none; }
-    #cosmic-glow {
-      pointer-events: none;
-      width: 30px;
-      height: 20px;
-      position: absolute;
-      background: #4d6dff;
-      top: 18px;
-      left: 10px;
-      filter: blur(20px);
-      opacity: 0.8;
-      transition: all 2s;
-    }
-    #search-container:hover > #cosmic-glow { opacity: 0; }
-    #search-results {
-      position: absolute;
-      top: 60px;
-      width: 320px;
-      background-color: #05071b;
-      border-radius: 8px;
-      max-height: 200px;
-      overflow-y: auto;
-      box-shadow: 0 0 15px #4d6dff70;
-      display: none;
-      z-index: 20;
-    }
-    #search-results div {
-      padding: 10px;
-      cursor: pointer;
-      color: #a9c7ff;
-    }
-    #search-results div:hover {
-      background-color: #4d6dff20;
-    }
+/* Card */
+.card { position:relative; width:300px; height:200px; border-radius:10px; overflow:hidden; cursor:pointer; transition: all 0.4s ease; background-color:#111; perspective:1000px; }
+.card img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:10px; z-index:0; transition: transform 0.4s ease; }
+.card__content { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) rotate(-45deg); width:100%; height:100%; padding:20px; box-sizing:border-box; background-color: rgba(0,0,0,0.8); opacity:0; border-radius:10px; z-index:10; transition: all 0.4s ease; }
+.card:hover .card__content { transform:translate(-50%, -50%) rotate(0deg); opacity:1; }
+.card__title { font-size:24px; font-weight:700; color:#fff; margin:0; }
+.card__description { margin-top:10px; font-size:14px; color:#ccc; line-height:1.4; }
+.card:hover { transform: rotateX(5deg) rotateY(-5deg) scale(1.05); box-shadow:0 10px 25px rgba(0,0,0,0.5); }
+.card svg { width:48px; fill:#fff; z-index:11; transition: all 0.4s ease; }
+.card:hover svg { scale:0; transform: rotate(-45deg); }
 
-    /* Optional cosmic visuals */
-    .galaxy {
-      height: 800px;
-      width: 800px;
-      background-image: radial-gradient(#ffffff 1px, transparent 1px),
-                        radial-gradient(#ffffff 1px, transparent 1px);
-      background-size: 50px 50px;
-      background-position: 0 0, 25px 25px;
-      position: absolute;
-      z-index: -1;
-      animation: twinkle 5s infinite;
-    }
-    @keyframes twinkle { 0%,100%{opacity:0.5;}50%{opacity:1;} }
-  </style>
+/* Scroll reveal */
+.reveal { opacity:0; transform: translateY(50px); transition: all 0.8s ease; }
+.reveal.active { opacity:1; transform: translateY(0); }
+
+/* Gradient */
+.gradient-text { background: linear-gradient(90deg,#4f46e5,#cf30aa,#4f46e5); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+</style>
 </head>
+<body class="bg-black">
 
-<body class="bg-white dark:bg-darkbg text-gray-900 dark:text-gray-100 transition-colors duration-500">
+<div class="cyber-pattern">
 
-<!-- Navbar -->
-<header class="fixed w-full z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md shadow-md">
-  <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
-    <a href="/" class="flex items-center gap-4">
-      <img src="assets/logo.jpg" alt="Logo" class="w-12 h-12 object-contain rounded"/>
-      <span class="hidden md:block font-heading font-bold text-xl">Flock`s Dev Portfolio</span>
-    </a>
-    <nav class="hidden md:flex items-center gap-10 font-semibold text-gray-800 dark:text-gray-200">
-      <a href="#hero" class="hover:text-brand transition-colors btn-hover">Home</a>
-      <a href="about.html" class="hover:text-brand transition-colors btn-hover">About</a>
-      <a href="#projects" class="hover:text-brand transition-colors btn-hover">Projects</a>
-      <a href="#contact" class="hover:text-brand transition-colors btn-hover">Contact</a>
-    </nav>
-    <div class="flex items-center gap-3 md:hidden">
-      <button id="themeToggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition-colors btn-hover">🌙</button>
-      <button id="menuBtn" class="p-2 bg-gray-200 dark:bg-gray-700 rounded btn-hover">☰</button>
+<!-- Welcome Modal -->
+<div id="welcome-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50 hidden">
+  <div class="flex flex-col justify-center items-center bg-[#111] text-white rounded-lg shadow-lg p-6 w-80">
+    <h2 class="text-2xl font-bold mb-4 text-center">Welcome!</h2>
+    <p class="mb-4 text-center">Thanks for visiting our website. Stay connected with us on social media.</p>
+    <div class="flex space-x-4">
+      <!-- Discord -->
+      <a href="https://discord.gg/yourserver" target="_blank" class="hover:opacity-80 transition duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245 240" class="w-12 h-12 fill-current text-[#7289da]">
+          <path d="M104.4 104.3c-5.7 0-10.2 5-10.2 11.2 0 6.2 4.6 11.2 10.2 11.2 5.7 0 10.3-5 10.2-11.2.1-6.2-4.5-11.2-10.2-11.2zm36.2 0c-5.7 0-10.3 5-10.3 11.2 0 6.2 4.6 11.2 10.3 11.2 5.7 0 10.2-5 10.2-11.2 0-6.2-4.5-11.2-10.2-11.2z"/>
+          <path d="M189.5 20h-134C41.2 20 30 31.2 30 45.5v134c0 14.3 11.2 25.5 25.5 25.5h134c14.3 0 25.5-11.2 25.5-25.5v-134c0-14.3-11.2-25.5-25.5-25.5zm-41.6 132s-3.9-4.6-7.2-8.7c14.3-4.1 19.7-12.7 19.7-12.7-4.5 2.9-8.7 5-12.6 6.3-5.5 2.3-10.8 3.8-16.1 4.7-10.9 2-20.7 1.5-29.1-0.1-6.3-1.2-11.7-2.7-16.2-4.7-2.7-1-5.6-2.2-8.6-3.8 0 0 5.2 8.3 18.8 12.7-3.4 4.1-7.4 8.9-7.4 8.9-24.4-0.8-33.7-16.8-33.7-16.8 0-35.5 15.9-64.3 15.9-64.3 15.9-11.8 30.9-11.5 30.9-11.5l1.1 1.3c-19.9 5.7-29 14.4-29 14.4s2.4-1.3 6.4-3.1c11.6-4.8 20.7-6 24.5-6.3 0.6 0.8 1.3 1.7 2.1 2.5 0 0 10.5-1.3 22.6 6.1 4.2 2.1 6.9 3.5 6.9 3.5s-9-8.3-28-14.5l1.6-1.8s15.2-0.3 31 11.5c0 0 15.8 28.7 15.8 64.2 0.1 0-9.5 16-33.9 16.8z"/>
+        </svg>
+      </a>
+      <!-- GitHub -->
+      <a href="https://github.com/sybumrp" target="_blank" class="hover:opacity-80 transition duration-200">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-12 h-12 text-white">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.263.82-.582 0-.287-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.386-1.333-1.756-1.333-1.756-1.09-.745.083-.73.083-.73 1.205.084 1.84 1.236 1.84 1.236 1.07 1.835 2.807 1.305 3.492.997.108-.776.418-1.305.762-1.605-2.665-.3-5.466-1.335-5.466-5.93 0-1.31.468-2.382 1.235-3.222-.123-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.48 11.48 0 013.003-.404c1.02.004 2.045.138 3.003.404 2.29-1.552 3.296-1.23 3.296-1.23.656 1.653.243 2.873.12 3.176.77.84 1.234 1.912 1.234 3.222 0 4.61-2.805 5.625-5.475 5.921.43.372.813 1.104.813 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.698.825.58C20.565 21.796 24 17.297 24 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+      </a>
     </div>
+    <button id="welcome-close" class="bg-gradient-to-r mt-4 from-[#4f46e5] to-[#cf30aa] text-white font-bold py-2 px-4 rounded-full animate-pulse">
+      Close
+    </button>
   </div>
-  <div id="mobileMenu" class="flex flex-col md:hidden bg-white dark:bg-black overflow-hidden max-h-0 transition-[max-height] duration-300">
-    <a href="#hero" class="py-3 px-6 hover:underline dark:hover:text-gray-300 btn-hover">Home</a>
-    <a href="about.html" class="py-3 px-6 hover:underline dark:hover:text-gray-300 btn-hover">About</a>
-    <a href="#projects" class="py-3 px-6 hover:underline dark:hover:text-gray-300 btn-hover">Projects</a>
-    <a href="#contact" class="py-3 px-6 hover:underline dark:hover:text-gray-300 btn-hover">Contact</a>
-  </div>
-</header>
-
-<!-- Cosmic Search Bar -->
-<div id="search-container">
-  <div id="cosmic-glow"></div>
-  <input type="text" id="search-bar" class="input" placeholder="Search the portfolio..."/>
-  <div id="search-results"></div>
 </div>
 
-<!-- Hero Section -->
-<section id="hero" class="relative h-screen flex items-center justify-center overflow-hidden fade-slide">
-  <div class="absolute inset-0 w-full h-full overflow-hidden">
-    <div class="absolute inset-0 bg-black/20"></div>
-  </div>
+<header class="fixed w-full z-50 flex justify-between items-center px-8 py-5">
+  <a href="#" class="flex items-center gap-4">
+    <img src="assets/logo_1.png" alt="Logo" class="w-12 h-12 object-cover rounded-full"/>
+    <span class="font-heading font-bold text-xl gradient-text">Flock | Ghoststack Development</span>
+  </a>
+  <nav class="flex gap-6 items-center">
+    <a href="#hero">Home</a>
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+    <a href="https://github.com/sybumrp" target="_blank" class="btn-github">View My Github</a>
+  </nav>
+</header>
 
-  <div class="relative z-10 text-center max-w-4xl space-y-6">
-    <h1 class="text-5xl md:text-6xl font-heading font-bold text-white drop-shadow-lg">
-      Flock | Full Stack Developer
-    </h1>
-    <p class="text-lg md:text-2xl text-white/90">
-      Passionate about coding, web development, and creating unique clothing pieces. Let's build something amazing together!
-    </p>
-    <div class="flex justify-center gap-6 mt-6 flex-wrap">
-      <a href="#projects"
-         class="px-6 py-3 border border-brand text-brand rounded-lg hover:bg-brand/10 dark:hover:bg-brand/20 font-semibold btn-hover">
-         View Projects
-      </a>
+<main class="pt-24">
+<!-- Hero -->
+<section id="hero" class="flex flex-col items-center justify-center text-center min-h-screen px-4 reveal">
+  <h1 class="text-5xl md:text-6xl font-heading font-bold gradient-text">Flock</h1>
+  <h2 class="text-2xl md:text-3xl font-heading font-bold mt-2 gradient-text">Ghoststack Development Founder</h2>
+  <p class="text-white text-lg md:text-xl max-w-xl mx-auto mt-4">Full Stack Developer specializing in web, FiveM scripts, MLOs, reskins, clothing dev, and car handling.</p>
+
+  <div class="relative mt-6 w-full flex justify-center reveal">
+    <div id="main" class="relative w-full max-w-md">
+      <div class="glow-layer"></div>
+      <div class="border-layer"></div>
+      <input type="text" id="search-input" class="w-full h-14 pl-4 pr-14 rounded-xl bg-[#010201] text-white text-lg placeholder-gray-400 focus:outline-none relative z-10" placeholder="Search projects...">
+      <div class="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gradient-to-b from-[#161329] to-[#1d1b4b] rounded-lg flex items-center justify-center z-20">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h18M8 12h8M5 20h14"/>
+        </svg>
+      </div>
+      <ul id="search-results" class="hidden absolute top-14 w-full bg-[#111] rounded-xl shadow-lg z-50"></ul>
     </div>
   </div>
 </section>
 
-<!-- About Section -->
-<section id="about" class="max-w-7xl mx-auto px-8 py-32 grid md:grid-cols-2 gap-24 items-center fade-slide">
-  <div class="space-y-8">
-    <h2 class="text-4xl font-heading font-bold">About Me</h2>
-    <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-      I’m Logan, a **Full Stack Developer** with a love for both code and creativity. I specialize in building interactive web apps, e-commerce platforms, and custom clothing pieces.  
-      When I’m not coding, I enjoy studying **game development** and keeping up with the latest in **cybersecurity**. Let's build something amazing together!
-    </p>
+<!-- About -->
+<section id="about" class="max-w-7xl mx-auto py-20 px-6 grid md:grid-cols-2 gap-10 items-center reveal">
+  <div>
+    <h2 class="text-4xl font-heading font-bold mb-6 gradient-text">About Me</h2>
+    <p>I’m <strong>Flock</strong>, a Full Stack Developer and founder of <strong>Ghoststack Development</strong>. I build web apps, FiveM scripts, MLOs, custom clothing, and car handling systems.</p>
   </div>
-  <img src="assets/portrait.jpg" alt="Logan's photo" class="w-full rounded-xl shadow-lg fade-slide"/>
+  <div>
+    <img src="assets/logo_1.png" alt="Flock" class="rounded-xl shadow-xl w-full object-cover">
+  </div>
 </section>
 
-<!-- Contact Section -->
-<section id="contact" class="bg-gray-50 dark:bg-darkbg py-24 px-4 sm:px-8">
-  <div class="max-w-7xl mx-auto text-center space-y-6 fade-slide-up">
-    <h3 class="text-3xl sm:text-4xl font-heading font-bold">Contact</h3>
-    <p class="text-base sm:text-lg text-gray-600 dark:text-gray-400">Feel free to reach out to me via the following platforms:</p>
-    
-    <!-- Social Media Links -->
-    <div class="flex justify-center gap-8 mt-6">
-      <a href="https://discord.com/users/yourdiscordid" target="_blank" class="text-3xl text-gray-600 dark:text-gray-300 hover:text-brand transition-colors">
-        <i class="fab fa-discord"></i>
-      </a>
-      <a href="https://github.com/yourgithubusername" target="_blank" class="text-3xl text-gray-600 dark:text-gray-300 hover:text-brand transition-colors">
-        <i class="fab fa-github"></i>
-      </a>
-      <a href="https://www.linkedin.com/in/yourlinkedinusername" target="_blank" class="text-3xl text-gray-600 dark:text-gray-300 hover:text-brand transition-colors">
-        <i class="fab fa-linkedin"></i>
-      </a>
-      <a href="mailto:logan@example.com" class="text-3xl text-gray-600 dark:text-gray-300 hover:text-brand transition-colors">
-        <i class="fas fa-envelope"></i>
-      </a>
+<!-- Services -->
+<section id="services" class="max-w-7xl mx-auto py-20 px-6 text-center reveal">
+  <h2 class="text-4xl font-heading font-bold mb-10 gradient-text">What I Do</h2>
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="p-6 bg-[#111] rounded-xl hover:bg-[#1f0f2f] transition transform hover:scale-105">
+      <h3 class="text-xl font-bold mb-2">Web Development</h3>
+      <p>Custom websites, responsive designs, and web apps with modern stacks.</p>
+    </div>
+    <div class="p-6 bg-[#111] rounded-xl hover:bg-[#1f0f2f] transition transform hover:scale-105">
+      <h3 class="text-xl font-bold mb-2">FiveM Dev</h3>
+      <p>Scripts, MLOs, car handling, reskins, and custom servers for GTA V.</p>
+    </div>
+    <div class="p-6 bg-[#111] rounded-xl hover:bg-[#1f0f2f] transition transform hover:scale-105">
+      <h3 class="text-xl font-bold mb-2">Design & Reskin</h3>
+      <p>Clothing, vehicles, and environment reskins to make your project unique.</p>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
-<footer class="bg-gray-100 dark:bg-darkbg py-12 text-center text-gray-500 dark:text-gray-400 space-y-3 fade-slide">
-  <p>© 2025 Flock — All rights reserved</p>
-  <p>Contact: <a href="mailto:logan@example.com" class="underline dark:text-gray-300 btn-hover">flock@example.com</a></p>
+<!-- Projects -->
+<section id="projects" class="max-w-7xl mx-auto py-20 px-6 text-center reveal">
+  <h2 class="text-4xl font-heading font-bold mb-10 gradient-text">Projects</h2>
+  <div class="flex flex-wrap justify-center gap-8">
+    <div class="card">
+      <img src="assets/project1.jpg" alt="FiveM Script">
+      <div class="card__content">
+        <p class="card__title">FiveM Roleplay Script</p>
+        <p class="card__description">Custom server scripts with unique jobs and systems.</p>
+      </div>
+    </div>
+    <div class="card">
+      <img src="assets/project2.jpg" alt="Car Handling">
+      <div class="card__content">
+        <p class="card__title">Car Handling Pack</p>
+        <p class="card__description">Improved driving physics and reskinned vehicles for FiveM servers.</p>
+      </div>
+    </div>
+    <div class="card">
+      <img src="assets/project3.jpg" alt="Portfolio Website">
+      <div class="card__content">
+        <p class="card__title">Website Development</p>
+        <p class="card__description">Modern responsive website built with Tailwind and interactive elements.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact" class="py-20 text-center px-6 reveal">
+  <h3 class="text-3xl font-bold mb-4 gradient-text">Contact Me</h3>
+  <p class="text-lg mb-6">Reach out via Discord, GitHub, LinkedIn, or email.</p>
+  <a href="mailto:flock@example.com" class="inline-block px-8 py-3 border-2 border-brand text-brand rounded-xl font-semibold hover:bg-brand hover:text-white transition">Email Me</a>
+</section>
+
+</main>
+
+<footer class="bg-[#05050a] py-10 text-center text-gray-400 reveal">
+  <p>© 2025 Flock — Ghoststack Development</p>
 </footer>
 
-<!-- Font Awesome for Icons -->
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</div>
 
 <script>
-  // Theme toggle
-  const themeToggle = document.getElementById('themeToggle');
-  themeToggle.addEventListener('click', () => {
-    document.documentElement.classList.toggle('dark');
-    themeToggle.textContent = document.documentElement.classList.contains('dark')?'☀️':'🌙';
-    localStorage.theme = document.documentElement.classList.contains('dark')?'dark':'light';
+// Neon Search
+const data = ["Web Development","FiveM Scripts","MLOs","Clothing Reskin","Car Handling","Car Reskin","Portfolio Website"];
+const input = document.getElementById("search-input");
+const results = document.getElementById("search-results");
+input.addEventListener("input", () => {
+  const query = input.value.toLowerCase();
+  results.innerHTML = "";
+  if (!query) return results.classList.add("hidden");
+  const filtered = data.filter(item => item.toLowerCase().includes(query));
+  filtered.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    li.className = "hover:bg-[#cf30aa]/30 cursor-pointer p-2";
+    li.addEventListener("click", ()=>{ input.value=item; results.classList.add("hidden"); });
+    results.appendChild(li);
   });
-  if(localStorage.theme==='dark'||(!localStorage.theme&&window.matchMedia('(prefers-color-scheme: dark)').matches)){
-    document.documentElement.classList.add('dark'); themeToggle.textContent='☀️';
+  results.classList.toggle("hidden", filtered.length === 0);
+});
+document.addEventListener("click", e => { if(!document.getElementById("main").contains(e.target)) results.classList.add("hidden"); });
+
+// Scroll Reveal
+const reveals = document.querySelectorAll('.reveal');
+window.addEventListener('scroll', () => {
+  for (const r of reveals) {
+    const top = r.getBoundingClientRect().top;
+    if(top < window.innerHeight - 100) r.classList.add('active');
   }
+});
 
-  // Mobile menu toggle
-  const menuBtn=document.getElementById('menuBtn');
-  const mobileMenu=document.getElementById('mobileMenu');
-  menuBtn.addEventListener('click',()=>mobileMenu.classList.toggle('max-h-96'));
-
-  // Fade animations
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting){
-        entry.target.classList.add('show');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.2 });
-  document.querySelectorAll('.fade-slide, .fade-slide-up').forEach(el => observer.observe(el));
-
-  // Search functionality
-  const searchBar = document.getElementById('search-bar');
-  const results = document.getElementById('search-results');
-  const pages = [
-    { name: 'Home', link: '#hero' },
-    { name: 'About', link: '#about' },
-    { name: 'Projects', link: '#projects' },
-    { name: 'Contact', link: '#contact' }
-  ];
-
-  searchBar.addEventListener('input', () => {
-    const query = searchBar.value.toLowerCase();
-    results.innerHTML = '';
-    if(query) {
-      const matches = pages.filter(p => p.name.toLowerCase().includes(query));
-      matches.forEach(match => {
-        const div = document.createElement('div');
-        div.textContent = match.name;
-        div.addEventListener('click', () => {
-          window.location.href = match.link;
-        });
-        results.appendChild(div);
-      });
-      results.style.display = matches.length ? 'block' : 'none';
-    } else {
-      results.style.display = 'none';
-    }
+// Welcome modal logic
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('welcome-modal');
+  if(!localStorage.getItem('visited')) {
+    modal.style.display = 'flex';
+  }
+  document.getElementById('welcome-close').addEventListener('click', () => {
+    modal.style.display = 'none';
+    localStorage.setItem('visited','true');
   });
+});
 </script>
 
 </body>
