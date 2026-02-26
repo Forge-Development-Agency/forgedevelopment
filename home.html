@@ -49,6 +49,10 @@ header { background-color: rgba(0,0,0,0.7); transition: all 0.3s ease; }
 header a { color:#fff; transition: color 0.3s; }
 header a:hover { color:#4f46e5; }
 
+/* Hamburger Menu */
+#mobile-menu { opacity:0; pointer-events:none; transition:all 0.3s ease; }
+#menu-toggle:checked + label + #mobile-menu { opacity:1; pointer-events:auto; }
+
 /* Neon Search */
 #main { position: relative; width: 100%; max-width: 400px; margin: 1rem auto; }
 .glow-layer, .border-layer { position:absolute; top:0; left:0; width:100%; height:56px; border-radius:1rem; transition: transform 0.5s ease, opacity 0.5s ease; }
@@ -75,30 +79,47 @@ header a:hover { color:#4f46e5; }
 /* Gradient */
 .gradient-text { background: linear-gradient(90deg,#4f46e5,#cf30aa,#4f46e5); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width:768px) {
-  header { flex-direction: column; align-items: flex-start; gap: 1rem; padding:1rem; }
-  nav { flex-direction: column; gap: 0.5rem; width:100%; }
   .grid.md\:grid-cols-2 { grid-template-columns:1fr !important; }
   .grid.md\:grid-cols-3 { grid-template-columns:1fr !important; }
-  .text-5xl { font-size:3rem !important; }
-  .text-6xl { font-size:3.5rem !important; }
-  .text-2xl { font-size:1.5rem !important; }
-  .text-3xl { font-size:1.25rem !important; }
-  .px-8 { padding-left:1rem !important; padding-right:1rem !important; }
 }
 </style>
 </head>
 <body class="bg-black">
-
 <div class="cyber-pattern">
 
-<header class="fixed w-full z-50 flex justify-between items-center px-8 py-5">
+<!-- Header -->
+<header class="fixed w-full z-50 flex justify-between items-center px-6 py-5 bg-black/70">
   <a href="#" class="flex items-center gap-4">
     <img src="assets/logo_1.png" alt="Logo" class="w-12 h-12 object-cover rounded-full"/>
-    <span class="font-heading font-bold text-xl gradient-text">Flock | Ghoststack Development</span>
+    <span class="font-heading font-bold text-xl gradient-text">Flock | Ghoststack Dev</span>
   </a>
-  <nav class="flex gap-6 items-center">
+
+  <!-- Hamburger for mobile -->
+  <div class="relative md:hidden">
+    <input id="menu-toggle" type="checkbox" class="hidden" />
+    <label for="menu-toggle" class="cursor-pointer block w-8 h-8">
+      <svg viewBox="0 0 24 24" class="w-8 h-8 stroke-white">
+        <path class="origin-center transition-transform duration-300" d="M3 6h18M3 12h18M3 18h18"></path>
+      </svg>
+    </label>
+
+    <!-- Mobile Menu -->
+    <nav id="mobile-menu" class="absolute right-0 mt-2 w-48 bg-[#111] rounded-xl shadow-lg">
+      <ul class="flex flex-col p-4 gap-3">
+        <li><a href="#hero" class="hover:text-brand transition">Home</a></li>
+        <li><a href="#about" class="hover:text-brand transition">About</a></li>
+        <li><a href="#services" class="hover:text-brand transition">Services</a></li>
+        <li><a href="#projects" class="hover:text-brand transition">Projects</a></li>
+        <li><a href="#contact" class="hover:text-brand transition">Contact</a></li>
+        <li><a href="https://github.com/sybumrp" target="_blank" class="btn-github">View My Github</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Desktop Menu -->
+  <nav class="hidden md:flex gap-6 items-center">
     <a href="#hero">Home</a>
     <a href="#about">About</a>
     <a href="#services">Services</a>
@@ -109,92 +130,91 @@ header a:hover { color:#4f46e5; }
 </header>
 
 <main class="pt-24">
+  <!-- Hero -->
+  <section id="hero" class="flex flex-col items-center justify-center text-center min-h-screen px-4 reveal">
+    <h1 class="text-5xl md:text-6xl font-heading font-bold gradient-text">Flock</h1>
+    <h2 class="text-2xl md:text-3xl font-heading font-bold mt-2 gradient-text">Ghoststack Development Founder</h2>
+    <p class="text-white text-lg md:text-xl max-w-xl mx-auto mt-4">Full Stack Developer specializing in web, FiveM scripts, MLOs, reskins, clothing dev, and car handling.</p>
 
-<!-- Hero -->
-<section id="hero" class="flex flex-col items-center justify-center text-center min-h-screen px-4 reveal">
-  <h1 class="text-5xl md:text-6xl font-heading font-bold gradient-text">Flock</h1>
-  <h2 class="text-2xl md:text-3xl font-heading font-bold mt-2 gradient-text">Ghoststack Development Founder</h2>
-  <p class="text-white text-lg md:text-xl max-w-xl mx-auto mt-4">Full Stack Developer specializing in web, FiveM scripts, MLOs, reskins, clothing dev, and car handling.</p>
-
-  <div class="relative mt-6 w-full flex justify-center reveal">
-    <div id="main" class="relative w-full max-w-md">
-      <div class="glow-layer"></div>
-      <div class="border-layer"></div>
-      <input type="text" id="search-input" class="w-full h-14 pl-4 pr-14 rounded-xl bg-[#010201] text-white text-lg placeholder-gray-400 focus:outline-none relative z-10" placeholder="Search projects...">
-      <div class="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gradient-to-b from-[#161329] to-[#1d1b4b] rounded-lg flex items-center justify-center z-20">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h18M8 12h8M5 20h14"/>
-        </svg>
-      </div>
-      <ul id="search-results" class="hidden absolute top-14 w-full bg-[#111] rounded-xl shadow-lg z-50"></ul>
-    </div>
-  </div>
-</section>
-
-<!-- About -->
-<section id="about" class="max-w-7xl mx-auto py-20 px-6 grid md:grid-cols-2 gap-10 items-center reveal">
-  <div>
-    <h2 class="text-4xl font-heading font-bold mb-6 gradient-text">About Me</h2>
-    <p>I’m <strong>Flock</strong>, a Full Stack Developer and founder of <strong>Ghoststack Development</strong>. I build web apps, FiveM scripts, MLOs, custom clothing, and car handling systems.</p>
-  </div>
-  <div>
-    <img src="assets/logo_1.png" alt="Flock" class="rounded-xl shadow-xl w-full object-cover">
-  </div>
-</section>
-
-<!-- Services -->
-<section id="services" class="max-w-7xl mx-auto py-20 px-6 text-center reveal">
-  <h2 class="text-4xl font-heading font-bold mb-10 gradient-text">What I Do</h2>
-  <div class="grid md:grid-cols-3 gap-8">
-    <div class="p-6 bg-[#111] rounded-xl hover:bg-[#1f0f2f] transition transform hover:scale-105">
-      <h3 class="text-xl font-bold mb-2">Web Development</h3>
-      <p>Custom websites, responsive designs, and web apps with modern stacks.</p>
-    </div>
-    <div class="p-6 bg-[#111] rounded-xl hover:bg-[#1f0f2f] transition transform hover:scale-105">
-      <h3 class="text-xl font-bold mb-2">FiveM Dev</h3>
-      <p>Scripts, MLOs, car handling, reskins, and custom servers for GTA V.</p>
-    </div>
-    <div class="p-6 bg-[#111] rounded-xl hover:bg-[#1f0f2f] transition transform hover:scale-105">
-      <h3 class="text-xl font-bold mb-2">Design & Reskin</h3>
-      <p>Clothing, vehicles, and environment reskins to make your project unique.</p>
-    </div>
-  </div>
-</section>
-
-<!-- Projects -->
-<section id="projects" class="max-w-7xl mx-auto py-20 px-6 text-center reveal">
-  <h2 class="text-4xl font-heading font-bold mb-10 gradient-text">Projects</h2>
-  <div class="flex flex-wrap justify-center gap-8">
-    <div class="card">
-      <img src="assets/project1.jpg" alt="FiveM Script">
-      <div class="card__content">
-        <p class="card__title">FiveM Roleplay Script</p>
-        <p class="card__description">Custom server scripts with unique jobs and systems.</p>
+    <div class="relative mt-6 w-full flex justify-center reveal">
+      <div id="main" class="relative w-full max-w-md">
+        <div class="glow-layer"></div>
+        <div class="border-layer"></div>
+        <input type="text" id="search-input" class="w-full h-14 pl-4 pr-14 rounded-xl bg-[#010201] text-white text-lg placeholder-gray-400 focus:outline-none relative z-10" placeholder="Search projects...">
+        <div class="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-gradient-to-b from-[#161329] to-[#1d1b4b] rounded-lg flex items-center justify-center z-20">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h18M8 12h8M5 20h14"/>
+          </svg>
+        </div>
+        <ul id="search-results" class="hidden absolute top-14 w-full bg-[#111] rounded-xl shadow-lg z-50"></ul>
       </div>
     </div>
-    <div class="card">
-      <img src="assets/project2.jpg" alt="Car Handling">
-      <div class="card__content">
-        <p class="card__title">Car Handling Pack</p>
-        <p class="card__description">Improved driving physics and reskinned vehicles for FiveM servers.</p>
-      </div>
-    </div>
-    <div class="card">
-      <img src="assets/project3.jpg" alt="Portfolio Website">
-      <div class="card__content">
-        <p class="card__title">Website Development</p>
-        <p class="card__description">Modern responsive website built with Tailwind and interactive elements.</p>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- Contact -->
-<section id="contact" class="py-20 text-center px-6 reveal">
-  <h3 class="text-3xl font-bold mb-4 gradient-text">Contact Me</h3>
-  <p class="text-lg mb-6">Reach out via Discord, GitHub, LinkedIn, or email.</p>
-  <a href="mailto:flock@example.com" class="inline-block px-8 py-3 border-2 border-brand text-brand rounded-xl font-semibold hover:bg-brand hover:text-white transition">Email Me</a>
-</section>
+  <!-- About -->
+  <section id="about" class="max-w-7xl mx-auto py-20 px-6 grid md:grid-cols-2 gap-10 items-center reveal">
+    <div>
+      <h2 class="text-4xl font-heading font-bold mb-6 gradient-text">About Me</h2>
+      <p>I’m <strong>Flock</strong>, a Full Stack Developer and founder of <strong>Ghoststack Development</strong>. I build web apps, FiveM scripts, MLOs, custom clothing, and car handling systems.</p>
+    </div>
+    <div>
+      <img src="assets/logo_1.png" alt="Flock" class="rounded-xl shadow-xl w-full object-cover">
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section id="services" class="max-w-7xl mx-auto py-20 px-6 text-center reveal">
+    <h2 class="text-4xl font-heading font-bold mb-10 gradient-text">What I Do</h2>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="p-6 bg-[#111] rounded-xl hover:bg-[#1f0f2f] transition transform hover:scale-105">
+        <h3 class="text-xl font-bold mb-2">Web Development</h3>
+        <p>Custom websites, responsive designs, and web apps with modern stacks.</p>
+      </div>
+      <div class="p-6 bg-[#111] rounded-xl hover:bg-[#1f0f2f] transition transform hover:scale-105">
+        <h3 class="text-xl font-bold mb-2">FiveM Dev</h3>
+        <p>Scripts, MLOs, car handling, reskins, and custom servers for GTA V.</p>
+      </div>
+      <div class="p-6 bg-[#111] rounded-xl hover:bg-[#1f0f2f] transition transform hover:scale-105">
+        <h3 class="text-xl font-bold mb-2">Design & Reskin</h3>
+        <p>Clothing, vehicles, and environment reskins to make your project unique.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" class="max-w-7xl mx-auto py-20 px-6 text-center reveal">
+    <h2 class="text-4xl font-heading font-bold mb-10 gradient-text">Projects</h2>
+    <div class="flex flex-wrap justify-center gap-8">
+      <div class="card">
+        <img src="assets/project1.jpg" alt="FiveM Script">
+        <div class="card__content">
+          <p class="card__title">FiveM Roleplay Script</p>
+          <p class="card__description">Custom server scripts with unique jobs and systems.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="assets/project2.jpg" alt="Car Handling">
+        <div class="card__content">
+          <p class="card__title">Car Handling Pack</p>
+          <p class="card__description">Improved driving physics and reskinned vehicles for FiveM servers.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="assets/project3.jpg" alt="Portfolio Website">
+        <div class="card__content">
+          <p class="card__title">Website Development</p>
+          <p class="card__description">Modern responsive website built with Tailwind and interactive elements.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-20 text-center px-6 reveal">
+    <h3 class="text-3xl font-bold mb-4 gradient-text">Contact Me</h3>
+    <p class="text-lg mb-6">Reach out via Discord, GitHub, LinkedIn, or email.</p>
+    <a href="mailto:flock@example.com" class="inline-block px-8 py-3 border-2 border-brand text-brand rounded-xl font-semibold hover:bg-brand hover:text-white transition">Email Me</a>
+  </section>
 
 </main>
 
@@ -233,19 +253,6 @@ window.addEventListener('scroll', () => {
     if(top < window.innerHeight - 100) r.classList.add('active');
   }
 });
-
-// Welcome modal logic
-document.addEventListener('DOMContentLoaded', () => {
-  const modal = document.getElementById('welcome-modal');
-  if(!localStorage.getItem('visited')) {
-    modal.style.display = 'flex';
-  }
-  document.getElementById('welcome-close').addEventListener('click', () => {
-    modal.style.display = 'none';
-    localStorage.setItem('visited','true');
-  });
-});
 </script>
-
 </body>
 </html>
