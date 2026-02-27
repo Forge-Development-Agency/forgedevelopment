@@ -138,6 +138,133 @@ section{ padding:6rem 1rem; max-width:1200px; margin:auto; }
 .footer-link:hover {
   color: white;
 }
+/* From Uiverse.io by EmmaxPlay */ 
+.tools {
+ display: flex;
+ align-items: center;
+ padding: 9px;
+}
+
+.circle {
+ padding: 0 4px;
+}
+
+.box {
+ display: inline-block;
+ align-items: center;
+ width: 10px;
+ height: 10px;
+ padding: 1px;
+ border-radius: 50%;
+}
+
+.red {
+ background-color: #ff605c;
+}
+
+.yellow {
+ background-color: #ffbd44;
+}
+
+.green {
+ background-color: #00ca4e;
+}
+
+/* From Uiverse.io by vinodjangid07 */ 
+.rating-card {
+  width: 280px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background: #0f0c29;
+  background: linear-gradient(to right bottom, #443e89, #0f0c29);
+  padding: 20px 20px;
+  border-radius: 10px;
+  gap: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.058);
+}
+.text-wrapper {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.text-primary {
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.text-secondary {
+  color: #cccccc;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+.rating-stars-container {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center;
+}
+.star-label svg {
+  fill: rgb(210, 210, 210);
+  width: 20px;
+  height: auto;
+}
+.rating-stars-container input {
+  appearance: unset;
+}
+.rating-stars-container input:hover ~ .star-label svg {
+  fill: rgb(255, 204, 185);
+}
+.rating-stars-container input:checked ~ .star-label svg {
+  fill: rgb(255, 102, 47);
+  animation: slide-in-fwd-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+@keyframes slide-in-fwd-center {
+  0% {
+    transform: scale(1.6);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.socials-container {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid rgb(150, 150, 150);
+}
+.social-button {
+  text-decoration: none;
+}
+.social-button svg {
+  width: 15px;
+  fill: rgb(228, 228, 228);
+}
+.social-button:hover svg {
+  fill: rgb(255, 102, 47);
+}
+
+/* Subtle glow effect on the toast */
+#flock-toast {
+  box-shadow: 0 8px 25px rgba(207,48,170,0.5);
+  backdrop-filter: blur(6px);
+}
+
 </style>
 </head>
 <body>
@@ -165,6 +292,14 @@ section{ padding:6rem 1rem; max-width:1200px; margin:auto; }
 <a href="https://github.com/sybumrp" target="_blank" class="text-brand font-bold">View My Github</a>
 </nav>
 </div>
+
+
+<!-- Flock Notification Toast -->
+<div id="flock-toast" class="fixed bottom-6 right-6 bg-[#111] text-white px-5 py-3 rounded-xl shadow-xl opacity-0 transform translate-y-10 transition-all duration-500 z-50 flex items-center gap-3 hover:scale-105">
+  <span class="font-bold text-brand">🚀 Flock</span>
+  <span>wants to be a successful 18-year-old! Keep an eye on his growth!</span>
+</div>
+
 
 <!-- Desktop nav -->
 <nav class="desktop items-center gap-8 font-medium">
@@ -204,9 +339,10 @@ section{ padding:6rem 1rem; max-width:1200px; margin:auto; }
 
 </nav>
 </header>
-
 <main class="pt-24">
+  
 
+  
 <!-- Hero -->
 <section id="hero" class="min-h-screen reveal">
 <h1 class="text-5xl md:text-6xl font-heading font-bold gradient-text">Flock</h1>
@@ -279,6 +415,197 @@ section{ padding:6rem 1rem; max-width:1200px; margin:auto; }
     </div>
   </aside>
 </section>
+
+
+
+<section id="tools" class="max-w-7xl mx-auto py-12 px-6 reveal">
+  <h2 class="text-3xl font-heading font-bold mb-6 gradient-text">My Tools & Skills</h2>
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- Web Development Card -->
+    <div class="glass-card p-6 hover:scale-105 transition transform cursor-pointer group relative">
+      <h3 class="font-bold text-xl text-white mb-2">Web Development</h3>
+      <p class="text-gray-300 text-sm mb-4">Modern responsive websites & web apps.</p>
+      <div class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
+        <span class="px-2 py-1 rounded bg-brand/20 text-brand text-xs font-semibold">HTML</span>
+        <span class="px-2 py-1 rounded bg-brand/20 text-brand text-xs font-semibold">CSS</span>
+        <span class="px-2 py-1 rounded bg-brand/20 text-brand text-xs font-semibold">JavaScript</span>
+        <span class="px-2 py-1 rounded bg-brand/20 text-brand text-xs font-semibold">TailwindCSS</span>
+        <span class="px-2 py-1 rounded bg-brand/20 text-brand text-xs font-semibold">Next.js</span>
+        <span class="px-2 py-1 rounded bg-brand/20 text-brand text-xs font-semibold">React</span>
+      </div>
+    </div>
+
+    <!-- FiveM Development Card with Modal -->
+    <div id="fivemCard" class="glass-card p-6 hover:scale-105 transition transform cursor-pointer group relative">
+      <h3 class="font-bold text-xl text-white mb-2">FiveM Development</h3>
+      <p class="text-gray-300 text-sm mb-4">Scripts, MLOs, car handling, reskins.</p>
+      <div class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
+        <span class="px-2 py-1 rounded bg-neon/20 text-neon text-xs font-semibold">Lua</span>
+        <span class="px-2 py-1 rounded bg-neon/20 text-neon text-xs font-semibold">HTML</span>
+        <span class="px-2 py-1 rounded bg-neon/20 text-neon text-xs font-semibold">CSS</span>
+        <span class="px-2 py-1 rounded bg-neon/20 text-neon text-xs font-semibold">JavaScript</span>
+        <span class="px-2 py-1 rounded bg-neon/20 text-neon text-xs font-semibold">Meta</span>
+      </div>
+    </div>
+
+    <!-- Other Cards (Design, Dev Tools, Experience, Soft Skills) -->
+    <div class="glass-card p-6 hover:scale-105 transition transform cursor-pointer group relative">
+      <h3 class="font-bold text-xl text-white mb-2">Design & Reskin</h3>
+      <p class="text-gray-300 text-sm mb-4">Clothing, vehicles, and environment reskins.</p>
+      <div class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
+        <span class="px-2 py-1 rounded bg-purple-500/20 text-purple-400 text-xs font-semibold">Photoshop</span>
+        <span class="px-2 py-1 rounded bg-purple-500/20 text-purple-400 text-xs font-semibold">Blender</span>
+        <span class="px-2 py-1 rounded bg-purple-500/20 text-purple-400 text-xs font-semibold">Figma</span>
+      </div>
+    </div>
+
+    <div class="glass-card p-6 hover:scale-105 transition transform cursor-pointer group relative">
+      <h3 class="font-bold text-xl text-white mb-2">Dev Tools</h3>
+      <p class="text-gray-300 text-sm mb-4">My essential development utilities.</p>
+      <div class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
+        <span class="px-2 py-1 rounded bg-gray-700/30 text-gray-100 text-xs font-semibold">VS Code</span>
+        <span class="px-2 py-1 rounded bg-gray-700/30 text-gray-100 text-xs font-semibold">Git & GitHub</span>
+        <span class="px-2 py-1 rounded bg-gray-700/30 text-gray-100 text-xs font-semibold">Node.js</span>
+        <span class="px-2 py-1 rounded bg-gray-700/30 text-gray-100 text-xs font-semibold">NPM / Yarn</span>
+        <span class="px-2 py-1 rounded bg-gray-700/30 text-gray-100 text-xs font-semibold">Docker</span>
+      </div>
+    </div>
+
+    <div class="glass-card p-6 hover:scale-105 transition transform cursor-pointer group relative">
+      <h3 class="font-bold text-xl text-white mb-2">Experience</h3>
+      <p class="text-gray-300 text-sm mb-4">Years of working on web and FiveM projects.</p>
+      <div class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
+        <span class="px-2 py-1 rounded bg-yellow-400/30 text-yellow-300 text-xs font-semibold">5+ Years Web Dev</span>
+        <span class="px-2 py-1 rounded bg-yellow-400/30 text-yellow-300 text-xs font-semibold">3+ Years FiveM</span>
+        <span class="px-2 py-1 rounded bg-yellow-400/30 text-yellow-300 text-xs font-semibold">Team Lead</span>
+        <span class="px-2 py-1 rounded bg-yellow-400/30 text-yellow-300 text-xs font-semibold">Freelance Projects</span>
+      </div>
+    </div>
+
+    <div class="glass-card p-6 hover:scale-105 transition transform cursor-pointer group relative">
+      <h3 class="font-bold text-xl text-white mb-2">Soft Skills</h3>
+      <p class="text-gray-300 text-sm mb-4">What I bring to teamwork & project management.</p>
+      <div class="flex flex-wrap gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
+        <span class="px-2 py-1 rounded bg-blue-500/20 text-blue-300 text-xs font-semibold">Communication</span>
+        <span class="px-2 py-1 rounded bg-blue-500/20 text-blue-300 text-xs font-semibold">Problem Solving</span>
+        <span class="px-2 py-1 rounded bg-blue-500/20 text-blue-300 text-xs font-semibold">Collaboration</span>
+        <span class="px-2 py-1 rounded bg-blue-500/20 text-blue-300 text-xs font-semibold">Creativity</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FiveM Modal Popup -->
+<div id="fivemModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50">
+  <div class="bg-white dark:bg-zinc-900 rounded-2xl w-11/12 md:w-3/4 lg:w-2/3 max-h-[90vh] overflow-y-auto p-6 relative shadow-xl">
+
+    <button id="closeFivemModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-900 dark:hover:text-white">&times;</button>
+
+    <h2 class="text-2xl font-bold mb-4 text-sky-600">FiveM Development Experience</h2>
+    <p class="text-gray-700 dark:text-gray-300 mb-6">
+      I specialize in creating FiveM scripts, MLOs, car handling, and custom UI. Here are some projects & highlights.
+    </p>
+
+    <div class="space-y-6">
+   <!--Car Handling Pack
+      <div class="flex flex-col md:flex-row items-start gap-4">
+        <div class="h-6 w-6 bg-sky-600 rounded-full mt-1"></div>
+        <div class="flex-1">
+          <h3 class="font-semibold text-lg">Car Handling Pack</h3>
+          <p class="text-gray-600 dark:text-gray-400 text-sm">Customized car physics & tuning for roleplay servers. Completed Feb 2024.</p>
+          <div class="mt-2 flex flex-wrap gap-4">
+            <img src="assets/pics/5m/car1.jpg" class="w-48 h-32 md:w-64 md:h-40 object-cover rounded" alt="Car Preview">
+            <img src="assets/pics/5m/car2.jpg" class="w-48 h-32 md:w-64 md:h-40 object-cover rounded" alt="Car Preview">
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Custom MLOs -->
+      <div class="flex flex-col gap-4">
+        <h3 class="font-semibold text-lg">Custom MLOs</h3>
+
+        <!-- LGMods Folder (Collapsible) -->
+        <div class="border-l-2 border-sky-600 pl-4">
+          <button class="font-medium text-sky-600 flex items-center gap-2 w-full text-left" onclick="this.nextElementSibling.classList.toggle('hidden')">
+            LGMods
+            <svg class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <!-- Sinner Street 2.0 Reskin -->
+          <div class="ml-4 mt-2 space-y-2 hidden">
+            <div class="font-semibold text-gray-700 dark:text-gray-300">Sinner Street 2.0 Reskin</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">For Orbit Network</div>
+            <div class="flex flex-wrap gap-4 mt-2">
+              <img src="assets/pics/5m/mlo1.png" class="w-64 h-40 md:w-80 md:h-52 object-cover rounded" alt="Sinner Street Preview 1">
+              <!-- Add more images here as needed -->
+            </div>
+          </div>
+        </div>
+
+<!-- Scripts Section -->
+<div class="flex flex-col gap-4 mt-6">
+  <h3 class="font-semibold text-lg text-sky-600">Scripts</h3>
+
+  <!-- GhostStack Developments Folder (Collapsible) -->
+  <div class="border-l-2 border-sky-600 pl-4">
+    <button class="font-medium text-sky-600 flex items-center gap-2 w-full text-left" 
+            onclick="this.nextElementSibling.classList.toggle('hidden')">
+      GhostStack Developments
+      <svg class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
+
+    <!-- Scripts Folder Content -->
+    <div class="ml-4 mt-2 space-y-2 hidden">
+      <div class="font-semibold text-gray-700 dark:text-gray-300">Server Essentials</div>
+      <div class="text-sm text-gray-600 dark:text-gray-400">Custom admin & roleplay scripts</div>
+      <a href="https://github.com/ghoststack-development/Electus-Admin-addon" target="_blank" 
+         class="inline-block px-4 py-1 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition">View on GitHub</a>
+
+      <div class="mt-3 flex gap-4 flex-wrap">
+        <img src="assets/pics/5m/script1.png" class="w-48 h-28 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer script-img" alt="Script Preview 1">
+        <img src="assets/pics/5m/script2.png" class="w-48 h-28 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer script-img" alt="Script Preview 2">
+        <img src="assets/pics/5m/script3.png" class="w-48 h-28 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer script-img" alt="Script Preview 3">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50">
+  <div class="relative max-w-3xl w-full mx-4">
+    <button id="closeLightbox" class="absolute top-2 right-2 text-white text-2xl font-bold hover:text-gray-300">&times;</button>
+    <img id="lightboxImage" src="" class="w-full h-auto rounded-lg shadow-lg" alt="Lightbox Image">
+  </div>
+</div>
+
+        <!-- Another MLO example -->
+        <div class="border-l-2 border-sky-600 pl-4">
+          <button class="font-medium text-sky-600 flex items-center gap-2 w-full text-left" onclick="this.nextElementSibling.classList.toggle('hidden')">
+            Downtown Interiors
+            <svg class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <div class="ml-4 mt-2 space-y-2 hidden">
+            <div class="font-semibold text-gray-700 dark:text-gray-300">Luxury Apartment Remodel</div>
+            <div class="text-sm text-gray-600 dark:text-gray-400">For private roleplay server</div>
+            <div class="flex flex-wrap gap-4 mt-2">
+              <img src="assets/pics/5m/mlo3.jpg" class="w-64 h-40 md:w-80 md:h-52 object-cover rounded" alt="Apartment Preview 1">
+              <img src="assets/pics/5m/mlo4.jpg" class="w-64 h-40 md:w-80 md:h-52 object-cover rounded" alt="Apartment Preview 2">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Projects -->
 <section id="projects" class="max-w-7xl mx-auto py-20 px-6 text-center reveal">
@@ -360,7 +687,7 @@ section{ padding:6rem 1rem; max-width:1200px; margin:auto; }
   <p class="text-lg mb-10">
     Reach out via Discord, GitHub, LinkedIn, or email.
   </p>
-
+  
   <!-- Buttons Wrapper -->
   <div class="flex flex-col md:flex-row justify-center items-center gap-6 max-w-2xl mx-auto">
 
@@ -396,46 +723,51 @@ section{ padding:6rem 1rem; max-width:1200px; margin:auto; }
         </div>
       </div>
     </a>
+    
 
 
-    <!-- Discord Button -->
-    <a href="https://discord.gg/YOURINVITE"
-       target="_blank"
-       rel="noopener noreferrer"
-       class="group relative w-full md:w-80 p-4 rounded-2xl backdrop-blur-xl border-2 border-brand/30 bg-gradient-to-br from-brand/20 via-black/60 to-black/80 shadow-2xl hover:shadow-brand/40 hover:scale-[1.02] hover:-translate-y-1 active:scale-95 transition-all duration-500 ease-out cursor-pointer hover:border-neon/60 overflow-hidden">
 
-      <!-- Sweep -->
-      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-neon/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
 
-      <!-- Glow -->
-      <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-brand/10 via-neon/20 to-brand/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-      <div class="relative z-10 flex items-center gap-4">
-        <div class="p-3 rounded-lg bg-gradient-to-br from-brand/30 to-neon/20 backdrop-blur-sm group-hover:scale-110 transition-all duration-300">
-          <!-- Discord Icon -->
-          <svg xmlns="http://www.w3.org/2000/svg"
-               viewBox="0 0 640 512"
-               class="w-6 h-6 fill-current text-brand group-hover:text-neon transition">
-            <path d="M524.531 69.836a1.5 1.5 0 0 0-.764-.7A485.065 485.065 0 0 0 404.081 32.03a1.816 1.816 0 0 0-1.923.91 337.461 337.461 0 0 0-14.9 30.6 447.848 447.848 0 0 0-134.426 0 309.541 309.541 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91 483.689 483.689 0 0 0-119.688 37.107 1.712 1.712 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a2.016 2.016 0 0 0 .765 1.375 487.666 487.666 0 0 0 146.825 74.189 1.9 1.9 0 0 0 2.063-.676A348.2 348.2 0 0 0 208.12 430.4a1.86 1.86 0 0 0-1.019-2.588 321.173 321.173 0 0 1-45.868-21.853 1.885 1.885 0 0 1-.185-3.126 251.047 251.047 0 0 0 9.109-7.137 1.819 1.819 0 0 1 1.9-.256c96.229 43.917 200.41 43.917 295.5 0a1.812 1.812 0 0 1 1.924.233 234.533 234.533 0 0 0 9.132 7.16 1.884 1.884 0 0 1-.162 3.126 301.407 301.407 0 0 1-45.89 21.83 1.875 1.875 0 0 0-1 2.611 391.055 391.055 0 0 0 30.014 48.815 1.864 1.864 0 0 0 2.063.7A486.048 486.048 0 0 0 610.7 405.729a1.882 1.882 0 0 0 .765-1.352c12.264-126.783-20.532-236.912-86.934-334.541z"/>
-          </svg>
-        </div>
+<!-- Discord Button -->
+<a href="https://discord.gg/YOURINVITE"
+   target="_blank"
+   rel="noopener noreferrer"
+   class="group relative w-full md:w-80 p-4 rounded-2xl backdrop-blur-xl border-2 border-brand/30 bg-gradient-to-br from-brand/20 via-black/60 to-black/80 shadow-2xl hover:shadow-brand/50 hover:scale-[1.04] hover:-translate-y-1.5 active:scale-95 transition-all duration-400 ease-out cursor-pointer overflow-hidden">
 
-        <div class="flex-1 text-left">
-          <p class="font-bold text-lg text-brand group-hover:text-neon transition">
-            Discord
-          </p>
-          <p class="text-gray-400 text-sm group-hover:text-gray-300 transition">
-            Join the community
-          </p>
-        </div>
-      </div>
-    </a>
+  <!-- Sweep Animation -->
+  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-neon/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1200 ease-out"></div>
 
+  <!-- Glow Overlay -->
+  <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-brand/15 via-neon/25 to-brand/15 opacity-0 group-hover:opacity-100 transition-opacity duration-600"></div>
+
+  <div class="relative z-10 flex items-center gap-4">
+    <!-- Icon Container -->
+    <div class="p-3 rounded-lg bg-gradient-to-br from-brand/30 to-neon/20 backdrop-blur-sm group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+      <!-- Discord Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg"
+           viewBox="0 0 640 512"
+           class="w-6 h-6 fill-current text-brand group-hover:text-neon transition-colors duration-300">
+        <path d="M524.531 69.836a1.5 1.5 0 0 0-.764-.7A485.065 485.065 0 0 0 404.081 32.03a1.816 1.816 0 0 0-1.923.91 337.461 337.461 0 0 0-14.9 30.6 447.848 447.848 0 0 0-134.426 0 309.541 309.541 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91 483.689 483.689 0 0 0-119.688 37.107 1.712 1.712 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a2.016 2.016 0 0 0 .765 1.375 487.666 487.666 0 0 0 146.825 74.189 1.9 1.9 0 0 0 2.063-.676A348.2 348.2 0 0 0 208.12 430.4a1.86 1.86 0 0 0-1.019-2.588 321.173 321.173 0 0 1-45.868-21.853 1.885 1.885 0 0 1-.185-3.126 251.047 251.047 0 0 0 9.109-7.137 1.819 1.819 0 0 1 1.9-.256c96.229 43.917 200.41 43.917 295.5 0a1.812 1.812 0 0 1 1.924.233 234.533 234.533 0 0 0 9.132 7.16 1.884 1.884 0 0 1-.162 3.126 301.407 301.407 0 0 1-45.89 21.83 1.875 1.875 0 0 0-1 2.611 391.055 391.055 0 0 0 30.014 48.815 1.864 1.864 0 0 0 2.063.7A486.048 486.048 0 0 0 610.7 405.729a1.882 1.882 0 0 0 .765-1.352c12.264-126.783-20.532-236.912-86.934-334.541z"/>
+      </svg>
+    </div>
+
+    <!-- Text -->
+    <div class="flex-1 text-left">
+      <p class="font-bold text-lg text-brand group-hover:text-neon transition-colors duration-300">
+        Discord
+      </p>
+      <p class="text-gray-400 text-sm group-hover:text-gray-300 transition-colors duration-300">
+        Join the community
+      </p>
+    </div>
   </div>
+</a>
 </section>
 
-</main>
 
+
+</main>
 <footer class="relative mt-24">
   <!-- Glass background -->
   <div class="absolute inset-0 bg-white/5 backdrop-blur-xl border-t border-white/10"></div>
@@ -454,6 +786,7 @@ section{ padding:6rem 1rem; max-width:1200px; margin:auto; }
 
         <!-- Socials -->
         <div class="flex gap-4 mt-6">
+
           <!-- Discord -->
           <a href="#" class="glass-btn" aria-label="Discord">
             <svg viewBox="0 0 245 240" class="w-5 h-5 fill-white">
@@ -469,24 +802,27 @@ section{ padding:6rem 1rem; max-width:1200px; margin:auto; }
             </svg>
           </a>
 
-          <!-- X / Twitter -->
+          <!-- X -->
           <a href="#" class="glass-btn" aria-label="X">
             <svg viewBox="0 0 24 24" class="w-5 h-5 fill-white">
               <path d="M18.9 2H22l-7.4 8.5L23 22h-6.6l-5.2-6.8L5.7 22H2l7.9-9.1L1 2h6.8l4.7 6.2L18.9 2zm-1.2 18h1.8L7.4 4h-1.9l12.2 16z"/>
             </svg>
           </a>
+
         </div>
       </div>
+
+      
 
       <!-- Links -->
       <div class="grid grid-cols-2 gap-10">
         <div>
           <span class="uppercase text-sm tracking-widest text-gray-400">Links</span>
           <ul class="mt-4 space-y-2">
-            <li><a href="#" class="footer-link">About</a></li>
-            <li><a href="#" class="footer-link">Projects</a></li>
-            <li><a href="#" class="footer-link">Services</a></li>
-            <li><a href="#" class="footer-link">Contact</a></li>
+            <li><a href="#about" class="footer-link">About</a></li>
+            <li><a href="#projects" class="footer-link">Projects</a></li>
+            <li><a href="#services" class="footer-link">Services</a></li>
+            <li><a href="#contact" class="footer-link">Contact</a></li>
           </ul>
         </div>
 
@@ -497,13 +833,134 @@ section{ padding:6rem 1rem; max-width:1200px; margin:auto; }
               MIT License — free to use, modify, and distribute.
             </li>
             <li>
-              <a href="LICENSE" class="footer-link">View License</a>
+              <button onclick="openLicense()" class="footer-link">
+                View License
+              </button>
             </li>
           </ul>
         </div>
       </div>
 
     </div>
+        <!-- From Uiverse.io by vinodjangid07 --> 
+<div class="rating-card">
+  <div class="text-wrapper">
+    <p class="text-primary">Please Rate Your Experience</p>
+    <p class="text-secondary">to help us serve you better</p>
+  </div>
+
+  <div class="rating-stars-container">
+    <input value="star-5" name="star" id="star-5" type="radio" />
+    <label for="star-5" class="star-label">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
+          pathLength="360"
+        ></path>
+      </svg>
+    </label>
+    <input value="star-4" name="star" id="star-4" type="radio" />
+    <label for="star-4" class="star-label">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
+          pathLength="360"
+        ></path>
+      </svg>
+    </label>
+    <input value="star-3" name="star" id="star-3" type="radio" />
+    <label for="star-3" class="star-label">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
+          pathLength="360"
+        ></path>
+      </svg>
+    </label>
+    <input value="star-2" name="star" id="star-2" type="radio" />
+    <label for="star-2" class="star-label">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
+          pathLength="360"
+        ></path>
+      </svg>
+    </label>
+    <input value="star-1" name="star" id="star-1" type="radio" />
+    <label for="star-1" class="star-label">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"
+          pathLength="360"
+        ></path>
+      </svg>
+    </label>
+      <!-- ⭐ PUBLIC AVERAGE -->
+  <p id="public-rating" class="text-secondary">
+    ⭐ Average rating: loading...
+  </p>
+  </div>
+  <div class="socials-container">
+    <a class="social-button" href="#">
+      <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M512 256C512 114.6 397.4 0 256 0S0 114.6 0 256C0 376 82.7 476.8 194.2 504.5V334.2H141.4V256h52.8V222.3c0-87.1 39.4-127.5 125-127.5c16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1c-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H287V510.1C413.8 494.8 512 386.9 512 256h0z"
+        ></path>
+      </svg>
+    </a>
+    <a class="social-button" href="#">
+      <svg viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"
+        ></path>
+      </svg>
+    </a>
+    <a class="social-button" href="#">
+      <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"
+        ></path>
+      </svg>
+    </a>
+  </div>
+</div>
+
+<div
+  id="thankYouToast"
+  class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+>
+  <div
+    role="alert"
+    class="max-w-lg rounded-lg border border-stone bg-stone-100 p-4 shadow-lg sm:p-6 lg:p-8"
+  >
+    <div class="flex items-center gap-4">
+      <span class="shrink-0 rounded-full bg-emerald-400 p-2 text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+          <path fill-rule="evenodd"
+            d="M18 3a1 1 0 00-1.447-.894L8.763 6H5a3 3 0 000 6h.28l1.771 5.316A1 1 0 008 18h1a1 1 0 001-1v-4.382l6.553 3.276A1 1 0 0018 15V3z"
+            clip-rule="evenodd"></path>
+        </svg>
+      </span>
+
+      <p class="font-medium sm:text-lg text-emerald-600">
+        Thanks for rating!
+      </p>
+    </div>
+
+    <p class="mt-4 text-gray-600">
+      Your feedback helps improve the website 💖
+    </p>
+
+    <div class="mt-6 flex justify-end">
+      <button
+        id="dismissToast"
+        class="rounded-lg bg-stone-300 px-5 py-3 text-sm font-semibold text-gray-800 hover:bg-stone-400"
+      >
+        Dismiss
+      </button>
+    </div>
+  </div>
+</div>
 
     <!-- Bottom -->
     <div class="border-t border-white/10 mt-12 pt-6 text-center text-sm text-gray-400">
@@ -512,8 +969,134 @@ section{ padding:6rem 1rem; max-width:1200px; margin:auto; }
   </div>
 </footer>
 
-<script>
-  document.getElementById("year").textContent = new Date().getFullYear();
+<!-- LICENSE MODAL -->
+<div id="licenseModal" class="fixed inset-0 z-[999] hidden items-center justify-center bg-black/70 backdrop-blur-sm">
+
+  <div class="relative w-[90%] max-w-4xl h-[80vh] glass-card rounded-xl overflow-hidden shadow-2xl">
+
+    <!-- Top bar -->
+    <div class="flex items-center justify-between px-4 py-2 bg-black/40 border-b border-white/10">
+      <div class="tools">
+        <div class="circle"><span class="red box"></span></div>
+        <div class="circle"><span class="yellow box"></span></div>
+        <div class="circle"><span class="green box"></span></div>
+      </div>
+
+      <button onclick="closeLicense()" class="text-gray-400 hover:text-white text-sm">
+        ✕
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6 overflow-y-auto h-full text-sm text-gray-200 font-mono leading-relaxed">
+
+<pre>
+MIT License
+
+Copyright (c) <span id="licenseYear"></span> Flock — Ghoststack Development
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+</pre>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+/* =========================
+   FIREBASE (RATINGS)
+========================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-analytics.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDtDIdY0eT87dcmqRB5LW-FEiwklDUENNM",
+  authDomain: "odmweb-b6a85.firebaseapp.com",
+  projectId: "odmweb-b6a85",
+  storageBucket: "odmweb-b6a85.firebasestorage.app",
+  messagingSenderId: "116995655604",
+  appId: "1:116995655604:web:53045958e23ab6b06e94e1",
+  measurementId: "G-J6642QG93L"
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
+const ratingsRef = collection(db, "ratings");
+
+/* =========================
+   STAR RATING LOGIC
+========================= */
+const stars = document.querySelectorAll('input[name="star"]');
+const publicRatingText = document.getElementById("public-rating");
+
+stars.forEach(star => {
+  star.addEventListener("change", async () => {
+    const rating = parseInt(star.id.split("-")[1]);
+
+    await addDoc(ratingsRef, {
+      rating: rating,
+      time: Date.now()
+    });
+
+const toast = document.getElementById("thankYouToast");
+toast.classList.remove("hidden");
+
+// auto hide after 4s
+setTimeout(() => {
+  toast.classList.add("hidden");
+}, 4000);
+  });
+});
+
+const dismissBtn = document.getElementById("dismissToast");
+if (dismissBtn) {
+  dismissBtn.addEventListener("click", () => {
+    document.getElementById("thankYouToast").classList.add("hidden");
+  });
+}
+
+// LIVE PUBLIC AVERAGE
+onSnapshot(ratingsRef, (snapshot) => {
+  let total = 0;
+  let count = 0;
+
+  snapshot.forEach(doc => {
+    total += doc.data().rating;
+    count++;
+  });
+
+  if (!publicRatingText) return;
+
+  if (count > 0) {
+    const avg = (total / count).toFixed(1);
+    publicRatingText.textContent = `⭐ Average rating: ${avg} (${count} votes)`;
+  } else {
+    publicRatingText.textContent = "⭐ No ratings yet";
+  }
+});
+
+/* =========================
+   YOUR ORIGINAL JS
+========================= */
+document.getElementById("year").textContent = new Date().getFullYear();
+
 // Hamburger toggle
 const hamburger = document.getElementById('hamburger');
 const menu = document.getElementById('menu');
@@ -523,26 +1106,37 @@ hamburger.addEventListener('click', ()=> menu.classList.toggle('show'));
 const data = ["Web Development","FiveM Scripts","MLOs","Clothing Reskin","Car Handling","Car Reskin","Portfolio Website"];
 const input = document.getElementById("search-input");
 const results = document.getElementById("search-results");
+
 input.addEventListener("input", ()=>{
   const query = input.value.toLowerCase();
   results.innerHTML = "";
   if(!query) return results.classList.add("hidden");
+
   const filtered = data.filter(i=>i.toLowerCase().includes(query));
   filtered.forEach(i=>{
     const li=document.createElement("li");
     li.textContent=i;
     li.className="hover:bg-[#cf30aa]/30 cursor-pointer p-2";
-    li.addEventListener("click", ()=>{ input.value=i; results.classList.add("hidden"); });
+    li.addEventListener("click", ()=>{ 
+      input.value=i; 
+      results.classList.add("hidden"); 
+    });
     results.appendChild(li);
   });
   results.classList.toggle("hidden", filtered.length===0);
 });
-document.addEventListener("click", e=>{ if(!document.getElementById("main").contains(e.target)) results.classList.add("hidden"); });
+
+document.addEventListener("click", e=>{
+  if(!document.getElementById("main").contains(e.target)) results.classList.add("hidden");
+});
 
 // Scroll reveal
 const reveals = document.querySelectorAll('.reveal');
 window.addEventListener('scroll', ()=>{
-  for(const r of reveals){ if(r.getBoundingClientRect().top < window.innerHeight-100) r.classList.add('active'); }
+  for(const r of reveals){
+    if(r.getBoundingClientRect().top < window.innerHeight-100)
+      r.classList.add('active');
+  }
 });
 
 const iframe = document.getElementById("previewFrame");
@@ -572,13 +1166,95 @@ toggleBtn.addEventListener("click", () => {
   }
 });
 
-// Fullscreen button
-fullscreenBtn.addEventListener("click", () => {
-  const wrapper = document.getElementById("preview-wrapper");
-  if (wrapper.requestFullscreen) {
-    wrapper.requestFullscreen();
+document.getElementById("licenseYear").textContent = new Date().getFullYear();
+
+function openLicense() {
+  const modal = document.getElementById("licenseModal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+}
+
+function closeLicense() {
+  const modal = document.getElementById("licenseModal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+
+// Close when clicking backdrop
+document.getElementById("licenseModal").addEventListener("click", e => {
+  if (e.target.id === "licenseModal") closeLicense();
+});
+
+// ESC key close
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeLicense();
+});
+
+// FiveM modal
+const fivemCard = document.getElementById('fivemCard');
+const fivemModal = document.getElementById('fivemModal');
+const closeFivemModal = document.getElementById('closeFivemModal');
+
+fivemCard.addEventListener('click', () => {
+  fivemModal.classList.remove('hidden');
+  fivemModal.classList.add('flex');
+});
+
+closeFivemModal.addEventListener('click', () => {
+  fivemModal.classList.add('hidden');
+  fivemModal.classList.remove('flex');
+});
+
+fivemModal.addEventListener('click', (e) => {
+  if (e.target === fivemModal) {
+    fivemModal.classList.add('hidden');
+    fivemModal.classList.remove('flex');
   }
 });
+
+// Image lightbox
+const images = document.querySelectorAll('.script-img');
+const lightbox = document.getElementById('lightbox');
+const lightboxImage = document.getElementById('lightboxImage');
+const closeBtn = document.getElementById('closeLightbox');
+
+images.forEach(img => {
+  img.addEventListener('click', () => {
+    lightboxImage.src = img.src;
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+  });
+});
+
+closeBtn.addEventListener('click', () => {
+  lightbox.classList.add('hidden');
+  lightbox.classList.remove('flex');
+});
+
+lightbox.addEventListener('click', e => {
+  if(e.target === lightbox) {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+  }
+});
+
+function showFlockToast() {
+  const toast = document.getElementById('flock-toast');
+  toast.classList.remove('opacity-0', 'translate-y-10');
+  toast.classList.add('opacity-100', 'translate-y-0');
+
+  // Hide after 5s
+  setTimeout(() => {
+    toast.classList.remove('opacity-100', 'translate-y-0');
+    toast.classList.add('opacity-0', 'translate-y-10');
+  }, 5000);
+}
+
+// Trigger every 25 seconds
+setInterval(showFlockToast, 25000);
+
+// Optional: show once on page load
+showFlockToast()
 </script>
 </body>
 </html>
